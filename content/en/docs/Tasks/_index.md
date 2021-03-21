@@ -3,9 +3,9 @@
 title: "Core Tasks"
 linkTitle: "Core Tasks"
 weight: 6
-date: 2017-01-05
+date: 2021-03-07
 description: >
-  What can your user do with your project?
+  User guides for statistical workflow
 ---
 
 {{% pageinfo %}}

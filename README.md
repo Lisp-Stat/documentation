@@ -1,89 +1,128 @@
-# Docsy Example
 
-[Docsy](https://github.com/google/docsy) is a Hugo theme for technical documentation sites, providing easy site navigation, structure, and more. This **Docsy Example Project** uses the Docsy theme, as well as providing a skeleton documentation structure for you to use. You can either copy this project and edit it with your own content, or use the theme in your projects like any other [Hugo theme](https://gohugo.io/themes/installing-and-using-themes/).
+<!-- PROJECT SHIELDS -->
 
-The theme is included in this project as a Git submodule:
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MS-PL License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-```bash
-▶ git submodule
- a053131a4ebf6a59e4e8834a42368e248d98c01d themes/docsy (heads/master)
-```
 
-This Docsy Example Project is hosted at [https://example.docsy.dev/](https://example.docsy.dev/).
 
-You can find detailed theme instructions in the Docsy user guide: https://docsy.dev/docs/
+<!-- PROJECT LOGO -->
+<br />
+<p align="center">
+  <a href="https://github.com/lisp-stat/documentation">
+    <img src="https://lisp-stat.dev/images/stats-image.svg" alt="Logo" width="80" height="80">
+  </a>
 
-This is not an officially supported Google product. This project is currently maintained.
+  <h3 align="center">Lisp-Stat Documentation</h3>
 
-## Using the Docsy Example Project as a template
+  <p align="center">
+	Documentation for Lisp-Stat
+	<br />
+    <a href="https://lisp-stat.dev/"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/lisp-stat/documentation/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/lisp-stat/documentation/issues">Request Feature</a>
+    ·
+    <a href="https://www.docsy.dev/">Reference Manual</a>
+  </p>
+</p>
 
-A simple way to get started is to use this project as a template, which gives you a site project that is set up and ready to use. To do this: 
 
-1. Click **Use this template**.
 
-2. Select a name for your new project and click **Create repository from template**.
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+	<li><a href="#resources">Resources</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
 
-3. Make your own local working copy of your new repo using git clone, replacing https://github.com/my/example.git with your repo’s web URL:
 
-```bash
-git clone --recurse-submodules --depth 1 https://github.com/my/example.git
-```
 
-You can now edit your local versions of the site’s source files.
+<!-- ABOUT THE PROJECT -->
+## About the Project
 
-If you want to do SCSS edits and want to publish these, you need to install `PostCSS`
+Lisp-Stat is a domain specific language (DSL) for statistical analysis
+and machine learning.  It is targeted at statistics practioners with
+little or no experience in programming.
 
-```bash
-npm install
-```
 
-## Running the website locally
+### Built With
 
-Once you've cloned or copied the site repo, from the repo root folder, run:
+* [Docsy](https://www.docsy.dev/)
 
-```
-hugo server
-```
+<!-- GETTING STARTED -->
+## Getting Started
 
-## Running a container locally
+To get a local copy up and running see Docsy's [getting
+started](https://www.docsy.dev/docs/getting-started/)
 
-You can run docsy-example inside a [Docker](ihttps://docs.docker.com/)
-container, the container runs with a volume bound to the `docsy-example`
-folder. This approach doesn't require you to install any dependencies other
-than Docker.
 
-1. Build the docker image 
+<!-- ROADMAP -->
+## Roadmap
 
-```bash
-docker build -f dev.Dockerfile -t docsy-example-dev:latest .
-```
+See the [open issues](https://github.com/lisp-stat/documentation/issues) for a list of proposed features (and known issues).
 
-1. Run the built image
+## Resources
 
-```bash
-docker run --publish 1313:1313 --detach --mount src="$(pwd)",target=/home/docsy/app,type=bind docsy-example-dev:latest
-```
+This system is part of the [Lisp-Stat](https://lisp-stat.dev/) project; that should be your first stop for information. Also see the  [resources](https://lisp-stat.dev/resources) and
+[community](https://lisp-stat.dev/community) pages for more
+information.
 
-Open your web browser and type `http://localhost:1313` in your navigation bar,
-This opens a local instance of the docsy-example homepage. You can now make
-changes to the docsy example and those changes will immediately show up in your
-browser after you save.
+<!-- CONTRIBUTING -->
+## Contributing
 
-To stop the container, first identify the container ID with:
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on the code of conduct, and the process for submitting pull requests.
 
-```bash
-docker container ls
-```
+<!-- LICENSE -->
+## License
 
-Take note of the hexadecimal string below the `CONTAINER ID` column, then stop
-the container:
+Distributed under the MS-PL License. See [LICENSE](LICENSE) for more information.
 
-```bash
-docker stop [container_id]
-```
 
-To delete the container run:
 
-```
-docker container rm [container_id]
-```
+<!-- CONTACT -->
+## Contact
+
+Project Link: [https://github.com/lisp-stat/data-frame](https://github.com/lisp-stat/data-frame)
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/lisp-stat/data-frame.svg?style=for-the-badge
+[contributors-url]: https://github.com/lisp-stat/data-frame/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/lisp-stat/data-frame.svg?style=for-the-badge
+[forks-url]: https://github.com/lisp-stat/data-frame/network/members
+[stars-shield]: https://img.shields.io/github/stars/lisp-stat/data-frame.svg?style=for-the-badge
+[stars-url]: https://github.com/lisp-stat/data-frame/stargazers
+[issues-shield]: https://img.shields.io/github/issues/lisp-stat/data-frame.svg?style=for-the-badge
+[issues-url]: https://github.com/lisp-stat/data-frame/issues
+[license-shield]: https://img.shields.io/github/license/lisp-stat/data-frame.svg?style=for-the-badge
+[license-url]: https://github.com/lisp-stat/data-frame/blob/master/LICENSE
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://www.linkedin.com/company/symbolics/

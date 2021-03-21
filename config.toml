@@ -1,5 +1,5 @@
 baseURL = "/"
-title = "Goldydocs"
+title = "Lisp-Stat"
 
 enableRobotsTXT = true
 
@@ -53,26 +53,26 @@ id = "UA-00000000-0"
 
 [languages]
 [languages.en]
-title = "Goldydocs"
-description = "A Docsy example site"
+title = "Lisp-Stat"
+description = "Lisp-Stat Documentation"
 languageName ="English"
 # Weight used for sorting.
-weight = 1
-[languages.no]
-title = "Goldydocs"
-description = "Docsy er operativsystem for skyen"
-languageName ="Norsk"
-contentDir = "content/no"
-time_format_default = "02.01.2006"
-time_format_blog = "02.01.2006"
+# weight = 1
+# [languages.no]
+# title = "LispStat"
+# description = "Docsy er operativsystem for skyen"
+# languageName ="Norsk"
+# contentDir = "content/no"
+# time_format_default = "02.01.2006"
+# time_format_blog = "02.01.2006"
 
-[languages.fa]
-title = "اسناد گلدی"
-description = "یک نمونه برای پوسته داکسی"
-languageName ="فارسی"
-contentDir = "content/fa"
-time_format_default = "2006.01.02"
-time_format_blog = "2006.01.02"
+# [languages.fa]
+# title = "اسناد گلدی"
+# description = "یک نمونه برای پوسته داکسی"
+# languageName ="فارسی"
+# contentDir = "content/fa"
+# time_format_default = "2006.01.02"
+# time_format_blog = "2006.01.02"
 
 [markup]
   [markup.goldmark]
@@ -80,7 +80,7 @@ time_format_blog = "2006.01.02"
       unsafe = true
   [markup.highlight]
       # See a complete list of available styles at https://xyproto.github.io/splash/docs/all.html
-      style = "tango"
+      style = "emacs"
       # Uncomment if you want your chosen highlight style used for code blocks without a specified language
       # guessSyntax = "true"
 
@@ -91,8 +91,8 @@ time_format_blog = "2006.01.02"
 section = ["HTML", "print"]
 
 [params]
-copyright = "The Docsy Authors"
-privacy_policy = "https://policies.google.com/privacy"
+copyright = "Symbolics Pte Ltd"
+privacy_policy = "/privacy"
 
 # First one is picked as the Twitter card image if not set on page.
 # images = ["images/project-illustration.png"]
@@ -101,30 +101,30 @@ privacy_policy = "https://policies.google.com/privacy"
 # This menu appears only if you have at least one [params.versions] set.
 version_menu = "Releases"
 
-# Flag used in the "version-banner" partial to decide whether to display a 
+# Flag used in the "version-banner" partial to decide whether to display a
 # banner on every page indicating that this is an archived version of the docs.
 # Set this flag to "true" if you want to display the banner.
 archived_version = false
 
 # The version number for the version of the docs represented in this doc set.
-# Used in the "version-banner" partial to display a version number for the 
+# Used in the "version-banner" partial to display a version number for the
 # current doc set.
-version = "0.0"
+version = "1.0"
 
 # A link to latest version of the docs. Used in the "version-banner" partial to
 # point people to the main doc site.
-url_latest_version = "https://example.com"
+url_latest_version = "https://lisp-stat.dev/"
 
 # Repository configuration (URLs for in-page links to opening issues and suggesting changes)
-github_repo = "https://github.com/google/docsy-example"
+github_repo = "https://github.com/Lisp-Stat/documentation"
 # An optional link to a related project repo. For example, the sibling repository where your product code lives.
-github_project_repo = "https://github.com/google/docsy"
+#github_project_repo = "https://github.com/lisp-stat/documentation"
 
 # Specify a value here if your content directory is not in your repo's root directory
 # github_subdir = ""
 
 # Google Custom Search Engine ID. Remove or comment out to disable search.
-gcs_engine_id = "011737558837375720776:fsdu1nryfng"
+#gcs_engine_id = "011737558837375720776:fsdu1nryfng"
 
 # Enable Algolia DocSearch
 algolia_docsearch = false
@@ -133,7 +133,13 @@ algolia_docsearch = false
 offlineSearch = false
 
 # Enable syntax highlighting and copy buttons on code blocks with Prism
-prism_syntax_highlighting = false
+prism_syntax_highlighting = true # No support for Common Lisp, despite claiming so
+
+# Defaults are in theme config.toml
+time_format_blog = "Monday, 02 January 2006"
+time_format_default = "02 January 2006"
+# Sections to publish in the main RSS feed.
+rss_sections = ["blog"]
 
 # User interface configuration
 [params.ui]
@@ -142,11 +148,11 @@ sidebar_menu_compact = false
 #  Set to true to disable breadcrumb navigation.
 breadcrumb_disable = false
 #  Set to true to hide the sidebar search box (the top nav search box will still be displayed if search is enabled)
-sidebar_search_disable = false
+sidebar_search_disable = true
 #  Set to false if you don't want to display a logo (/assets/icons/logo.svg) in the top nav bar
 navbar_logo = true
 # Set to true to disable the About link in the site footer
-footer_about_disable = false
+footer_about_disable = true
 
 # Adds a H2 section titled "Feedback" to the bottom of each doc. The responses are sent to Google Analytics as events.
 # This feature depends on [services.googleAnalytics] and will be disabled if "services.googleAnalytics.id" is not set.
@@ -155,11 +161,11 @@ footer_about_disable = false
 [params.ui.feedback]
 enable = true
 # The responses that the user sees after clicking "yes" (the page was helpful) or "no" (the page was not helpful).
-yes = 'Glad to hear it! Please <a href="https://github.com/USERNAME/REPOSITORY/issues/new">tell us how we can improve</a>.'
-no = 'Sorry to hear that. Please <a href="https://github.com/USERNAME/REPOSITORY/issues/new">tell us how we can improve</a>.'
+yes = 'Glad to hear it! Please <a href="https://github.com/Lisp-Stat/documentation/issues/new">tell us how we can improve</a>.'
+no = 'Sorry to hear that. Please <a href="https://github.com/Lisp-Stat/documentation/issues/new">tell us how we can improve</a>.'
 
 # Adds a reading time to the top of each doc.
-# If you want this feature, but occasionally need to remove the Reading time from a single page, 
+# If you want this feature, but occasionally need to remove the Reading time from a single page,
 # add "hide_readingtime: true" to the page's front matter
 [params.ui.readingtime]
 enable = false
@@ -168,33 +174,50 @@ enable = false
 # End user relevant links. These will show up on left side of footer and in the community page if you have one.
 [[params.links.user]]
 	name = "User mailing list"
-	url = "https://example.org/mail"
+	url = "https://groups.google.com/g/lisp-stat"
 	icon = "fa fa-envelope"
         desc = "Discussion and help from your fellow users"
-[[params.links.user]]
-	name ="Twitter"
-	url = "https://example.org/twitter"
-	icon = "fab fa-twitter"
-        desc = "Follow us on Twitter to get the latest news!"
+# [[params.links.user]]
+# 	name ="Twitter"
+# 	url = "https://example.org/twitter"
+# 	icon = "fab fa-twitter"
+#         desc = "Follow us on Twitter to get the latest news!"
 [[params.links.user]]
 	name = "Stack Overflow"
-	url = "https://example.org/stack"
+	url = "https://stackoverflow.com/questions/tagged/xlispstat"
 	icon = "fab fa-stack-overflow"
         desc = "Practical questions and curated answers"
+
 # Developer relevant links. These will show up on right side of footer and in the community page if you have one.
 [[params.links.developer]]
 	name = "GitHub"
-	url = "https://github.com/google/docsy"
+	url = "https://github.com/lisp-stat"
 	icon = "fab fa-github"
-        desc = "Development takes place here!"
+        desc = "Development takes place here"
+# [[params.links.developer]]
+# 	name = "Slack"
+# 	url = "https://example.org/slack"
+# 	icon = "fab fa-slack"
+#         desc = "Chat with other project developers"
 [[params.links.developer]]
-	name = "Slack"
-	url = "https://example.org/slack"
-	icon = "fab fa-slack"
-        desc = "Chat with other project developers"
-[[params.links.developer]]
-	name = "Developer mailing list"
-	url = "https://example.org/mail"
+	name = "Developer discussion"
+	url = "https://github.com/Lisp-Stat/lisp-stat/discussions"
 	icon = "fa fa-envelope"
         desc = "Discuss development issues around the project"
 
+
+
+#
+# Symbolics added configuration
+#
+# [module]
+#   [[module.imports]]
+#     path="S:/src/"
+#   [[module.imports.mounts]]
+#     source="num-utils/docs"
+#     target="content/docs/Reference/numerical-utilities"
+#     language="en"
+#   [[module.imports.mounts]]
+#     source="special-functions/docs"
+#     target="content/docs/Reference/special-functions"
+#     language="en"

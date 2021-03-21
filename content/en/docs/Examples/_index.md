@@ -3,15 +3,14 @@
 title: "Examples"
 linkTitle: "Examples"
 weight: 3
-date: 2017-01-05
+date: 2021-03-07
 description: >
-  See your project in action!
+  From the ninth edition of the book, *Introduction to the Practice of Statistics*
 ---
 
-{{% pageinfo %}}
-This is a placeholder page that shows you how to use this template site.
-{{% /pageinfo %}}
+## Looking at data
 
-Do you have any example **applications** or **code** for your users in your repo or elsewhere? Link to your examples here.
+### Displaying distributions with graphs
 
+- [Categorical variables](https://github.com/Lisp-Stat/IPS/notebooks/Chapter-1/Categorical.ipynb) &mdash; Bar & pie charts
 

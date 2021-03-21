@@ -1,5 +1,5 @@
 ---
-title: "Docsy Blog"
+title: "Lisp-Stat Blog"
 linkTitle: "Blog"
 menu:
   main:
