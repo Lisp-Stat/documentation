@@ -12,5 +12,5 @@ description: >
 
 ### Displaying distributions with graphs
 
-- [Categorical variables](https://github.com/Lisp-Stat/IPS/notebooks/Chapter-1/Categorical.ipynb) &mdash; Bar & pie charts
+- [Categorical variables](https://github.com/Lisp-Stat/IPS/blob/master/notebooks/Chapter-1/Categorical.ipynb) &mdash; Bar & pie charts
 

@@ -15,7 +15,7 @@ follow these steps for contributing to Lisp-Stat:
 - Step 3: Get your [code reviewed](#code-review) and committed to the project.
 
 You may also be interested in the [additional
-information](additional-info) at the end of this document.
+information](#additional-info) at the end of this document.
 
 ### Get source code
 
@@ -137,7 +137,7 @@ You could also look at [CRAN](https://cran.r-project.org/), which
 contains thousands of high-quality packages.
 
 For specific ideas that would help, see the
-[ideas](/docs/contribute/ideas) page.
+[ideas](/docs/contributing/ideas) page.
 
 #### Issue Guidelines
 

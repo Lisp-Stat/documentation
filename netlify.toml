@@ -1,0 +1,20 @@
+[build]
+  publish = "public"
+  command = "cd themes/docsy && git submodule update -f --init && cd ../.. && hugo"
+
+[context.production.environment]
+  HUGO_VERSION = "0.81.0" # if older, use format: 0.53 (no trailing zero)
+  HUGO_ENV = "production"
+  HUGO_ENABLEGITINFO = "true"
+
+# Not using preview nor branch deployment yet
+# See:
+#  https://www.netlify.com/blog/2017/11/16/get-full-control-over-your-deployed-branches/
+#  https://www.netlify.com/blog/2016/07/20/introducing-deploy-previews-in-netlify/
+#  https://gohugo.io/hosting-and-deployment/hosting-on-netlify/
+
+[context.branch-deploy.environment]
+  HUGO_VERSION = "0.81.0"
+
+[context.deploy-preview.environment]
+  HUGO_VERSION = "0.81.0"

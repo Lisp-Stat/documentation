@@ -221,7 +221,7 @@ for accurate implementation is somewhat more limited.
 For the most part, implementation priority is determined by the
 features required when working through the [Lisp-Stat
 examples](/docs/examples/) and the [basic
-tutorial](/docs/tutorials/basic).  Being able to execute the code in
+tutorial](/docs/tutorials/basics).  Being able to execute the code in
 both of these documents is the first MVP milestone. If you see
 something in one of these documents that does not work yet it will be
 a good starter issue for a contribution.

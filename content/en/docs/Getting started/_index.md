@@ -63,10 +63,10 @@ find the systems, try this at the REPL:
 
 Lisp-Stat reference manuals are generated with the
 [declt](https://github.com/didierverna/declt) system. This produces
-high quality PDFs, markdown (soon), HTML and Info output. The manuals
-are available in HTML in the [reference](/docs/reference) section of
-this website; PDF and Info files can be download from the individual
-systems `docs/` directory.
+high quality PDFs, markdown (soon), HTML and Info output.  The manuals
+are available in HTML, <!-- in the [reference](/docs/reference)
+section of this website;--> PDF and Info files that can be download
+from the individual systems `docs/` directory.
 
 You can install the info manuals into the emacs help system and this
 allows searching and browsing from within the editing environment.  To
