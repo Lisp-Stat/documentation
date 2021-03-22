@@ -131,7 +131,7 @@ Now, suppose we want to create a data frame from a `plist`
 We could also have used the `plist-df` function:
 
 ```lisp
-(df:plist-df plist)
+(plist-df plist)
 ```
 
 and to demonstrate the same thing using an alist, we'll use the
@@ -139,7 +139,7 @@ and to demonstrate the same thing using an alist, we'll use the
 `alist`:
 
 ```lisp
-(df:alist-df (plist-alist plist))
+(alist-df (plist-alist plist))
 ```
 
 ### From vectors
@@ -602,21 +602,21 @@ function.  Using `*d*`, defined in [Reading
 data](/docs/tasks/data-frame/#reading-data) above:
 
 ```lisp
-(df:column *d* :gender)
+(column *d* :gender)
 #("Male" "Male" "Female")
 ```
 
 To get all the columns as a vector, use the `columns` function:
 
 ```lisp
-(df:columns *d*)
+(columns *d*)
 #(#("Female" "Female" "Male") #(30 31 32) #(180.0d0 182.7d0 165.0d0))
 ```
 
 You can also return a subset of the columns by passing in a selection:
 
 ```lisp
-(df:columns *d* '(:gender :age))
+(columns *d* '(:gender :age))
 #(#("Female" "Female" "Male") #(30 31 32))
 ```
 

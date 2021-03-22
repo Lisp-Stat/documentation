@@ -47,7 +47,7 @@ anchor = "smart"
 [services]
 [services.googleAnalytics]
 # Comment out the next line to disable GA tracking. Also disables the feature described in [params.ui.feedback].
-id = "UA-00000000-0"
+id = "G-4JNEYSENWT"
 
 # Language configuration
 
@@ -56,6 +56,9 @@ id = "UA-00000000-0"
 title = "Lisp-Stat"
 description = "Lisp-Stat Documentation"
 languageName ="English"
+time_format_blog = "Monday, 02 January 2006"
+time_format_default = "02 January 2006"
+
 # Weight used for sorting.
 # weight = 1
 # [languages.no]
@@ -135,9 +138,6 @@ offlineSearch = false
 # Enable syntax highlighting and copy buttons on code blocks with Prism
 prism_syntax_highlighting = true # No support for Common Lisp, despite claiming so
 
-# Defaults are in theme config.toml
-time_format_blog = "Monday, 02 January 2006"
-time_format_default = "02 January 2006"
 # Sections to publish in the main RSS feed.
 rss_sections = ["blog"]
 
