@@ -3,7 +3,7 @@
   command = "cd themes/docsy && git submodule update -f --init && cd ../.. && hugo"
 
 [context.production.environment]
-  HUGO_VERSION = "0.81.0" # if older, use format: 0.53 (no trailing zero)
+  HUGO_VERSION = "0.82.0"
   HUGO_ENV = "production"
   HUGO_ENABLEGITINFO = "true"
 
@@ -14,7 +14,7 @@
 #  https://gohugo.io/hosting-and-deployment/hosting-on-netlify/
 
 [context.branch-deploy.environment]
-  HUGO_VERSION = "0.81.0"
+  HUGO_VERSION = "0.82.0"
 
 [context.deploy-preview.environment]
-  HUGO_VERSION = "0.81.0"
+  HUGO_VERSION = "0.82.0"
