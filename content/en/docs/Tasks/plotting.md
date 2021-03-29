@@ -27,7 +27,10 @@ in Electron, should someone want to pick up that integration.
 
 ### Configuring a browser
 
-
+You can configure a default browser in the file `browser.lisp` in the
+main system directory.  The default is configured for Chrome, and this
+is the recommended browser.  Browser command-line options can also be
+configured here.
 
 ### Vega-Lite specification
 Vega-Lite plots are specified with JSON to encoding mappings from data
@@ -165,5 +168,36 @@ sets from the Vega-Lite ecosystem.
 
 ### Rendering the plot
 
-The `vl:vl-plot` function will render a specification using the
-configured browser.
+There are two steps to rendering a plot:
+
+- saving the specification to a file in HTML and JavaScript format
+- calling the browser to render the plot
+
+The first step uses a back-end specific function. For example the
+Vega-Lite function for saving a plot is `vglt:save-plot`, the
+[Plotly](https://plotly.com/) one (when available), would be
+`plty:save-plot`. The browser functionality is common across all
+backends that use a browser for rendering, and these are located in
+the `plot` package.
+
+This example demonstrates rendering data from the Lisp-Stat [notebook
+on categorical variables](/docs/examples/). First some quick
+boilerplate to set up the environment:
+
+
+```lisp
+(ql:quickload :ips)         ; data examples
+(ql:quickload :plot/vglt)   ; Vega-Lite plotting
+(in-package :ips)
+(defparameter online (csv-to-data-frame (dex:get ips::eg01-07 :want-stream t)))
+(defparameter online-bar-chart (vglt:bar-chart online "SOURCE" "COUNT"))
+```
+
+Now we can render the spec like so:
+
+```lisp
+(plot:plot-from-file			        ; Common browser plotting
+ (vglt:save-plot 'online-bar-chart))	; Vega-Lite specific save
+```
+
+You should see a new Chrome window containing the plot.
