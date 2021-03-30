@@ -48,6 +48,7 @@ git clone https://github.com/Lisp-Stat/dfio.git && \
 git clone https://github.com/Lisp-Stat/special-functions.git && \
 git clone https://github.com/Lisp-Stat/numerical-utilities.git && \
 git clone https://github.com/Lisp-Stat/documentation.git && \
+git clone https://github.com/Lisp-Stat/plot.git && \
 git clone https://github.com/Lisp-Stat/lisp-stat.git
 ```
 
