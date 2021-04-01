@@ -106,7 +106,7 @@ We can encode this `alist` back to the original JSON with:
     (yason:encode *)))
 ```
 
-This mechanism is generic, and as you will see, when can build up an
+This mechanism is generic, and as you will see, we can build up an
 `alist` that corresponds to any Vega-Lite spec by manipulating the
 values in the `alist`.  This is what the convenience functions (like
 `bar-chart`) in the `vglt` package do.  Most of the time you will be

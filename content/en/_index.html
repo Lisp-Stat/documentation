@@ -47,3 +47,39 @@ For announcement of latest features, tips, hints and configuration
 
 {{< /blocks/section >}}
 
+<!-- Some quick examples -->
+{{< blocks/section >}}
+
+{{% blocks/feature icon="fas fa-code" title="Code for a simple plot" %}}
+<pre style="text-align: left">
+  <code>
+(ql:quickload :ips)      ; data examples
+(ql:quickload :plot/vglt); Vega-Lite lib
+(in-package :ips)        ; for imports
+(defparameter online
+  (csv-to-data-frame
+    (dex:get ips::eg01-07 :want-stream t)))
+(defparameter online-bar-chart
+  (vglt:bar-chart online "SOURCE" "COUNT"))
+  </code>
+</pre>
+{{% /blocks/feature %}}
+
+{{% blocks/feature icon="fas fa-code" title="Create a data frame from a network URL" %}}
+<pre style="text-align: left">
+  <code>
+(defparameter *df*
+  (csv-to-data-frame
+    (dex:get
+       "https://raw.githubusercontent.com/guru99-edu/R-Programming/master/computers.csv"
+       :want-stream t)))
+  </code>
+</pre>
+{{% /blocks/feature %}}
+
+{{% blocks/feature icon="fas fa-chart-line" title="Plot rendered in Jupyter-Lab" %}}
+<img src="bar-chart.png">
+{{% /blocks/feature %}}
+
+{{< /blocks/section >}}
+
