@@ -40,25 +40,30 @@ or generated using a function, optionally given index position
 They can also be transformed and manipulated:
 
 ```lisp
-(defparameter A #2A((1 2) (3 4)))
-(defparameter B #2A((2 3) (4 5)))
+(defparameter A #2A((1 2)
+                    (3 4)))
+(defparameter B #2A((2 3)
+                    (4 5)))
 
 ;; split along any dimension
 (split A 1)  ; => #(#(1 2) #(3 4))
 
 ;; stack along any dimension
-(stack 1 A B) ; => #2A((1 2 2 3) (3 4 4 5))
+(stack 1 A B) ; => #2A((1 2 2 3)
+              ;        (3 4 4 5))
 
 ;; element-wise function map
 (each #'+ #(0 1 2) #(2 3 5)) ; => #(2 4 7)
 
 ;; element-wise expressions
-(vectorize (A B) (* A (sqrt B))) ; => #2A((1.4142135 3.4641016) (6.0 8.944272))
+(vectorize (A B) (* A (sqrt B))) ; => #2A((1.4142135 3.4641016)
+                                 ;        (6.0       8.944272))
 
 ;; index operations e.g. matrix-matrix multiply:
 (each-index (i j)
   (sum-index k
-    (* (aref A i k) (aref B k j)))) ; => #2A((10 13) (22 29))
+    (* (aref A i k) (aref B k j)))) ; => #2A((10 13)
+	                                ;        (22 29))
 ```
 
 ## Array shorthand
@@ -98,7 +103,8 @@ Displaced arrays are usually constructed using `make-array`, but this
 library also provides `displace` for that purpose:
 
 ```lisp
-(defparameter *a* #2A((1 2 3) (4 5 6)))
+(defparameter *a* #2A((1 2 3)
+                      (4 5 6)))
 (aops:displace *a* 2 1) ; => #(2 3)
 ```
 
@@ -128,7 +134,8 @@ Now consider `sub`, which returns a specific array, composed of the
 elements that would start with given subscripts:
 
 ```lisp
-(aops:sub *b* 0) ; => #2A((0 1) (2 3))
+(aops:sub *b* 0) ; => #2A((0 1)
+                 ;        (2 3))
 (aops:sub *b* 0 1) ; => #(2 3)
 (aops:sub *b* 0 1 0) ; => 2
 ```
@@ -144,7 +151,8 @@ first subscript:
                     (4 5)
                     (6 7)
                     (8 9))
-              1 3) ; => #2A((2 3) (4 5))
+              1 3) ; => #2A((2 3)
+			       ;        (4 5))
 ```
 
 and also has a `(setf partition)` pair.
@@ -152,7 +160,8 @@ and also has a `(setf partition)` pair.
 **`combine`** is the opposite of `split`:
 
 ```lisp
-(aops:combine #(#(0 1) #(2 3))) ; => #2A((0 1) (2 3))
+(aops:combine #(#(0 1) #(2 3))) ; => #2A((0 1)
+                                ;        (2 3))
 ```
 
 **`subvec`** returns a displaced subvector:
@@ -168,7 +177,9 @@ Finally, **`reshape`** can be used to displace arrays into a different
 shape:
 
 ```lisp
-(aops:reshape *a* '(3 2)) ; => #2A((1 2) (3 4) (5 6))
+(aops:reshape *a* '(3 2)) ; => #2A((1 2)
+                          ;        (3 4)
+						  ;        (5 6))
 ```
 
 You can use `t` for one of the dimensions, to be filled in
@@ -233,16 +244,18 @@ new array, but take an array as first argument, which is modified and returned.
 For example:
 ```lisp
 (aops:rand '(2 2))
-; => #2A((0.6686077 0.59425664) (0.7987722 0.6930506))
+; => #2A((0.6686077 0.59425664)
+;        (0.7987722 0.6930506))
 
 (aops:rand* 'single-float '(2 2))
-; => #2A((0.39332366 0.5557821) (0.48831415 0.10924244))
+; => #2A((0.39332366 0.5557821)
+;        (0.48831415 0.10924244))
 
 (let ((a (make-array '(2 2) :element-type 'double-float)))
   ;; Modify array A, filling with random numbers
   (aops:rand! a))
   ; => #2A((0.6324615478515625d0 0.4636608362197876d0)
-           (0.4145939350128174d0 0.5124958753585815d0))
+  ;        (0.4145939350128174d0 0.5124958753585815d0))
 ```
 
 **`generate`** (and `generate*`) allow you to generate arrays using
@@ -250,11 +263,14 @@ functions.
 
 ```lisp
 (aops:generate (lambda () (random 10)) 3) ; => #(6 9 5)
-(aops:generate #'identity '(2 3) :position) ; => #2A((0 1 2) (3 4 5))
+(aops:generate #'identity '(2 3) :position) ; => #2A((0 1 2)
+                                            ;        (3 4 5))
 (aops:generate #'identity '(2 2) :subscripts)
-;; => #2A(((0 0) (0 1)) ((1 0) (1 1)))
+; => #2A(((0 0) (0 1))
+;        ((1 0) (1 1)))
 (aops:generate #'cons '(2 2) :position-and-subscripts)
-;; => #2A(((0 0 0) (1 0 1)) ((2 1 0) (3 1 1)))
+; => #2A(((0 0 0) (1 0 1))
+;        ((2 1 0) (3 1 1)))
 ```
 
 Depending on the last argument, the function will be called with the
@@ -265,9 +281,13 @@ complete permutations, look at the docstring and the unit tests).
 Transposing is a special case of permute:
 
 ```lisp
-(defparameter *a* #2A((1 2 3) (4 5 6)))
-(aops:permute '(0 1) *a*) ; => #2A((1 2 3) (4 5 6))
-(aops:permute '(1 0) *a*) ; => #2A((1 4) (2 5) (3 6))
+(defparameter *a* #2A((1 2 3)
+                      (4 5 6)))
+(aops:permute '(0 1) *a*) ; => #2A((1 2 3)
+                          ;        (4 5 6))
+(aops:permute '(1 0) *a*) ; => #2A((1 4)
+                          ;        (2 5)
+						  ;        (3 6))
 ```
 
 **`each`** applies a function to its (array) arguments elementwise:
@@ -283,7 +303,8 @@ Transposing is a special case of permute:
 (aops:vectorize (a) (* 2 a)) ; => #(2 4 6 8)
 
 (defparameter b #(2 3 4 5))
-(aops:vectorize (a b) (* a (sin b))) ; => #(0.9092974 0.28224 -2.2704074 -3.8356972)
+(aops:vectorize (a b) (* a (sin b)))
+; => #(0.9092974 0.28224 -2.2704074 -3.8356972)
 ```
 
 There is also a version `vectorize*` which takes a type argument for the
@@ -304,8 +325,8 @@ the function that calculates the sum. `margin` automates that for you:
                (5 7)) 0) ; => #(7 11)
 ```
 
-But the function is much more general than this: the arguments `inner`
-and `outer` allow arbitrary permutations before splitting.
+But the function is more general than this: the arguments `inner` and
+`outer` allow arbitrary permutations before splitting.
 
 Finally, **`recycle`** allows you to recycle arrays along inner and outer
 dimensions:
@@ -354,11 +375,14 @@ elements. Like `sum-index` it is given one or more index symbols, and
 uses a code walker to find array dimensions.
 
 ```lisp
-(defparameter A #2A((1 2) (3 4)))
-(defparameter B #2A((5 6) (7 8)))
+(defparameter A #2A((1 2)
+                    (3 4)))
+(defparameter B #2A((5 6)
+                    (7 8)))
 
 ;; Transpose
-(aops:each-index (i j) (aref A j i)) ; => #2A((1 3) (2 4))
+(aops:each-index (i j) (aref A j i)) ; => #2A((1 3)
+                                     ;        (2 4))
 
 ;; Sum columns
 (aops:each-index i
@@ -368,14 +392,16 @@ uses a code walker to find array dimensions.
 ;; Matrix-matrix multiply
 (aops:each-index (i j)
    (aops:sum-index k
-      (* (aref A i k) (aref B k j)))) ; => #2A((19 22) (43 50))
+      (* (aref A i k) (aref B k j)))) ; => #2A((19 22)
+	                                  ;        (43 50))
 ```
 
 **`reduce-index`** is a more general version of `sum-index`; it
 applies a reduction operation over one or more indices.
 
 ```lisp
-(defparameter A #2A((1 2) (3 4)))
+(defparameter A #2A((1 2)
+                    (3 4)))
 
 ;; Sum all values in an array
 (aops:reduce-index #'+ i (row-major-aref A i)) ; => 10
@@ -393,7 +419,8 @@ Some reductions over array elements can be done using the Common Lisp
 displaced vector:
 
 ```lisp
-(defparameter a #2A((1 2) (3 4)))
+(defparameter a #2A((1 2)
+                    (3 4)))
 (reduce #'max (aops:flatten a)) ; => 4
 ```
 
@@ -411,8 +438,10 @@ More complicated reductions can be done with **`vectorize-reduce`**,
 for example the maximum absolute difference between arrays:
 
 ```lisp
-(defparameter a #2A((1 2) (3 4)))
-(defparameter b #2A((2 2) (1 3)))
+(defparameter a #2A((1 2)
+                    (3 4)))
+(defparameter b #2A((2 2)
+                    (1 3)))
 
 (aops:vectorize-reduce #'max (a b) (abs (- a b))) ; => 2
 ```
@@ -427,7 +456,8 @@ returns an array that effectively equivalent (`eq`) to array. Another
 example is `recycle`:
 
 ```lisp
-(aops:recycle 4 :inner '(2 2)) ; => #2A((4 4) (4 4))
+(aops:recycle 4 :inner '(2 2)) ; => #2A((4 4)
+                               ;        (4 4))
 ```
 
 ## Stacking
@@ -440,6 +470,8 @@ You can stack compatible arrays along any axis:
 (aops:stack 0 *a1* *a2*) ; => #(0 1 2 3 5 7)
 (aops:stack 1
           (aops:reshape-col *a1*)
-          (aops:reshape-col *a2*)) ; => #2A((0 3) (1 5) (2 7))
+          (aops:reshape-col *a2*)) ; => #2A((0 3)
+	                               ;        (1 5)
+								   ;        (2 7))
 
 ```

@@ -13,12 +13,12 @@ shares many of the properties of arrays and lists.  By design it can be
 manipulated using the same mechanisms used to manipulate lisp arrays.
 This allow you to, for example, transform a data frame into an array
 and use [array-operations](/docs/tasks/array-operations) to manipulate
-it, and then turn it into a data frame again to use in modelling or
+it, and then turn it into a data frame again to use in modeling or
 plotting.
 
 {{< alert title="Note" >}}In this document we refer to _column_ and
-_variable_ interchangably. Likewise _factor_ and _category_ refer to a
-variable type. Where neccessary we distinguish the terminology.
+_variable_ interchangeably. Likewise _factor_ and _category_ refer to a
+variable type. Where necessary we distinguish the terminology.
 
 The examples assume that you are `in-package` `data-frame`. If not, you
 will need to use a package prefix if following along.  All the samples
@@ -95,7 +95,7 @@ in the file `examples.lisp` type:
 The files `precipitation.lisp` and `sg-weather.lisp` now contain a set
 of expressions that, when read in with the `load` command, will
 recreate the variables `precipitation` and `min-temp`.  You can look
-at these files with an editor like the emacs editor and you can
+at these files with an editor like the Emacs editor and you can
 prepare files with your own data by following these examples.
 
 
@@ -106,6 +106,19 @@ A data frame can be created from a Common Lisp `array`, `alist` or
 
 Data frame columns represent sample set *variables*, and its rows
 are *observations* (or cases).
+
+{{< alert title="Note" >}}For these examples we are going to install a modified version of the Lisp-Stat data-frame print-object function. This will cause the REPL to display the data-frame at creation, and save us from having to type (print data-frame) in each example.  If you'd like to install it as we have, use the code below.
+{{< /alert >}}
+
+
+```lisp
+(defmethod print-object ((df data-frame) stream)
+  "Print the first six rows of DATA-FRAME"
+  (let* ((*print-lines* 6)
+	 (*print-pretty* t))
+    (df:pprint-data-frame df stream)))
+(in-package :ls-user)
+```
 
 Let's create a simple data frame. First we'll setup some example
 variables to represent our sample domain:
@@ -123,15 +136,22 @@ Now, suppose we want to create a data frame from a `plist`
 
 ```lisp
 (apply #'df plist)
-;#<DATA-FRAME:DATA-FRAME (2 x 4)
-;  :VECTOR #(1 2 3 4)
-;  :SYMBOLS #(A B C D)>
+;; VECTOR SYMBOLS
+;;      1 A
+;;      2 B
+;;      3 C
+;;      4 D
 ```
 
 We could also have used the `plist-df` function:
 
 ```lisp
 (plist-df plist)
+;; VECTOR SYMBOLS
+;;      1 A
+;;      2 B
+;;      3 C
+;;      4 D
 ```
 
 and to demonstrate the same thing using an alist, we'll use the
@@ -140,312 +160,32 @@ and to demonstrate the same thing using an alist, we'll use the
 
 ```lisp
 (alist-df (plist-alist plist))
+;; VECTOR SYMBOLS
+;;      1 A
+;;      2 B
+;;      3 C
+;;      4 D
 ```
 
 ### From vectors
 You can use `make-df` to create a data frame from keys and a list of
-vectors:
+vectors. Each vector becomes a column in the data-frame.
 
 ```lisp
 (make-df '(:a :b) '(#(1 2 3) #(10 20 30)))
+;; A  B
+;; 1 10
+;; 2 20
+;; 3 30
 ```
 
 This is useful if you've started working with variables defined with
 `def`, `defparameter` or `defvar` and want to combine them into a data
 frame.
 
+### Example datasets
 
-
-## Data-frame operations
-
-These functions operate on data-frames as a whole.  For this section of
-the manual, we are going to work with this data-frame:
-
-```lisp
-(defparameter df1 (make-df '(:a :b) '(#(2 3 5) #(7 11 13))))
-```
-
-You'll use the first three of these to convert a data-frame to and
-from standard lisp data structures.  This is useful if you've got data
-in Common Lisp format and want to work with it in a data frame, or if
-you've got a data frame and want to apply Common Lisp operators on it
-that don't exist in `df`.
-
-### as-alist
-
-Just like it says on the tin, `as-alist` takes a data frame and
-returns an `alist` version of it:
-
-```lisp
-(as-alist df1)
-; => ((:A . #(2 3 5)) (:B . #(7 11 13)))
-```
-
-### as-plist
-
-Similarly, `as-plist` will return a `plist`:
-
-```lisp
-(nu:as-plist df1)
-; => (:A #(2 3 5) :B #(7 11 13))
-```
-
-Note that `as-plist` is in the `nu` (numerical-utilities) package,
-where the generic `as-plist` resides.
-
-
-### as-array
-
-`as-array` returns the data frame as a row-major two dimensional lisp
-array.  You'll want to save the variable names using the `keys`
-function to make it easy to convert back (see
-[matrix-df](#matrix-df)).  One of the reasons you might want to use
-this function is to manipulate the data-frame using
-[array-operations](/docs/tasks/array-operations).  This is
-particularly useful when you have data frames of all numeric values.
-
-```lisp
-(aops:as-array df1)
-; => #2A((2 7) (3 11) (5 13))
-```
-
-Like `as-plist`, `as-array` is in the `aops` package because the
-generic array conversion functions are in the `array-operations`
-system.
-
-### columns
-
-This function returns the variables of the data frame as a list of
-vectors:
-
-```lisp
-(columns df1)
-; => #(#(2 3 5) #(7 11 13))
-```
-
-This is a column-major lisp array.
-
-You can also pass a selection to the `columns` function to return
-specific columns:
-
-```lisp
-(columns df1 :a)
-; => #(2 3 5)
-```
-
-
-
-### copy
-
-`copy` returns a newly allocated data-frame with the same values as
-the original:
-
-```lisp
-(copy df1)
-; =>#<DATA-FRAME (2 x 3)
-;     :A #(2 3 5)
-;     :B #(7 11 13)>
-```
-
-Useful when applying destructive operations to the data-frame.
-
-### keys
-
-Returns a vector of the variables in the data frame. The keys are
-symbols. Symbol properties describe the variable, for example units.
-
-```lisp
-(keys df1)
-; => #(:A :B)
-```
-
-
-### map-df
-
-`map-df` transforms one data-frame into another, row-by-row. Its
-function signature is:
-
-```lisp
-(map-df (data-frame keys function result-keys) ...
-```
-
-It applies _function_ to each row, and returns a data frame with the
-_result-keys_ as the column (variable) names.  You can also specify the
-type of the new variables.
-
-The goal for this example is to transform `df1` into a data-frame that
-consists of the product of `:a` and `:b`, and a bit mask of the
-columns that indicate where the value is <= 30.  First we'll need a
-helper for the bit mask:
-
-```lisp
-(defun predicate-bit (a b)
-  "Return 1 if a*b <= 30, 0 otherwise"
-  (if (<= 30 (* a b))
-      1
-      0))
-```
-
-Now we can transform `df1` into our new data-frame, `df2`, with:
-
-```lisp
-(defparameter df2 (map-df df1 '(:a :b)
-			  (lambda (a b)
-			    (vector (* a b) (predicate-bit a b)))
-			  '((:p fixnum) (:m bit))))
-```
-
-```lisp
-df2
-;#<DATA-FRAME (2 x 3)
-;  :P #(14 33 65)
-;  :M #*011>
-```
-
-Note how we specified both the new key names and their type.
-
-
-### matrix-df
-
-Convert a matrix to a data-frame with the given keys.
-
-```lisp
-(matrix-df (keys df1) (aops:as-array df1))
-; => #<DATA-FRAME (2 x 3)
-;      :A #(2 3 5)
-;      :B #(7 11 13)>
-```
-
-This is useful if you need to do a lot of numeric number-crunching on
-a data set as an array, then want to add categorical variables and
-continue processing as a data-frame.
-
-
-### rows
-
-`rows` returns the rows of a data frame as a list of vectors:
-
-```lisp
-(rows df1)
-; => (#(2 7) #(3 11) #(5 13))
-```
-
-## Reading data
-
-You can use the `dfio` system to read text-base tabular data, such as
-CSV, into a data frame. Here is a short demonstration of reading from
-strings:
-
-```lisp
-(defparameter *d* (dfio:csv-to-data-frame
-                     (format nil "Gender,Age,Height~@
-                                  \"Male\",30,180.~@
-                                  \"Male\",31,182.7~@
-                                  \"Female\",32,1.65e2")))
-;#<DATA-FRAME:DATA-FRAME (3 x 3)
-;  :GENDER #("Male" "Male" "Female")
-;  :AGE #(30 31 32)
-;  :HEIGHT #(180.0d0 182.7d0 165.0d0)>
-```
-
-`dfio` tries to hard to decipher the various number formats sometimes
-encountered in CSV files:
-
-```lisp
-(select:select (dfio:csv-to-data-frame
-                 (format nil "\"All kinds of wacky number formats\"~%.7~%19.~%.7f2"))
-                t :all-kinds-of-wacky-number-formats)
-; => #(0.7d0 19.0d0 70.0)
-```
-
-
-
-### From files
-
-We saw above that `dfio` can read from strings, so one easy way to
-read from a file is to use the `uiop` system function
-`read-file-string`.  Assuming there is a file named "computers.csv" in
-the current `*default-pathname-defaults*`, you could load it like
-this:
-
-```lisp
-(defparameter *df* (dfio:csv-to-data-frame
-		      (uiop:read-file-string "computers.csv")))
-```
-
-For most data sets, this method will work fine.  If you are working
-with extremely large CSV files, you may want to consider using a
-stream from an open file.
-
-
-### From URLs
-
-`dfio` can also read from Common Lisp
-[streams](http://www.lispworks.com/documentation/HyperSpec/Body/21_a.htm).
-Streams operations can be network or file based.  Here is an example
-of how to read the same file over the network using the HTTP client
-[dexador](https://github.com/fukamachi/dexador).
-
-```lisp
-(defparameter *df* (dfio:csv-to-data-frame
-		      (dex:get
-		       "https://raw.githubusercontent.com/guru99-edu/R-Programming/master/computers.csv"
-		       :want-stream t)))
-```
-
-{{< alert title="Note" >}}The input delimiter is hard-coded to comma
-(CSV) in `dfio`; output delimiters can be specified in the save
-function.  This is an inherited behaviour and can be easily changed by
-following the example in the `data-frame-to-csv` function.  In
-reality, most text based data we encounter are CSV, and there has not
-been a need for other delimiters for input.{{< /alert >}}
-
-### From a database
-
-{{< alert color="warning" >}}
-This functionality has been implemented, but is not
-yet ready for release. It needs code cleanup, commenting, error
-handling and test cases written, along with user documentation (this
-section). If you need to read from a database, [open an
-issue](https://github.com/Lisp-Stat/dfio/issues) and we'll get you
-sorted.
-{{< /alert >}}
-
-
-## Saving data
-
-Data frames can be saved into any delimited text format supported by
-[cl-csv](https://github.com/AccelerationNet/cl-csv), or several
-flavors of JSON, such as Vega-Lite.  Since the JSON reader/writers are
-specific to the plotting applications, they are described in the
-[plotting](/docs/tasks/plotting) section.
-
-### To files
-
-To save our computers.csv file to disk, you could use:
-
-```lisp
-(dfio:data-frame-to-csv *df*
-			  :stream #P"datasets/computers.csv"
-			  :add-first-row t)         ; add column headers
-```
-
-and to save it to tab-seperated values:
-
-```lisp
-(dfio:data-frame-to-csv *df*
-	          :separator #\tab
-			  :stream #P"datasets/computers.csv"
-			  :add-first-row t)         ; add column headers
-```
-
-### To a database
-
-See the section above, [From a database](/docs/tasks/data-frame/#from-a-database).
-
-## Example datasets
-
-Vincent Arel-Bundock maintains a library of [R
+Vincent Arel-Bundock maintains a library of nearly 1500 [R
 datasets](https://github.com/vincentarelbundock/Rdatasets) that is a
 consolidation of example data from various R packages.  The
 `lisp-stat/rdata` system allows you to load these to use in Lisp-Stat.
@@ -454,60 +194,13 @@ To get started, try loading the classic `mtcars` data set:
 ```lisp
 (ql:quickload :lisp-stat/rdata)
 (rdata:load-df 'rdata::datasets 'rdata::mtcars)
-;; #<DATA-FRAME:DATA-FRAME (12 x 32)
-;;   :|| 1 (3%) x "Mazda RX4",
-;;       1 (3%) x "Mazda RX4 Wag",
-;;       1 (3%) x "Datsun 710",
-;;       1 (3%) x "Hornet 4 Drive",
-;;       1 (3%) x "Hornet Sportabout",
-;;       1 (3%) x "Valiant",
-;;       1 (3%) x "Duster 360",
-;;       1 (3%) x "Merc 240D",
-;;       1 (3%) x "Merc 230",
-;;       1 (3%) x "Merc 280",
-;;       1 (3%) x "Merc 280C",
-;;       1 (3%) x "Merc 450SE",
-;;       1 (3%) x "Merc 450SL",
-;;       1 (3%) x "Merc 450SLC",
-;;       1 (3%) x "Cadillac Fleetwood",
-;;       1 (3%) x "Lincoln Continental",
-;;       1 (3%) x "Chrysler Imperial",
-;;       1 (3%) x "Fiat 128",
-;;       1 (3%) x "Honda Civic",
-;;       1 (3%) x "Toyota Corolla",
-;;       1 (3%) x "Toyota Corona",
-;;       1 (3%) x "Dodge Challenger",
-;;       1 (3%) x "AMC Javelin",
-;;       1 (3%) x "Camaro Z28",
-;;       1 (3%) x "Pontiac Firebird",
-;;       1 (3%) x "Fiat X1-9",
-;;       1 (3%) x "Porsche 914-2",
-;;       1 (3%) x "Lotus Europa",
-;;       1 (3%) x "Ford Pantera L",
-;;       1 (3%) x "Ferrari Dino",
-;;       1 (3%) x "Maserati Bora",
-;;       1 (3%) x "Volvo 142E"
-;;   :MPG 32 reals, min=10.4d0, q25=15.399999698003132d0, q50=19.2d0, q75=22.8d0,
-;;        max=33.9d0
-;;   :CYL 14 (44%) x 8, 11 (34%) x 4, 7 (22%) x 6
-;;   :DISP 32 reals, min=71.1d0, q25=120.65d0, q50=205.86666333675385d0,
-;;         q75=334.0, max=472
-;;   :HP 32 reals, min=52, q25=96.0, q50=123, q75=186.25, max=335
-;;   :DRAT 32 reals, min=2.76d0, q25=3.08d0, q50=3.6950000000000003d0,
-;;         q75=3.952000046730041d0, max=4.93d0
-;;   :WT 32 reals, min=1.513d0, q25=2.5425d0, q50=3.325d0,
-;;       q75=3.6766665957371387d0, max=5.424d0
-;;   :QSEC 32 reals, min=14.5d0, q25=16.884999999999998d0, q50=17.71d0,
-;;         q75=18.9d0, max=22.9d0
-;;   :VS bits, ones: 14 (44%)
-;;   :AM bits, ones: 13 (41%)
-;;   :GEAR 15 (47%) x 3, 12 (38%) x 4, 5 (16%) x 5
-;;   :CARB 10 (31%) x 4,
-;;         10 (31%) x 2,
-;;         7 (22%) x 1,
-;;         3 (9%) x 3,
-;;         1 (3%) x 6,
-;;         1 (3%) x 8>
+;;                      MPG CYL  DISP  HP DRAT    WT  QSEC VS AM GEAR CARB 
+;; Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+;; Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+;; Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+;; Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+;; Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+;; Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1 ..
 ```
 
 You can list the packages in Rdatasets like so:
@@ -534,8 +227,7 @@ data set:
 ```
 
 Here's the first few rows of the table produced by the above
-command.  Remember, this is only one package. In total there are nearly
-1500 data sets in the Rdatasets library.
+command.
 
 | Dataset               | Title                                                           | Vars. | Obs. |
 | ----------------------|-----------------------------------------------------------------|------:|-----:|
@@ -555,69 +247,458 @@ command.  Remember, this is only one package. In total there are nearly
 | CO2                   | Mauna Loa Atmospheric CO2 Concentration                         |     2 |  468 |
 
 
-## Describe a data-frame
+## Data-frame operations
+
+These functions operate on data-frames as a whole.  For this section
+of the manual, we are going to work with a subset of the `mtcars` data
+set from above. We'll use the [select](/docs/tasks/select/) package to
+take the first 5 rows so that the data transformations are easier to
+see.
+
+```lisp
+(defparameter mtcars-small (select mtcars (range 0 5) t))
+```
+
+The next three functions convert a data-frame to and from standard
+lisp data structures.  This is useful if you've got data in Common
+Lisp format and want to work with it in a data frame, or if you've got
+a data frame and want to apply Common Lisp operators on it that don't
+exist in `df`.
+
+### as-alist
+
+Just like it says on the tin, `as-alist` takes a data frame and
+returns an `alist` version of it (formatted for clearer output -- a
+pretty printer that outputs an alist in this format would be a welcome
+addition to CL)
+
+```lisp
+(as-alist mtcars-small)
+;; ((:|| . #("Mazda RX4" "Mazda RX4 Wag" "Datsun 710" "Hornet 4 Drive" "Hornet Sportabout"))
+;;  (:MPG . #(21 21 22.8d0 21.4d0 18.7d0))
+;;  (:CYL . #(6 6 4 6 8))
+;;  (:DISP . #(160 160 108 258 360))
+;;  (:HP . #(110 110 93 110 175))
+;;  (:DRAT . #(3.9d0 3.9d0 3.85d0 3.08d0 3.15d0))
+;;  (:WT . #(2.62d0 2.875d0 2.32d0 3.215d0 3.44d0))
+;;  (:QSEC . #(16.46d0 17.02d0 18.61d0 19.44d0 17.02d0))
+;;  (:VS . #*00110)
+;;  (:AM . #*11100)
+;;  (:GEAR . #(4 4 4 3 3))
+;;  (:CARB . #(4 4 1 1 2)))
+```
+
+### as-plist
+
+Similarly, `as-plist` will return a `plist`:
+
+```lisp
+(nu:as-plist mtcars-small)
+;; (:|| #("Mazda RX4" "Mazda RX4 Wag" "Datsun 710" "Hornet 4 Drive" "Hornet Sportabout")
+;;  :MPG #(21 21 22.8d0 21.4d0 18.7d0)
+;;	:CYL #(6 6 4 6 8)
+;;	:DISP #(160 160 108 258 360)
+;;	:HP #(110 110 93 110 175)
+;;	:DRAT #(3.9d0 3.9d0 3.85d0 3.08d0 3.15d0)
+;;	:WT #(2.62d0 2.875d0 2.32d0 3.215d0 3.44d0)
+;;	:QSEC #(16.46d0 17.02d0 18.61d0 19.44d0 17.02d0)
+;;	:VS #*00110
+;;	:AM #*11100
+;;	:GEAR #(4 4 4 3 3)
+;;	:CARB #(4 4 1 1 2))
+```
+
+
+### as-array
+
+`as-array` returns the data frame as a row-major two dimensional lisp
+array.  You'll want to save the variable names using the
+[keys](/docs/tasks/data-frame/#keys) function to make it easy to
+convert back (see [matrix-df](#matrix-df)).  One of the reasons you
+might want to use this function is to manipulate the data-frame using
+[array-operations](/docs/tasks/array-operations).  This is
+particularly useful when you have data frames of all numeric values.
+
+```lisp
+(defparameter mtcars-keys (keys mtcars)) ; we'll use later
+(defparameter mtcars-small-array (as-array mtcars-small))
+mtcars-small-array
+; #2A(("Mazda RX4" 21 6 160 110 3.9d0 2.62d0 16.46d0 0 1 4 4)
+;     ("Mazda RX4 Wag" 21 6 160 110 3.9d0 2.875d0 17.02d0 0 1 4 4)
+;     ("Datsun 710" 22.8d0 4 108 93 3.85d0 2.32d0 18.61d0 1 1 4 1)
+;     ("Hornet 4 Drive" 21.4d0 6 258 110 3.08d0 3.215d0 19.44d0 1 0 3 1)
+;     ("Hornet Sportabout" 18.7d0 8 360 175 3.15d0 3.44d0 17.02d0 0 0 3 2))
+```
+
+Our abbreviated `mtcars` data frame is now a two dimensional Common
+Lisp array.
+
+### columns
+
+This function returns the variables of the data frame as a vector of
+vectors:
+
+```lisp
+(columns mtcars-small)
+; #(#("Mazda RX4" "Mazda RX4 Wag" "Datsun 710" "Hornet 4 Drive" "Hornet Sportabout")
+;   #(21 21 22.8d0 21.4d0 18.7d0)
+;	#(6 6 4 6 8)
+;	#(160 160 108 258 360)
+;	#(110 110 93 110 175)
+;	#(3.9d0 3.9d0 3.85d0 3.08d0 3.15d0)
+;	#(2.62d0 2.875d0 2.32d0 3.215d0 3.44d0)
+;	#(16.46d0 17.02d0 18.61d0 19.44d0 17.02d0)
+;	#*00110
+;	#*11100
+;	#(4 4 4 3 3)
+;	#(4 4 1 1 2))
+```
+
+This is a column-major lisp array.
+
+You can also pass a selection to the `columns` function to return
+specific columns:
+
+```lisp
+(columns mtcars :mpg)
+; #(21 21 22.8d0 21.4d0 18.7d0)
+```
+
+
+
+### copy
+
+`copy` returns a newly allocated data-frame with the same values as
+the original:
+
+```lisp
+(copy mtcars-small)
+;;                    MPG CYL DISP  HP DRAT    WT  QSEC VS AM GEAR CARB 
+;; Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+;; Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+;; Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+;; Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+;; Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+
+```
+
+Useful when applying destructive operations to the data-frame.
+
+### keys
+
+Returns a vector of the variables in the data frame. The keys are
+symbols. Symbol properties describe the variable, for example units.
+
+```lisp
+(keys mtcars)
+; => #(:|| :MPG :CYL :DISP :HP :DRAT :WT :QSEC :VS :AM :GEAR :CARB)
+```
+
+If you are wondering about the `:||` at the start, this means an empty
+symbol in the keyword package.  It is used to designate row names.
+
+
+### map-df
+
+`map-df` transforms one data-frame into another, row-by-row. Its
+function signature is:
+
+```lisp
+(map-df (data-frame keys function result-keys) ...
+```
+
+It applies _function_ to each row, and returns a data frame with the
+_result-keys_ as the column (variable) names.  You can also specify the
+type of the new variables.
+
+The goal for this example is to transform `df1`:
+
+```lisp
+(defparameter df1 (make-df '(:a :b) '(#(2 3 5) #(7 11 13))))
+```
+
+into a data-frame that consists of the product of `:a` and `:b`, and a
+bit mask of the columns that indicate where the value is <= 30.  First
+we'll need a helper for the bit mask:
+
+```lisp
+(defun predicate-bit (a b)
+  "Return 1 if a*b <= 30, 0 otherwise"
+  (if (<= 30 (* a b))
+      1
+      0))
+```
+
+Now we can transform `df1` into our new data-frame, `df2`, with:
+
+```lisp
+(defparameter df2 (map-df df1 '(:a :b)
+			  (lambda (a b)
+			    (vector (* a b) (predicate-bit a b)))
+			  '((:p fixnum) (:m bit))))
+```
+
+```lisp
+df2
+;#<DATA-FRAME (2 x 3)
+;  :P #(14 33 65)
+;  :M #*011>
+```
+
+Note how we specified both the new key names and their type.  Here's
+an example that transforms the imperial to metric units of `mtcars`:
+
+```lisp
+(map-df mtcars-small '(:|| :mpg :disp :hp :wt)
+	(lambda (model mpg disp hp wt)
+	  (vector model
+              (/ 235.214583 mpg)
+		      (/ disp 61.024)
+		      (* hp 1.01387)
+		      (/ (* wt 1000) 2.2046)))
+	'(:model (:100km/l float) (:disp float) (:hp float) (:wt float)))
+;; MODEL                        100KM/L      DISP        HP                 WT
+;; Mazda RX4         11.200694000000000 2.6219194 111.52570 1190.9090650968321
+;; Mazda RX4 Wag     11.200694000000000 2.6219194 111.52570 1306.8181534936612
+;; Datsun 710        10.316429138183594 1.7697955  94.28991 1054.5454316887979
+;; Hornet 4 Drive    10.991335717317101 4.2278447 111.52570 1461.3636046894333
+;; Hornet Sportabout 12.578320018747911 5.8993187 177.42725 1563.6363297454589
+```
+
+
+
+### matrix-df
+
+Convert a matrix (array) to a data-frame with the given keys.  Here
+we'll use the values we saved earlier to construct a data-frame
+equivalent to `mtcars-small`:
+
+```lisp
+(matrix-df mtcars-keys  mtcars-small-array)
+;;                    MPG CYL DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
+;; Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+;; Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+;; Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+;; Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+;; Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+```
+
+This is useful if you need to do a lot of numeric number-crunching on
+a data set as an array, then want to add categorical variables and
+continue processing as a data-frame.
+
+
+### rows
+
+`rows` returns the rows of a data frame as a vector of vectors:
+
+```lisp
+(rows mtcars-small)
+;#(#("Mazda RX4" 21 6 160 110 3.9d0 2.62d0 16.46d0 0 1 4 4)
+;  #("Mazda RX4 Wag" 21 6 160 110 3.9d0 2.875d0 17.02d0 0 1 4 4)
+;  #("Datsun 710" 22.8d0 4 108 93 3.85d0 2.32d0 18.61d0 1 1 4 1)
+;  #("Hornet 4 Drive" 21.4d0 6 258 110 3.08d0 3.215d0 19.44d0 1 0 3 1)
+;  #("Hornet Sportabout" 18.7d0 8 360 175 3.15d0 3.44d0 17.02d0 0 0 3 2))
+```
+
+## Reading data
+
+You can use the `dfio` system to read text-base tabular data, such as
+CSV, into a data frame. Here is a short demonstration of reading from
+strings:
+
+```lisp
+(defparameter *d* (dfio:csv-to-data-frame
+                     (format nil "Gender,Age,Height~@
+                                  \"Male\",30,180.~@
+                                  \"Male\",31,182.7~@
+                                  \"Female\",32,1.65e2")))
+```
+
+`dfio` tries to hard to decipher the various number formats sometimes
+encountered in CSV files:
+
+```lisp
+(select (dfio:csv-to-data-frame
+                 (format nil "\"All kinds of wacky number formats\"~%.7~%19.~%.7f2"))
+                t :all-kinds-of-wacky-number-formats)
+; => #(0.7d0 19.0d0 70.0)
+```
+
+
+
+### From files
+
+We saw above that `dfio` can read from strings, so one easy way to
+read from a file is to use the `uiop` system function
+`read-file-string`.  We can read one of the example data files
+included with Lisp-Stat like this:
+
+```lisp
+(csv-to-data-frame
+	(uiop:read-file-string #P"LS:DATASETS;absorbtion.csv"))
+;; IRON ALUMINUM ABSORBTION 
+;;   61       13          4
+;;  175       21         18
+;;  111       24         14
+;;  124       23         18
+;;  130       64         26
+;;  173       38         26 ..
+```
+
+For most data sets, this method will work fine.  If you are working
+with extremely large CSV files, you may want to consider using a
+stream from an open file so you don't have `uiop` read the whole thing
+in before processing it into a data frame.
+
+
+### From URLs
+
+`dfio` can also read from Common Lisp
+[streams](http://www.lispworks.com/documentation/HyperSpec/Body/21_a.htm).
+Streams operations can be network or file based.  Here is an example
+of how to read the same file over the network using the HTTP client
+[dexador](https://github.com/fukamachi/dexador).
+
+<!-- Revisit this example. There was a trailing white space in the
+file that was fixed and pushed to the github repo, but still reports
+the same error. No error when loading locally, so I suspect some kind
+of proxy or cache in the way. -->
+
+```lisp
+(csv-to-data-frame
+ (dex:get
+   "https://github.com/Lisp-Stat/lisp-stat/blob/77ad465a6a9fc452a1d64ca64ac56d05017014ff/datasets/absorbtion.csv"
+   :want-stream t))
+```
+
+{{< alert title="Note" >}}The input delimiter is hard-coded to comma
+(CSV) in `dfio`; output delimiters can be specified in the save
+function.  This is an inherited behavior and can be changed by
+following the example in the `data-frame-to-csv` function.  In
+reality, most text based data we encounter are CSV, and there has not
+been a need for other delimiters for input.{{< /alert >}}
+
+### From a database
+
+{{< alert color="warning" >}}
+This functionality has been implemented, but is not
+yet ready for release. It needs code cleanup, commenting, error
+handling and test cases written, along with user documentation (this
+section). If you need to read from a database, [open an
+issue](https://github.com/Lisp-Stat/dfio/issues) and we'll get you
+sorted.
+{{< /alert >}}
+
+
+## Saving data
+
+Data frames can be saved into any delimited text format supported by
+[cl-csv](https://github.com/AccelerationNet/cl-csv), or several
+flavors of JSON, such as Vega-Lite.  Since the JSON reader/writers are
+specific to the plotting applications, they are described in the
+[plotting](/docs/tasks/plotting) section.
+
+### To files
+
+To save the `mtcars` data frame to disk, you could use:
+
+```lisp
+(data-frame-to-csv mtcars
+		           :stream #P"LS:DATASETS;mtcars.csv"
+                   :add-first-row t)         ; add column headers
+```
+
+and to save it to tab-separated values:
+
+```lisp
+(data-frame-to-csv mtcars
+	               :separator #\tab
+		           :stream #P"LS:DATASETS;mtcars.tsv"
+		           :add-first-row t)         ; add column headers
+```
+
+
+
+### To a database
+
+See the section above, [From a database](/docs/tasks/data-frame/#from-a-database).
+
+
+
+## Summarising data
 
 Often the first thing you'll want to do with a data frame is get a
-quick summary.  You can do that with these functions; all take a
-`data-frame` as a parameter:
+quick summary.  You can do that with these functions.  For more
+information about these functions, see the
+[reference](/docs/reference/) section.
 
-`aops:nrow`
-: return the number of rows in the data frame
+nrow *data-frame*
+: return the number of rows in *data-frame*
 
-`aops:ncol`
-: return the number of columns in the data frame
+ncol *data-frame*
+: return the number of columns in *data-frame*
 
-`aops:dims`
-: return the dimensions of the data frame
+dims *data-frame*
+: return the dimensions of *data-frame* as a list in (*rows* *columns*) format
 
-`df:keys`
-: return a list of variable names
+keys *data-frame*
+: return a vector of symbols representing column names
 
-{{% pageinfo %}}**Note**: the functions below are not yet
-implemented. _They would make great beginner contributions_.{{%
-/pageinfo %}}
+column-names *data-frame*
+: returns a list of strings of the column names in *data-frames*
 
-`fivenum`
-: Returns Tukey's five number summary: minimum, lower-hinge, median,
-  upper-hinge, maximum, for each variable in the data set (partially
-  implemented)
+row-names *data-frame*
+: returns a list of strings of the row names in *data-frames*
 
-`structure`
-: Provide overview of the structure of the data frame
+head *data-frame* &optional *n*
+: displays the first *n* rows of data-frame. *n* defaults to 6.
 
-`variables`
-: returns the name, types and units of the variables in the data frame
+head *data-frame* &optional *n*
+: displays the last *n* rows of data-frame. *n* defaults to 6.
 
-`head`
-: displays the first 10 rows
-
-`tail`
-: displays the last 10 rows
-
+summary *data-frame*
+: returns a summary of the variables in *data-frame*
 
 ## Manipulate columns
 
+You have seen some of these functions before, and for completeness we
+repeat them here.  The remainder of the section covers the remaining
+column functions.
+
 To obtain a variable (column) from a data frame, use the `column`
-function.  Using `*d*`, defined in [Reading
-data](/docs/tasks/data-frame/#reading-data) above:
+function.  Using `mtcars`, defined in [example
+datasets](/docs/tasks/data-frame/#example-datasets) above:
 
 ```lisp
-(column *d* :gender)
-#("Male" "Male" "Female")
+(column mtcars-small :mpg)
+;; #(21 21 22.8d0 21.4d0 18.7d0)
 ```
 
 To get all the columns as a vector, use the `columns` function:
 
 ```lisp
-(columns *d*)
-#(#("Female" "Female" "Male") #(30 31 32) #(180.0d0 182.7d0 165.0d0))
+(columns mtcars-small)
+; #(#("Mazda RX4" "Mazda RX4 Wag" "Datsun 710" "Hornet 4 Drive" "Hornet Sportabout")
+;   #(21 21 22.8d0 21.4d0 18.7d0)
+;	#(6 6 4 6 8)
+;	#(160 160 108 258 360)
+;	#(110 110 93 110 175)
+;	#(3.9d0 3.9d0 3.85d0 3.08d0 3.15d0)
+;	#(2.62d0 2.875d0 2.32d0 3.215d0 3.44d0)
+;	#(16.46d0 17.02d0 18.61d0 19.44d0 17.02d0)
+;	#*00110
+;	#*11100
+;	#(4 4 4 3 3)
+;	#(4 4 1 1 2))
 ```
 
 You can also return a subset of the columns by passing in a selection:
 
 ```lisp
-(columns *d* '(:gender :age))
-#(#("Female" "Female" "Male") #(30 31 32))
+(columns mtcars-small '(:mpg :wt))
+;; #(#(21 21 22.8d0 21.4d0 18.7d0)
+;;   #(2.62d0 2.875d0 2.32d0 3.215d0 3.44d0))
 ```
 
 ### Add columns
@@ -629,38 +710,65 @@ parameter.  The destructive versions are denoted with a '!' at the end
 of the function name.
 
 To add a single column to a data frame, use the `add-column!`
-function. Let's first review our data frame:
+function.  We'll use a data frame similar to the one used in our
+reading data-frames from a string example to illustrate column
+operations
+
+```lisp
+(defparameter *d* (csv-to-data-frame
+		   (format nil "Gender,Age,Height
+                              \"Male\",30,180
+                              \"Male\",31,182
+                              \"Female\",32,165
+	                          \"Male\",22,167
+	                          \"Female\",45,170")))
+```
 
 ```lisp
 *d*
-#<DATA-FRAME (3 x 3)
-  :GENDER #("Male" "Male" "Female")
-  :AGE #(30 31 32)
-  :HEIGHT #(180.0d0 182.7d0 165.0d0)>
+;; GENDER AGE HEIGHT 
+;; Male    30    180
+;; Male    31    182
+;; Female  32    165
+;; Male    22    167
+;; Female  45    170
 ```
 
 and add a 'weight' column to it:
 
 ```lisp
-(add-column! *d* :weight #(75.2d0 88.5d0 49.4d0))
-#<DATA-FRAME (4 x 3)
-  :GENDER #("Male" "Male" "Female")
-  :AGE #(30 31 32)
-  :HEIGHT #(180.0d0 182.7d0 165.0d0)
-  :WEIGHT #(75.2d0 88.5d0 49.4d0)>
+(add-column! *d* :weight #(75.2 88.5 49.4 78.1 79.4))
+;; GENDER AGE HEIGHT WEIGHT 
+;; Male    30    180   75.2
+;; Male    31    182   88.5
+;; Female  32    165   49.4
+;; Male    22    167   78.1
+;; Female  45    170   79.4
 ```
 
 Now let's add multiple columns destructively using `add-columns!`
 
 ```lisp
-(add-columns! *d* :a #(1 2 3) :b #(foo bar baz))
-#<DATA-FRAME (6 x 3)
-  :GENDER #("Male" "Male" "Female")
-  :AGE #(30 31 32)
-  :HEIGHT #(180.0d0 182.7d0 165.0d0)
-  :WEIGHT #(75.2d0 88.5d0 49.4d0)
-  :A #(1 2 3)
-  :B #(FOO BAR BAZ)>
+(add-columns! *d* :a #(1 2 3 4 5) :b #(foo bar baz qux quux))
+;; GENDER AGE HEIGHT WEIGHT A B
+;; Male    30    180   75.2 1 FOO
+;; Male    31    182   88.5 2 BAR
+;; Female  32    165   49.4 3 BAZ
+;; Male    22    167   78.1 4 QUX
+;; Female  45    170   79.4 5 QUUX
+```
+
+And looking at `*d*`, we can see that it has been destructively
+modified:
+
+```lisp
+*d*
+;; GENDER AGE HEIGHT WEIGHT A B
+;; Male    30    180   75.2 1 FOO
+;; Male    31    182   88.5 2 BAR
+;; Female  32    165   49.4 3 BAZ
+;; Male    22    167   78.1 4 QUX
+;; Female  45    170   79.4 5 QUUX
 ```
 
 ### Remove columns
@@ -670,12 +778,13 @@ the `remove-columns` function.  Since it returns a new data frame,
 we'll need to assign the return value to `*d*`:
 
 ```lisp
-(setf *d* (remove-columns *d* '(:a :b)))
-#<DATA-FRAME (4 x 3)
-  :WEIGHT #(75.2d0 88.5d0 49.4d0)
-  :HEIGHT #(180.0d0 182.7d0 165.0d0)
-  :AGE #(30 31 32)
-  :GENDER #("Male" "Male" "Female")>
+LS-USER> (setf *d* (remove-columns *d* '(:a :b)))
+;; WEIGHT HEIGHT AGE GENDER 
+;;   75.2    180  30 Male
+;;   88.5    182  31 Male
+;;   49.4    165  32 Female
+;;   78.1    167  22 Male
+;;   79.4    170  45 Female
 ```
 
 ### Rename columns
@@ -700,47 +809,53 @@ column is set the field to a new value:
 ```
 
 Note that `df::setf` is not exported.  This is an inherited (from
-Papp} behaviour and will probably change in future versions.  You can
-also replace a column using two functions specifically for this
-purpose. Here we'll replace the 'age' column with new values:
+Papp) behavior and likely because it bypasses checks on column
+length. Use this with caution.  You can also replace a column using
+two functions specifically for this purpose. Here we'll replace the
+'age' column with new values:
 
 ```lisp
-(replace-column *d* :age #(10 15 20))
-#<DATA-FRAME (4 x 3)
-  :WEIGHT #(75.2d0 88.5d0 49.4d0)
-  :HEIGHT #(180.0d0 182.7d0 165.0d0)
-  :AGE #(10 15 20)
-  :SEX #("Male" "Male" "Female")>
+LS-USER> (replace-column *d* :age #(10 15 20 25 30))
+;; WEIGHT HEIGHT AGE SEX
+;;   75.2    180  10 Male
+;;   88.5    182  15 Male
+;;   49.4    165  20 Female
+;;   78.1    167  25 Male
+;;   79.4    170  30 Female
 ```
 
 That was a non-destructive replacement, and since we didn't reassign
 the value of `*d*`, it is unchanged:
 
 ```lisp
-*d*
-#<DATA-FRAME (4 x 3)
-  :WEIGHT #(75.2d0 88.5d0 49.4d0)
-  :HEIGHT #(180.0d0 182.7d0 165.0d0)
-  :AGE #(30 31 32)
-  :SEX #("Male" "Male" "Female")>
+LS-USER> *d*
+;; WEIGHT HEIGHT AGE SEX
+;;   75.2    180  30 Male
+;;   88.5    182  31 Male
+;;   49.4    165  32 Female
+;;   78.1    167  22 Male
+;;   79.4    170  45 Female
 ```
 
 We can also use the destructive version to make a permanent change
 instead of `setf`-ing `*d*`:
 
 ```lisp
-(replace-column! *d* :age #(10 15 20))
-#<DATA-FRAME (4 x 3)
-  :WEIGHT #(75.2d0 88.5d0 49.4d0)
-  :HEIGHT #(180.0d0 182.7d0 165.0d0)
-  :AGE #(10 15 20)
-  :SEX #("Male" "Male" "Female")>
-*d*
-#<DATA-FRAME (4 x 3)
-  :WEIGHT #(75.2d0 88.5d0 49.4d0)
-  :HEIGHT #(180.0d0 182.7d0 165.0d0)
-  :AGE #(10 15 20)
-  :SEX #("Male" "Male" "Female")>
+LS-USER> (replace-column! *d* :age #(10 15 20 25 30))
+;; WEIGHT HEIGHT AGE SEX
+;;   75.2    180  10 Male
+;;   88.5    182  15 Male
+;;   49.4    165  20 Female
+;;   78.1    167  25 Male
+;;   79.4    170  30 Female
+
+LS-USER> *d*
+;; WEIGHT HEIGHT AGE SEX
+;;   75.2    180  10 Male
+;;   88.5    182  15 Male
+;;   49.4    165  20 Female
+;;   78.1    167  25 Male
+;;   79.4    170  30 Female
 ```
 
 ### Transform columns
@@ -752,12 +867,13 @@ There are two functions for column transformations.
 function. This example will add 20 to each value of the `:age` column:
 
 ```lisp
-(replace-column *d* :age #'(lambda (x) (+ 20 x)))
-#<DATA-FRAME (4 x 3)
-  :WEIGHT #(75.2d0 88.5d0 49.4d0)
-  :HEIGHT #(180.0d0 182.7d0 165.0d0)
-  :AGE #(30 35 40)
-  :SEX #("Male" "Male" "Female")>
+LS-USER> (replace-column *d* :age #'(lambda (x) (+ 20 x)))
+;; WEIGHT HEIGHT AGE SEX
+;;   75.2    180  30 Male
+;;   88.5    182  35 Male
+;;   49.4    165  40 Female
+;;   78.1    167  45 Male
+;;   79.4    170  50 Female
 ```
 
 `replace-column!` can also apply functions to a column, destructively
@@ -782,11 +898,13 @@ observe how the vectors were added element-wise. We'll demonstrate
 example data frame:
 
 ```lisp
-(map-columns (select *d* t '(:weight :age :height)) #'(lambda (x) (nu:e+ 1 x)))
-#<DATA-FRAME (3 x 3)
-  :WEIGHT #(76.2d0 89.5d0 50.4d0)
-  :AGE #(11 16 21)
-  :HEIGHT #(181.0d0 183.7d0 166.0d0)>
+LS-USER> (map-columns (select *d* t '(:weight :age :height)) #'(lambda (x) (nu:e+ 1 x)))
+;; WEIGHT AGE HEIGHT
+;;   76.2  11    181
+;;   89.5  16    183
+;;   50.4  21    166
+;;   79.1  26    168
+;;   80.4  31    171
 ```
 
 recall that we used the non-destructive version of `replace-column`
@@ -804,7 +922,7 @@ condition.  For example if you want to know how many cars have a MPG
 
 ```lisp
 (count-rows mtcars :mpg #'(lambda (x) (< 20 x)))
-; => 18
+; => 14
 ```
 
 ### do-rows
@@ -813,7 +931,21 @@ condition.  For example if you want to know how many cars have a MPG
 take the same number of arguments as variables supplied.  It is
 analogous to [dotimes](http://clhs.lisp.se/Body/m_dotime.htm), but
 iterating over data frame rows.  No values are returned; it is purely
-for side-effects.
+for side-effects.  Let's create a new data data-frame to
+illustrate row operations:
+
+```lisp
+LS-USER> (defparameter *d2* (make-df '(:a :b) '(#(1 2 3) #(10 20 30))))
+*D2*
+LS-USER> *d2*
+;; A  B 
+;; 1 10
+;; 2 20
+;; 3 30
+```
+
+This example uses `format` to illustrate iterating using `do-rows` for
+side effect:
 
 ```lisp
 (do-rows *d2* '(:a :b) #'(lambda (a b) (format t "~A " (+ a b))))
@@ -824,21 +956,11 @@ for side-effects.
 ### map-rows
 
 Where `map-columns` can be thought of as working through the data
-frame column-by-column, `map-rows` goes through row-by-row. We're
-going to use a different data-frame to illustrate this:
+frame column-by-column, `map-rows` goes through row-by-row.  Here we
+add the values in each row:
 
 ```lisp
-(defparameter *d2* (make-df '(:a :b) '(#(1 2 3) #(10 20 30))))
-*d2*
-#<DATA-FRAME (2 x 3)
-  :A #(1 2 3)
-  :B #(10 20 30)>
-```
-
-Now let's add the values in each row:
-
-```lisp
-(map-rows *d2* '(:a :b) #'+)
+LS-USER> (map-rows *d2* '(:a :b) #'+)
 #(11 22 33)
 ```
 
@@ -849,12 +971,12 @@ from a column:
 
 ```lisp
 (add-column! *d2* :c
-	     (map-rows *d2* :b
-		       #'(lambda (x) (- x (mean (select *d2* t :b))))))
-#<DATA-FRAME (3 x 3)
-  :A #(1 2 3)
-  :B #(10 20 30)
-  :C #(-10 0 10)>
+           (map-rows *d2* :b
+                     #'(lambda (x) (- x (mean (select *d2* t :b))))))
+;; A  B     C
+;; 1 10 -10.0
+;; 2 20   0.0
+;; 3 30  10.0
 ```
 
 You could also have used `replace-column!` in a similar manner to
@@ -867,21 +989,29 @@ The `df-remove-duplicates` function will remove duplicate rows. Let's
 create a data-frame with duplicates:
 
 ```lisp
-(defparameter dup (make-df '(:a :b :c) '(#(a a 3) #(a a 3) #(a a 333))))
-;#<DATA-FRAME (3 x 3)
-;  :A #(A A 3)
-;  :B #(A A 3)
-;  :C #(A A 333)>
+(defparameter dup (make-df '(:a :b :c) '(#(a1 a1 a3)
+                                         #(a1 a1 b3)
+										 #(a1 a1 c3))))
+DUP
 ```
 
-Now remove duplicate rows of 'A':
+Confirm a duplicate row:
 
 ```lisp
-(df-remove-duplicates dup)
-;#<DATA-FRAME (3 x 2)
-;  :A #(A 3)
-;  :B #(A 3)
-;  :C #(A 333)>
+LS-USER> dup
+;; A  B  C
+;; A1 A1 A1
+;; A1 A1 A1
+;; A3 B3 C3
+```
+
+Now remove duplicate rows 0 and 1:
+
+```lisp
+LS-USER> (df-remove-duplicates dup)
+;; A  B  C
+;; A1 A1 A1
+;; A3 B3 C3
 ```
 
 <!--
@@ -896,7 +1026,7 @@ variables name `mtcars`.
 
 ### mask-rows
 
-`mask-rows` is similar to `count-rows`, except it return a bit-vector
+`mask-rows` is similar to `count-rows`, except it returns a bit-vector
 for rows matching the predicate.  This is useful when you want to pass
 the bit vector to another function, like `select` to retrieve only the
 rows matching the predicate.
@@ -904,6 +1034,38 @@ rows matching the predicate.
 ```lisp
 (mask-rows mtcars :mpg #'(lambda (x) (< 20 x)))
 ; => #*11110001100000000111100001110001
+```
+
+to make this into a filter:
+
+```lisp
+(defparameter efficient-cars
+  (select mtcars (mask-rows mtcars :mpg #'(lambda (x) (< 20 x))) t)
+  "Cars with MPG > 20")
+```
+
+To view them we'll need to call the `pprint` function directly instead
+of using the `print-object` function we installed earlier.  Otherwise,
+we'll only see the first 6.
+
+```lisp
+LS-USER> (pprint efficient-cars)
+
+;;                 MPG CYL  DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
+;; Mazda RX4      21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+;; Mazda RX4 Wag  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+;; Datsun 710     22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+;; Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+;; Merc 240D      24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+;; Merc 230       22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+;; Fiat 128       32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+;; Honda Civic    30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+;; Toyota Corolla 33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+;; Toyota Corona  21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+;; Fiat X1-9      27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+;; Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+;; Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+;; Volvo 142E     21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
 ```
 
 ### The select system
@@ -938,7 +1100,7 @@ Lisp-Stat.  It builds on the basic date & time functions included in
 Common Lisp and allows you to:
 
 - print timestamp in various standard or custom formats (e.g. RFC1123 or RFC3339)
-- parse timestrings,
+- parse time strings,
 - perform time arithmetic,
 - convert Unix times, timestamps, and universal times to and fro.
 

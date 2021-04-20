@@ -16,7 +16,7 @@ Select provides:
     product of vectors of subscripts for each axis) of array-like
     objects.  The most important function is `select`. Unless you want
     to define additional methods for `select`, this is pretty much
-    all you need from this library.  See the [API reference](https://symbolics.github.io/select/) for
+    all you need from this library.  See the [API reference](https://lisp-stat.github.io/select/) for
     additional details.
 2.  An extensible DSL for selecting a subset of valid
     subscripts.  This is useful if, for example, you want to resolve
@@ -24,6 +24,7 @@ Select provides:
 3.  A set of utility functions for traversing selections in
     array-like objects.
 
+It combines the functionality of dplyr's _slice_ and _select_ methods.
 
 ## Basic Usage {#Using}
 
@@ -131,16 +132,8 @@ end of the range:
 			; => #(2), cf. (select ... (range 2 3))
 ```
 
-`(head)` and `(tail)` do the obvious:
-
-<a id="code-snippet--example-select-including"></a>
-```lisp
-(select #(0 1 2 3) (head 2))            ; => #(0 1)
-(select #(0 1 2 3) (tail 2))            ; => #(2 3)
-```
-
 All of these are trivial to implement. If there is something you are
-missing, you can easily extend @code{select}.  Pull request are
+missing, you can easily extend `select`.  Pull request are
 welcome.
 
 `(ref)` is a version of `(select)` that always returns a single

@@ -23,7 +23,7 @@ System, select
 
 **Home Page**
 
-:   <https://symbolics.github.io/select/>
+:   <https://lisp-stat.github.io/select/>
 
 **Source Control**
 
@@ -31,7 +31,7 @@ System, select
 
 **Bug Tracker**
 
-:   <https://github.com/Symbolics/select/issues/>
+:   <https://github.com/Lisp-Stat/select/issues/>
 
 **License**
 

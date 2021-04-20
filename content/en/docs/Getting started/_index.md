@@ -36,7 +36,14 @@ have been tested.
 
 ## Installation
 
-Lisp-Stat is not yet in quicklisp, so you'll need to retrieve the
+The easiest way to install Lisp-Stat is with Quicklisp:
+
+```lisp
+(ql:quickload :lisp-stat)
+```
+
+### Manual Install
+If you want to modify Lisp-Stat you'll need to retrieve the
 files from github and place them in a directory that is known to
 quicklisp. This long shell command will checkout all the required
 systems:
