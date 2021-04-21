@@ -360,7 +360,7 @@ You can also pass a selection to the `columns` function to return
 specific columns:
 
 ```lisp
-(columns mtcars :mpg)
+(columns mtcars-small :mpg)
 ; #(21 21 22.8d0 21.4d0 18.7d0)
 ```
 
@@ -395,7 +395,8 @@ symbols. Symbol properties describe the variable, for example units.
 ```
 
 If you are wondering about the `:||` at the start, this means an empty
-symbol in the keyword package.  It is used to designate row names.
+symbol in the keyword package.  By convention, a column without a name
+designates row names.
 
 
 ### map-df
@@ -437,12 +438,13 @@ Now we can transform `df1` into our new data-frame, `df2`, with:
 			    (vector (* a b) (predicate-bit a b)))
 			  '((:p fixnum) (:m bit))))
 ```
-
+Since it was a parameter assignment, we have to view it manually:
 ```lisp
-df2
-;#<DATA-FRAME (2 x 3)
-;  :P #(14 33 65)
-;  :M #*011>
+LS-USER> df2
+;;  P M
+;; 14 0
+;; 33 1
+;; 65 1
 ```
 
 Note how we specified both the new key names and their type.  Here's
@@ -451,7 +453,7 @@ an example that transforms the imperial to metric units of `mtcars`:
 ```lisp
 (map-df mtcars-small '(:|| :mpg :disp :hp :wt)
 	(lambda (model mpg disp hp wt)
-	  (vector model
+	  (vector model       ;no transformation for row name, return as-is
               (/ 235.214583 mpg)
 		      (/ disp 61.024)
 		      (* hp 1.01387)
@@ -474,7 +476,7 @@ we'll use the values we saved earlier to construct a data-frame
 equivalent to `mtcars-small`:
 
 ```lisp
-(matrix-df mtcars-keys  mtcars-small-array)
+(matrix-df mtcars-keys mtcars-small-array)
 ;;                    MPG CYL DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
 ;; Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
 ;; Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4

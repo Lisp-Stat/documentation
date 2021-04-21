@@ -112,8 +112,8 @@ Load some data:
 Find the sample mean and median:
 
 ```lisp
-(mean 'car-prices)
-(median 'car-prices)
+(mean car-prices)
+(median car-prices)
 ```
 
 
