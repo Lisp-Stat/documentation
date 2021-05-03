@@ -1,16 +1,10 @@
-
 ---
 title: "Examples"
 linkTitle: "Examples"
 weight: 3
-date: 2021-03-07
+date: 2021-04-27
 description: >
-  From the ninth edition of the book, *Introduction to the Practice of Statistics*
+  Using Lisp-Stat in the real world
 ---
 
-## Looking at data
-
-### Displaying distributions with graphs
-
-- [Categorical variables](https://github.com/Lisp-Stat/IPS/blob/master/notebooks/Chapter-1/Categorical.ipynb) &mdash; Bar & pie charts
-
+One of the best ways to learn Lisp-Stat is to see examples of actual work. This section contains examples of performing statistical analysis, derived from the book _Introduction to the Practices of Statistics_ (2017) by Moore, McCabe and Craig and plotting from the [Vega-Lite example gallery](https://vega.github.io/vega-lite/examples/).
