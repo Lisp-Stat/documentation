@@ -99,6 +99,7 @@ in fact, the dimensions do not be related at all as long as the
 displaced array fits inside the original one. The row-major index of the
 former in the latter is called the *offset* of the displacement.
 
+### displace
 Displaced arrays are usually constructed using `make-array`, but this
 library also provides `displace` for that purpose:
 
@@ -108,6 +109,7 @@ library also provides `displace` for that purpose:
 (aops:displace *a* 2 1) ; => #(2 3)
 ```
 
+### flatten
 **`flatten`** displaces to a row-major array:
 
 ```lisp
@@ -130,6 +132,7 @@ within a given axis:
 Note how splitting at `0` and the rank of the array returns the array
 itself.
 
+### sub
 Now consider `sub`, which returns a specific array, composed of the
 elements that would start with given subscripts:
 
@@ -142,6 +145,7 @@ elements that would start with given subscripts:
 
 There is also a `(setf sub)` function.
 
+### partition
 **`partition`** returns a consecutive chunk of an array separated along its
 first subscript:
 
@@ -157,6 +161,7 @@ first subscript:
 
 and also has a `(setf partition)` pair.
 
+### combine
 **`combine`** is the opposite of `split`:
 
 ```lisp
@@ -164,6 +169,7 @@ and also has a `(setf partition)` pair.
                                 ;        (2 3))
 ```
 
+### subvec
 **`subvec`** returns a displaced subvector:
 
 ```lisp
@@ -173,6 +179,7 @@ and also has a `(setf partition)` pair.
 There is also a `(setf subvec)` function, which is like `(setf subseq)`
 except for demanding matching lengths.
 
+### reshape
 Finally, **`reshape`** can be used to displace arrays into a different
 shape:
 
@@ -231,7 +238,8 @@ order.
 The following functions all make a new array, taking the dimensions as
 input.  The version ending in `*` also takes the array type as first
 argument.  There are also versions ending in `!` which do not make a
-new array, but take an array as first argument, which is modified and returned.
+new array, but take an array as first argument, which is modified and
+returned.
 
   Function   | Description
   ---------- | ------------------------------------------------------------------
@@ -258,6 +266,13 @@ For example:
   ;        (0.4145939350128174d0 0.5124958753585815d0))
 ```
 
+```lisp
+(linspace 0 4 5)   ;=> #(0 1 2 3 4)
+(linspace 1 3 5)   ;=> #(0 1/2 1 3/2 2)
+(linspace 0 4d0 3) ;=> #(0.0d0 2.0d0 4.0d0)
+```
+
+### generate
 **`generate`** (and `generate*`) allow you to generate arrays using
 functions.
 
@@ -276,6 +291,7 @@ functions.
 Depending on the last argument, the function will be called with the
 (row-major) position, the subscripts, both, or no argument.
 
+### permute
 **`permute`** can permute subscripts (you can also invert, complement, and
 complete permutations, look at the docstring and the unit tests).
 Transposing is a special case of permute:
@@ -290,12 +306,14 @@ Transposing is a special case of permute:
 						  ;        (3 6))
 ```
 
+### each
 **`each`** applies a function to its (array) arguments elementwise:
 
 ```lisp
 (aops:each #'+ #(0 1 2) #(2 3 5)) ; => #(2 4 7)
 ```
 
+### vectorize
 **`vectorize`** is a macro which performs elementwise operations
 
 ```lisp
@@ -311,6 +329,7 @@ There is also a version `vectorize*` which takes a type argument for the
 resulting array, and a version `vectorize!` which sets elements in a
 given array.
 
+### margin
 The semantics of **`margin`** are more difficult to explain, so perhaps an
 example will be more useful.  Suppose that you want to calculate column
 sums in a matrix.  You could `permute` (transpose) the matrix, `split`
@@ -328,6 +347,7 @@ the function that calculates the sum. `margin` automates that for you:
 But the function is more general than this: the arguments `inner` and
 `outer` allow arbitrary permutations before splitting.
 
+### recycle
 Finally, **`recycle`** allows you to recycle arrays along inner and outer
 dimensions:
 
@@ -338,6 +358,7 @@ dimensions:
 
 ## Indexing operations
 
+### nested-loop
 **`nested-loop`** is a simple macro which iterates over a set of indices
 with a given range
 
@@ -352,6 +373,7 @@ A ; => #2A((2 4) (6 8))
   (format t "(~a ~a) " i j)) ; => (0 0) (0 1) (0 2) (1 0) (1 1) (1 2)
 ```
 
+### sum-index
 **`sum-index`** is a macro which uses a code walker to determine the
 dimension sizes, summing over the given index or indices
 
@@ -370,6 +392,7 @@ dimension sizes, summing over the given index or indices
 
 The main use for `sum-index` is in combination with `each-index`.
 
+### each-index
 **`each-index`** is a macro which creates an array and iterates over the
 elements. Like `sum-index` it is given one or more index symbols, and
 uses a code walker to find array dimensions.
@@ -396,6 +419,7 @@ uses a code walker to find array dimensions.
 	                                  ;        (43 50))
 ```
 
+### reduce-index
 **`reduce-index`** is a more general version of `sum-index`; it
 applies a reduction operation over one or more indices.
 
@@ -424,6 +448,8 @@ displaced vector:
 (reduce #'max (aops:flatten a)) ; => 4
 ```
 
+### argmax/argmin
+
 **`argmax`** and **`argmin`** find the `row-major-aref` index where an
 array value is maximum or minimum.  They both return two values: the
 first value is the index; the second is the array value at that index.
@@ -434,6 +460,7 @@ first value is the index; the second is the array value at that index.
 (aops:argmin a) ; => 0 1
 ```
 
+### vectorize-reduce
 More complicated reductions can be done with **`vectorize-reduce`**,
 for example the maximum absolute difference between arrays:
 
@@ -462,7 +489,27 @@ example is `recycle`:
 
 ## Stacking
 
-You can stack compatible arrays along any axis:
+You can stack compatible arrays by column or row. Metaphorically you
+can think of these operations as stacking blocks. For example stacking
+two row vectors yields a 2x2 array:
+
+```lisp
+(stack-rows #(1 2) #(3 4))
+;; #2A((1 2)
+;;     (3 4))
+```
+
+Like other function, there are two versions: generalised stacking,
+with rows and columns of type `T`. These end in `*`. Specialised
+versions where the element-type is specified do not have a special
+character at the end of the function name.
+
+The stack functions use object dimensions (as returned by `dims` to
+determine how to use the object.
+
+- when the object has 0 dimensions, fill a column with the element
+- when the object has 1 dimension, use it as a column
+- when the object has 2 dimensions, use it as a matrix
 
 ```lisp
 (defparameter *a1* #(0 1 2))
