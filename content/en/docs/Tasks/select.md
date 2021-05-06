@@ -79,7 +79,7 @@ _t_ selects all subscripts:
 <a id="code-snippet--example-select-all"></a>
 ```lisp
 (select #2A((0 1 2)
-	    (3 4 5))
+	        (3 4 5))
 	 t 1)                           ; => #(1 4)
 ```
 

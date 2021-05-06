@@ -3,117 +3,158 @@ title: "Getting Started"
 linkTitle: "Getting Started"
 weight: 2
 description: >
-  Installation, setup and a simple sample analysis
+  Install to plotting in five minutes
 ---
-
-## New to Lisp
-
-If you are a Lisp newbie and want to get started as fast as possible,
-then Portacle is probably your best option. Portacle is a
-multi-platform IDE for Common Lisp that includes Emacs, SBCL, Git,
-Quicklisp, all configured and ready to use.
-
-<div class="mx-auto">
-	<a class="btn btn-lg btn-primary mr-3 mb-4" href="https://portacle.github.io/">
-		Download Portacle<i class="fas fa-arrow-alt-circle-right ml-2"></i>
-	</a>
-</div>
-
-If you are an existing emacs user, you can [configure emacs for Common
-Lisp](https://github.com/susam/emacs4cl).
-
-## Experienced with Lisp
-
-We assume an experienced user will have their own Emacs and lisp
-implementation and will want to install according to their own tastes
-and setup. The repo links you need are below.
 
 ## Prerequisites
 
-All that is needed is an ANSI Common Lisp implementation. Development
-is done with CCL and SBCL. Other platforms _should_ work, but will not
-have been tested.
+- SBCL or CCL Common Lisp
+- MacOS or Windows 10
+- Quicklisp
+- Chrome
 
-## Installation
+## Load & Configure
 
-The easiest way to install Lisp-Stat is with Quicklisp:
+First load Lisp-Stat, plotting libraries and data and configure the
+environment.
+
+### Lisp-Stat
 
 ```lisp
 (ql:quickload :lisp-stat)
-```
-
-### Manual Install
-If you want to modify Lisp-Stat you'll need to retrieve the
-files from github and place them in a directory that is known to
-quicklisp. This long shell command will checkout all the required
-systems:
-
-```shell
-cd ~/quicklisp/local-projects && \
-git clone https://github.com/Lisp-Stat/data-frame.git && \
-git clone https://github.com/Lisp-Stat/dfio.git && \
-git clone https://github.com/Lisp-Stat/special-functions.git && \
-git clone https://github.com/Lisp-Stat/numerical-utilities.git && \
-git clone https://github.com/Lisp-Stat/documentation.git && \
-git clone https://github.com/Lisp-Stat/plot.git && \
-git clone https://github.com/Lisp-Stat/select.git && \
-git clone https://github.com/Lisp-Stat/lisp-stat.git
-```
-
-The above assumes you have the default installation directories. Adjust
-accordingly if you have changed this. If Quicklisp claims it cannot
-find the systems, try this at the REPL:
-
-```lisp
-(ql:register-local-projects)
-```
-
-### Installing documentation
-
-Lisp-Stat reference manuals are generated with the
-[declt](https://github.com/didierverna/declt) system. This produces
-high quality PDFs, markdown (soon), HTML and Info output.  The manuals
-are available in HTML, <!-- in the [reference](/docs/reference)
-section of this website;--> PDF and Info files that can be download
-from the individual systems `docs/` directory.
-
-You can install the info manuals into the emacs help system and this
-allows searching and browsing from within the editing environment.  To
-do this, use the
-[install-info](https://www.gnu.org/software/texinfo/manual/texinfo/html_node/Invoking-install_002dinfo.html)
-command.  As an example, on my MS Windows 10 machine, with MSYS2/emacs
-installation:
-
-```shell
-install-info --add-once select.info /c/msys64/mingw64/share/info/dir
-```
-
-installs the `select` manual into a Lisp-Stat node at the top level of
-the info tree.
-
-## Try it out
-
-Load Lisp-Stat:
-```lisp
-(ql:quickload :lisp-stat)
-```
-
-Change to the Lisp-Stat user package:
-```lisp
 (in-package :ls-user)
 ```
 
-Load some data:
+### Vega-Lite
 
 ```lisp
-(load #P"LS:DATASETS;CAR-PRICES")
+(ql:quickload :plot/vglt)
 ```
 
-Find the sample mean and median:
+### Data
 
 ```lisp
-(mean car-prices)
-(median car-prices)
+(define-data-frame cars
+  (vglt:vl-to-df
+    (dex:get
+	  "https://raw.githubusercontent.com/vega/vega-datasets/master/data/cars.json"
+	  :want-stream t)))
 ```
 
+## View
 
+Print the data frame (showing the first 25 rows by default)
+
+```lisp
+(pprint cars)
+;; ORIGIN YEAR       ACCELERATION WEIGHT_IN_LBS HORSEPOWER DISPLACEMENT CYLINDERS MILES_PER_GALLON NAME
+;; USA    1970-01-01         12.0          3504        130        307.0         8             18.0 chevrolet chevelle malibu
+;; USA    1970-01-01         11.5          3693        165        350.0         8             15.0 buick skylark 320
+;; USA    1970-01-01         11.0          3436        150        318.0         8             18.0 plymouth satellite
+;; USA    1970-01-01         12.0          3433        150        304.0         8             16.0 amc rebel sst
+;; USA    1970-01-01         10.5          3449        140        302.0         8             17.0 ford torino
+;; USA    1970-01-01         10.0          4341        198        429.0         8             15.0 ford galaxie 500
+;; USA    1970-01-01          9.0          4354        220        454.0         8             14.0 chevrolet impala
+;; USA    1970-01-01          8.5          4312        215        440.0         8             14.0 plymouth fury iii
+;; USA    1970-01-01         10.0          4425        225        455.0         8             14.0 pontiac catalina
+;; USA    1970-01-01          8.5          3850        190        390.0         8             15.0 amc ambassador dpl
+;; Europe 1970-01-01         17.5          3090        115        133.0         4 NIL              citroen ds-21 pallas
+;; USA    1970-01-01         11.5          4142        165        350.0         8 NIL              chevrolet chevelle concours (sw)
+;; USA    1970-01-01         11.0          4034        153        351.0         8 NIL              ford torino (sw)
+;; USA    1970-01-01         10.5          4166        175        383.0         8 NIL              plymouth satellite (sw)
+;; USA    1970-01-01         11.0          3850        175        360.0         8 NIL              amc rebel sst (sw)
+;; USA    1970-01-01         10.0          3563        170        383.0         8             15.0 dodge challenger se
+;; USA    1970-01-01          8.0          3609        160        340.0         8             14.0 plymouth 'cuda 340
+;; USA    1970-01-01          8.0          3353        140        302.0         8 NIL              ford mustang boss 302
+;; USA    1970-01-01          9.5          3761        150        400.0         8             15.0 chevrolet monte carlo
+;; USA    1970-01-01         10.0          3086        225        455.0         8             14.0 buick estate wagon (sw)
+;; Japan  1970-01-01         15.0          2372         95        113.0         4             24.0 toyota corona mark ii
+;; USA    1970-01-01         15.5          2833         95        198.0         6             22.0 plymouth duster
+;; USA    1970-01-01         15.5          2774         97        199.0         6             18.0 amc hornet
+;; USA    1970-01-01         16.0          2587         85        200.0         6             21.0 ford maverick                 ..
+```
+
+Show the last few rows:
+
+```lisp
+(tail cars)
+;; ORIGIN YEAR       ACCELERATION WEIGHT_IN_LBS HORSEPOWER DISPLACEMENT CYLINDERS MILES_PER_GALLON NAME
+;; USA    1982-01-01         17.3          2950         90          151         4               27 chevrolet camaro
+;; USA    1982-01-01         15.6          2790         86          140         4               27 ford mustang gl
+;; Europe 1982-01-01         24.6          2130         52           97         4               44 vw pickup
+;; USA    1982-01-01         11.6          2295         84          135         4               32 dodge rampage
+;; USA    1982-01-01         18.6          2625         79          120         4               28 ford ranger
+;; USA    1982-01-01         19.4          2720         82          119         4               31 chevy s-10
+```
+
+## Statistics
+
+Look at a few statistics on the data set.
+
+```lisp
+(mean cars:acceleration) ; => 15.5197
+```
+
+```lisp
+(summary cars)
+```
+```
+  CARS:MILES_PER_GALLON
+                        398 reals, min=9, q25=17.33333317438761d0,
+                        q50=22.727271751923993d0, q75=29.14999923706055d0,
+                        max=46.6d0;
+                        8 (2%) x "NIL"
+  CARS:CYLINDERS
+                 207 (51%) x 4,
+                 108 (27%) x 8,
+                 84 (21%) x 6,
+                 4 (1%) x 3,
+                 3 (1%) x 5
+  CARS:DISPLACEMENT
+                    406 reals, min=68, q25=104.25, q50=147.92307,
+                    q75=277.76923, max=455
+  CARS:HORSEPOWER
+                  400 reals, min=46, q25=75.77778, q50=94.33333, q75=129.57143,
+                  max=230;
+                  6 (1%) x "NIL"
+  CARS:WEIGHT_IN_LBS
+                     406 reals, min=1613, q25=2226, q50=2822.5, q75=3620,
+                     max=5140
+  CARS:ACCELERATION
+                    406 reals, min=8, q25=13.674999999999999d0, q50=15.45d0,
+                    q75=17.16666632692019d0, max=24.8d0
+  CARS:YEAR
+            61 (15%) x "1982-01-01",
+            40 (10%) x "1973-01-01",
+            36 (9%) x "1978-01-01",
+            35 (9%) x "1970-01-01",
+            34 (8%) x "1976-01-01",
+            30 (7%) x "1975-01-01",
+            29 (7%) x "1971-01-01",
+            29 (7%) x "1979-01-01",
+            29 (7%) x "1980-01-01",
+            28 (7%) x "1972-01-01",
+            28 (7%) x "1977-01-01",
+            27 (7%) x "1974-01-01"
+  CARS:ORIGIN
+              254 (63%) x "USA", 79 (19%) x "Japan", 73 (18%) x "Europe">
+```
+
+Note: The car models, essentially the row names, have been removed
+from the summary.
+
+## Plot
+
+Create a scatter plot specification with default values:
+
+```lisp
+(defparameter cars-plot (vglt:scatter-plot cars "HORSEPOWER" "MILES_PER_GALLON"))
+```
+
+Render the plot:
+
+```lisp
+(plot:plot-from-file (vglt:save-plot 'cars-plot))
+```
+
+{{< figure src="/docs/getting-started/vega-cars-scatterplot.png" >}}
