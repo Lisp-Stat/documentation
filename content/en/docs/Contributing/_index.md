@@ -24,11 +24,11 @@ especially welcome.
 
 ## Contributor License Agreement
 
-Contributor License Agreements (CLAs) are generally common and
-accepted in open source projects. We all wish for Lisp-Stat to be
-used and distributed as widely as possible, and for its users to be
-confident about the origins and continuing existence of the code. The
-CLA help us achieve that goal.
+Contributor License Agreements (CLAs) are common and accepted in open
+source projects.  We all wish for Lisp-Stat to be used and distributed
+as widely as possible, and for its users to be confident about the
+origins and continuing existence of the code.  The CLA help us achieve
+that goal.
 
 The Lisp-Stat project uses CLAs to accept regular contributions from
 individuals and corporations, and to accept larger grants of existing

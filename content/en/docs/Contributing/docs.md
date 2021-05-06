@@ -7,7 +7,7 @@ description: >
 ---
 
 Creating and updating documentation is a great way to learn. You will
-not only become more familar with Common Lisp, you have a chance to
+not only become more familiar with Common Lisp, you have a chance to
 investigate the internals of all parts of a statistical system.
 
 We use [Hugo](https://gohugo.io/) to format and generate the website,
@@ -27,10 +27,8 @@ information on using pull requests.
 
 ### Repository Organisation
 
-Declt will, in version 4.0, generate documentation for individual
-systems in Markdown format. These are kept with the project,
-e.g. `select/docs/select.md`. At the moment, Declt produces Info, PDF
-and HTML formats.
+Declt generates documentation for individual systems in Markdown
+format.  These are kept with the project, e.g. `select/docs/select.md`.
 
 
 ### Conventions

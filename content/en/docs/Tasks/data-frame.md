@@ -60,6 +60,7 @@ variables: _list_ and _vector_, collectively known as a _sequence_.
 For the most part a _vector_ is more efficient, and the recommended
 way to work with variables that are independent of a data-frame.
 
+### defparameter
 Lisp-Stat provides a wrapper over Common Lisp's `defparameter`
 function to make working with data variables a little easier.  You can
 define a variable with the `def` function. Here are some variables
@@ -115,6 +116,21 @@ recreate the variables `precipitation` and `min-temp`.  You can look
 at these files with an editor like the Emacs editor and you can
 prepare files with your own data by following these examples.
 
+
+### define-data-frame
+
+The `define-data-frame` macro is conceptually equivalent to the Common
+Lisp `defparameter`, but with some additional functionality that makes
+working with data frames easier. You use it the same way you'd use
+`defparameter`, for example:
+
+```lisp
+(define-data-frame foo <any-function returning a data frame>
+```
+
+We'll use both ways of defining data frames in this manual. The access
+methods that are defined by `define-data-frame` are described in the
+[access data](/docs/tasks/data-frame/#access-data) section.
 
 ## Create data-frames
 
@@ -548,14 +564,12 @@ See the section above, [From a database](/docs/tasks/data-frame/#from-a-database
 
 ## Access data
 
-The `define-data-frame` macro is conceptually equivalent to the Common
-Lisp `defparameter`, but with some additional functionality that makes
-working with data frames easier. We used this when we defined the
-`mtcars` data frame.
+This section describes various way to access data variables.
+
 
 ### Access a data-frame
 
-Let's use it to define the `iris` data
+Let's use `define-data-frame` to define the `iris` data
 frame. We'll use both of these data frames in the examples below.
 
 ```lisp
@@ -592,7 +606,7 @@ We will see how to clean this up this data frame in the next sections.
 
 The second thing to note is the row numbers on the far left side.
 When Lisp-Stat prints a data frame it automatically adds row
-numbers. Rows and column numbering in Lisp-Stat start at 0.  In R they
+numbers. Row and column numbering in Lisp-Stat start at 0.  In R they
 start with 1.  Row numbers make it convenient to make selections from
 a data frame, but they are not part of the data and cannot be selected
 or manipulated.  They only appear when a data frame is printed.
@@ -785,6 +799,42 @@ list. The lisp reader then reads the contents of the list as symbols.
 ```
 
 
+### remove duplicates
+
+The `df-remove-duplicates` function will remove duplicate rows. Let's
+create a data-frame with duplicates:
+
+```lisp
+(defparameter dup (make-df '(a b c) '(#(a1 a1 a3)
+                                      #(a1 a1 b3)
+									  #(a1 a1 c3))))
+DUP
+```
+
+Confirm a duplicate row:
+
+```lisp
+LS-USER> dup
+;; A  B  C
+;; A1 A1 A1
+;; A1 A1 A1
+;; A3 B3 C3
+```
+
+Now remove duplicate rows 0 and 1:
+
+```lisp
+(df-remove-duplicates dup)
+;; A  B  C
+;; A1 A1 A1
+;; A3 B3 C3
+```
+
+<!-- TODO
+## Detect missing values
+-->
+
+
 ## Column operations
 
 You have seen some of these functions before, and for completeness we
@@ -876,6 +926,21 @@ and add a 'weight' column to it:
 ;; 4 Female  45    170   79.4
 ```
 
+now that we have weight, let's add a BMI column to it to demonstrate
+using a function to compute the new column values:
+
+```lisp
+(add-column! *d* 'bmi
+	     (map-rows *d* '(height weight)
+		       #'(lambda (h w) (/ w (square (/ h 100))))))
+;;   SEX    AGE HEIGHT WEIGHT       BMI
+;; 0 Female  10    180   75.2 23.209875
+;; 1 Female  15    182   88.5 26.717787
+;; 2 Male    20    165   49.4 18.145086
+;; 3 Female  25    167   78.1 28.003874
+;; 4 Male    30    170   79.4 27.474049
+```
+
 Now let's add multiple columns destructively using `add-columns!`
 
 ```lisp
@@ -889,6 +954,8 @@ Now let's add multiple columns destructively using `add-columns!`
 ;; 4 Female  45    170   79.4 5 QUUX
 ```
 
+(I removed the BMI column before creating this data frame to improve
+clarity)
 
 ### Remove columns
 
@@ -1140,42 +1207,6 @@ from a column:
 
 You could also have used `replace-column!` in a similar manner to
 replace a column with normalize values.
-
-
-## Deleting duplicates
-
-The `df-remove-duplicates` function will remove duplicate rows. Let's
-create a data-frame with duplicates:
-
-```lisp
-(defparameter dup (make-df '(a b c) '(#(a1 a1 a3)
-                                      #(a1 a1 b3)
-									  #(a1 a1 c3))))
-DUP
-```
-
-Confirm a duplicate row:
-
-```lisp
-LS-USER> dup
-;; A  B  C
-;; A1 A1 A1
-;; A1 A1 A1
-;; A3 B3 C3
-```
-
-Now remove duplicate rows 0 and 1:
-
-```lisp
-(df-remove-duplicates dup)
-;; A  B  C
-;; A1 A1 A1
-;; A3 B3 C3
-```
-
-<!-- TODO
-## Detect missing values
--->
 
 
 ## Create subsets

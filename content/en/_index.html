@@ -29,18 +29,18 @@ endpoints. Lisp-Stat provides a secure, safe and managable environment.
 {{% /blocks/lead %}}
 
 {{< blocks/section color="dark" >}}
-{{% blocks/feature icon="fa-lightbulb" title="See Lisp-Stat in action" url="https://lisp-stat.dev/docs/examples" %}}
+{{% blocks/feature icon="fa-lightbulb" title="See Lisp-Stat in action" url="/docs/examples" %}}
 See practical examples of using Lisp-Stat for statistical computation
 
 {{% /blocks/feature %}}
 
 
-{{% blocks/feature icon="fab fa-github" title="Contributions welcome" url="https://github.com/Lisp-Stat/lisp-stat" %}}
+{{% blocks/feature icon="fab fa-github" title="Contributions welcome" url="https://github.com/Lisp-Stat" %}}
 We do [Pull Request](https://github.com/Lisp-Stat/lisp-stat/pulls) contributions workflow on **GitHub**. New users are always welcome.
 {{% /blocks/feature %}}
 
 
-{{% blocks/feature icon="fas fa-blog" title="Read the 'blog" url="https://lisp-stat.dev/blog/" %}}
+{{% blocks/feature icon="fas fa-blog" title="Read the 'blog" url="/blog/" %}}
 For announcement of latest features, tips, hints and configuration
 {{% /blocks/feature %}}
 
@@ -50,40 +50,26 @@ For announcement of latest features, tips, hints and configuration
 <!-- Some quick examples -->
 {{< blocks/section >}}
 
-{{% blocks/feature icon="fas fa-code" title="Code for a simple plot" %}}
-<pre style="text-align: left">
-  <code>
-(ql:quickload :ips)      ; data examples
-(ql:quickload :plot/vglt); Vega-Lite lib
-(in-package :ips)        ; for imports
-(defparameter online
-  (csv-to-data-frame
-    (dex:get ips::eg01-07 :want-stream t)))
-(defparameter online-bar-chart
-  (vglt:bar-chart online "SOURCE" "COUNT"))
-  </code>
-
-</pre>
+{{% blocks/feature icon="fas fa-power-off" title="Get Started" url="/docs/getting-started/" %}}
+Install to plotting in five minutes
 {{% /blocks/feature %}}
 
-{{% blocks/feature icon="fas fa-code" title="Data frame from a URL" %}}
+{{% blocks/feature icon="fas fa-code" title="Load a R data set" %}}
 <pre style="text-align: left">
   <code>
-(defparameter *df*
-  (csv-to-data-frame
-    (dex:get
-       "https://raw.githubusercontent.com/guru99-edu/R-Programming/master/computers.csv"
-       :want-stream t)))
+(define-data-frame mtcars
+  (rdata 'rdata:datasets 'rdata:mtcars))
+
   </code>
 
 
 
-  
+
 </pre>
 {{% /blocks/feature %}}
 
-{{% blocks/feature icon="fas fa-book" title="A Jupyter-Lab Notebook" %}}
-<a href="jupyter-notebook.png"><img src="jupyter-notebook.png" alt="Juputer Lab Notebook" style="width:300px; height:250px;" ></a>
+{{% blocks/feature icon="fas fa-book" title="Jupyter-Lab Notebook" %}}
+<a href="https://github.com/Lisp-Stat/IPS/notebooks/Part%20I/01%20-%20Distributions.ipynb"><img src="jupyter-notebook.png" alt="Juputer Lab Notebook" style="width:300px; height:250px;" ></a>
 {{% /blocks/feature %}}
 
 {{< /blocks/section >}}

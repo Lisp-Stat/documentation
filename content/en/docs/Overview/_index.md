@@ -25,9 +25,9 @@ contemporary until the primary author joined the 'R Core' group.
 
 There are several reasons to prefer Lisp-Stat over R or Python.  The
 first is that it is fast. Lisp compilers produce native executable
-code that is nearly as fast as C.  As part of the Common Lisp
+code that is nearly as fast as C.  As part of the Common Lisp, the
 [numerical tower](https://en.wikipedia.org/wiki/Numerical_tower)
-it also has built in rational numbers, which is a natural way to work
+has built in rational numbers, which is a natural way to work
 with samples.  For example an experiment may produce 11598 positives
 out of a sample of 25000.  With exact rational arithmatic, there is no
 need to force everything to a float, the value is just what the
@@ -48,7 +48,7 @@ a history of industrial deployments, including:
 - Credit card authorisation at Amex (Authorizers Assistant)
 - US DoD logistics (and more that we do not know of)
 - CIA and NSA are big users based on Lisp sales
-- DWave and Rigetti use lisp for programming their quantum computers
+- DWave, HSL and Rigetti use lisp for programming their quantum computers
 - Apple's Siri was originally written in Lisp
 - Amazon got started with Lisp & C; so did Y-combinator
 - Google's flight search engine is written in Common Lisp
@@ -73,9 +73,9 @@ be happy to help.
 ## Core Systems {#systems}
 Lisp-Stat is composed of several systems (projects), each
 independently useful and brought together under the Lisp-Stat
-system. Dependencies between systems have been minimised to the extent
-possible possible so you can use them without importing all of
-Lisp-Stat.
+umbrella. Dependencies between systems have been minimised to the
+extent possible so you can use them individually without importing all
+of Lisp-Stat.
 
 ### Data-Frame {#data-frame}
 
@@ -83,7 +83,10 @@ A data frame is a data structure conceptually similar to a [R data
 frame](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/data.frame).
 It provides column-centric storage for data sets where each named
 column contains the values for one variable, and each row contains one
-set of observations.
+set of observations. For data frames, we use the
+'[tibble](https://www.rdocumentation.org/packages/tibble/versions/3.1.0)'
+from R as inspiration for functionality.
+
 
 Data frame can contain values of any type. If desired, additional
 attributes, such as float, the unit and other information may be
@@ -95,12 +98,8 @@ lengths (though the unit may change).
 ### DFIO {#dfio}
 
 The Data Frame I/O system provides input and output operations for
-data frames. Based on the
-[cl-csv](https://github.com/AccelerationNet/cl-csv) library, a data
-frame may be written to and read from files, strings or streams,
-including network streams.  Various separators and escapes are
-availble in the `cl-csv` package.
-
+data frames. A data frame may be written to and read from files,
+strings or streams, including network streams or relational databases.
 
 ### Select {#select}
 
@@ -113,14 +112,15 @@ Select is a facility for selecting portions of sequences or arrays. It provides:
   you need from this library.
 - An extensible DSL for selecting a subset of valid subscripts.  This
   is useful if, for example, you want to resolve column names in a
-  data frame in your implementation of select.
+  data frame in your implementation of select, or implementing
+  filtering based on row values.
 
 ### Array Operations {#aops}
 
 This library is a collection of functions and macros for manipulating
 Common Lisp arrays and performing numerical calculations with
 them. The library provides shorthand codes for frequently used
-operations, displaced array functions, indexing, transformations
+operations, displaced array functions, indexing, transformations,
 generation, permutation and reduction of columns.  Array operations
 may also be applied to data frames, and data frames may be converted
 to/from arrays.
@@ -133,7 +133,7 @@ Lisp with a focus on high accuracy double-float calculations.  These
 functions are the basis for the statistical distributions functions,
 e.g. gamma, beta, etc.
 
-
+<!--
 ### Distributions {#distributions}
 
 A library for probability distributions and associated functions, with
@@ -145,7 +145,7 @@ interface to the distributions and computes:
 - quantiles
 - random draws from distributions
 - mean, variance of distributions
-
+-->
 
 ### Numerical Utilities {#numerical-utilities}
 
@@ -172,7 +172,7 @@ statistical computing environment.  It is also the location for the
 packages. For example
 [cl-mathstats](https://github.com/gwkkwg/cl-mathstats) contains
 functionality not yet in Lisp-Stat, however its architecture does not
-lend itself well to incorporation via a `depends-on`, so as we
+lend itself well to incorporation via an ASDF `depends-on`, so as we
 consolidate the libraries, missing functionality will be placed in the
 Lisp-Stat system.  Eventually parts of `numerical-utilities`,
 especially the statistics functions, will be relocated here.
@@ -186,17 +186,19 @@ especially the statistics functions, will be relocated here.
 Emacs, with the [slime](https://common-lisp.net/project/slime/)
 package is the most tested IDE and the one the authors use.  If you
 are using one of the starter lisp packages mentioned in the [getting
-started](/docs/getting-started) section, this will have been installed
-for you. Otherwise, slime/swank is available in quicklisp.
+started](/docs/getting-started/installation) section, this will have
+been installed for you. Otherwise, slime/swank is available in
+quicklisp.
 
 ### Jupyter Lab {#jupyter-lab}
 
 [Jupyter Lab](http://jupyterlab.io/) and
 [common-lisp-jupyter](https://github.com/yitzchak/common-lisp-jupyter)
 provide an environment similar to RStudio for working with data and
-performing analysis.  The [Lisp-Stat examples](/docs/examples) use
-Jupyter Lab to illustrate worked examples based on the book,
-*Introduction to the Practice of Statistics*.
+performing analysis.  The [Lisp-Stat analytics
+examples](/docs/examples/analysis) use Jupyter Lab to illustrate
+worked examples based on the book, *Introduction to the Practice of
+Statistics*.
 
 ### Clozure Common Lisp {#ccl}
 
@@ -214,9 +216,9 @@ Generally, we are prioritising these systems for development:
 
 In terms of priority, 1 & 2 are equally rated, and
 special-functions/distributions lower priority because we have a few
-options for them, such as the CFFI for libRmath or lesser quality lisp
-implementations.  As well, the knowledge of numerical methods required
-for accurate implementation is somewhat more limited.
+options for them, such as the CFFI for libRmath or lesser quality.  As
+well, the knowledge of numerical methods required for accurate
+implementation is somewhat more limited.
 
 For the most part, implementation priority is determined by the
 features required when working through the [Lisp-Stat
@@ -225,16 +227,6 @@ tutorial](/docs/tutorials/basics).  Being able to execute the code in
 both of these documents is the first MVP milestone. If you see
 something in one of these documents that does not work yet it will be
 a good starter issue for a contribution.
-
-For data frames, we use the
-'[tibble](https://www.rdocumentation.org/packages/tibble/versions/3.1.0)'
-from R as inspiration for functionality. Skeletal [documentation for
-data frame](/docs/tasks/data-frame/) serves as a roadmap for remaining
-features.  If there's something in the table of contents that is not
-documented, it means it is not yet implemented.  Please open an issue
-on github if you'd like to contribute to any of these features, as
-several have partial implementations already.
-
 
 ## Acknowledgements {#acknowledgements}
 
@@ -245,5 +237,17 @@ real-world problems was a great start to the development of Lisp-Stat.
 
 ## What next?
 
-- [Get started](/docs/getting-started/): Install and run Lisp-Stat
-- [Examples](/docs/examples): Worked examples of statistical analysis with Lisp-Stat
+{{< cardpane >}}
+  {{< card header="**Get Started**" >}}
+  [Load & plot](/docs/getting-started/)<br/>
+  [Data Frame](/docs/getting-started/data-frame/)
+  {{< /card >}}
+  {{< card header="**Examples**" >}}
+  [Analytics](/docs/examples/analysis)<br/>
+  [Plotting](/docs/examples/plotting)
+  {{< /card >}}
+  {{< card header="**Tutorials**" >}}
+  [Basic tutorial](/docs/tutorial/basics)
+  {{< /card >}}
+{{< /cardpane >}}
+

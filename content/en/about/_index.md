@@ -12,7 +12,7 @@ layout: docs
 Lisp-Stat is an environment for statistical computing, conceptually
 similar to R, that is also suitable for front-line production
 deployments.  It grew out of a desire to have an environment for
-rapidly prototyping analytical and A.I. solutions, and move directly to
+rapidly prototyping analytical and AI solutions, and move to
 production environments with minimal friction.  Typically there is a
 gap between the modeling environment, perhaps R or Python, and the
 delivery environment. Lisp-Stat closes that gap.
@@ -53,16 +53,15 @@ an excellent object-oriented facility
 and meta-object protocol
 ([MOP](https://en.wikipedia.org/wiki/Metaobject#Metaobject_protocol)).
 
-Lisp-Stat is fully functional today, and most of the XLISP-STAT
-libraries can be ported with the aid of a compatibility package
-(XLS). This gives Lisp-Stat a leg up on ecosystem development. Though
-not as complete as CRAN, there is enough here to get useful work done.
+Lisp-Stat is functional today, and most of the XLISP-STAT libraries
+can be ported with the aid of a compatibility package (XLS).  This
+gives Lisp-Stat a leg up on ecosystem development.  Though not as
+complete as CRAN, there is enough here to get useful work done.
 
 ### Data-Frame
 
-Lisp-Stat includes a column-oriented data-frame. I/O methods
-are provided for delimited data files and JSON formats. Data may be
-loaded from the network or local disk.
+Lisp-Stat includes a column-oriented data-frame.   Data may be
+loaded from the network, local disk or a relational database.
 
 ### Notebooks
 
@@ -83,10 +82,6 @@ The XLS package implements many of the XLisp-Stat functions using
 Lisp-Stat equivalents. This package is working internally, but not yet
 released. If you need this, please raise an issue on github.
 
-### Git Integration
-
-Git workflows are used both in development and in projects.
-
 
 {{% /blocks/section %}}
 
@@ -95,7 +90,7 @@ Git workflows are used both in development and in projects.
 ## What's next for Lisp-Stat?
 
 Lisp-Stat is an open source project and we welcome patches and
-contributions to improve Lisp-Stat. Both code and documentation help,
+contributions to improve Lisp-Stat.  Both code and documentation help,
 and documenting the systems is an excellent way to learn the ins and
 outs of a statistical system whilst it is small enough to be
 managable.  We hope to continue to make improvements to the system
@@ -104,7 +99,7 @@ along with the Lisp-Stat community.
 Visit the [github repository](https://github.com/lisp-stat/) to
 see what we're currently working on. If there is something you would like
 to see in Lisp-Stat, please create an issue yourself - or assign
-yourself an issue if you would like to fix or add something. See our
+yourself an issue if you would like to fix or add something.  See our
 [contribution guidelines](/docs/contributing/) for more
 information.
 
