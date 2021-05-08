@@ -22,6 +22,10 @@ Quicklisp, all configured and ready to use.
 If you are an existing emacs user, you can [configure emacs for Common
 Lisp](https://github.com/susam/emacs4cl).
 
+Users new to lisp should also consider going through the [basic
+tutorial](/docs/tutorials/basic), which guides you step-by-step
+through the basics of working with Lisp as a statistics practitioner.
+
 ## Experienced with Lisp
 
 We assume an experienced user will have their own Emacs and lisp
@@ -129,7 +133,7 @@ Find the sample mean and median:
   [Analytics](/docs/examples/analysis)<br/>
   [Plotting](/docs/examples/plotting)
   {{< /card >}}
-  {{< card header="**Tutorials**" >}}
+  {{< card header="**R Users**" >}}
   [Basic tutorial](/docs/tutorial/basics)
   {{< /card >}}
 {{< /cardpane >}}

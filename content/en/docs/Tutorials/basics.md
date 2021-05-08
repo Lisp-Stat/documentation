@@ -1,5 +1,5 @@
 ---
-title: "Lisp-Stat Basics"
+title: "Basics"
 date: 2021-02-20
 weight: 4
 description: >
@@ -68,7 +68,7 @@ variables will be defined for you.
 
 {{< alert title="Note" >}}Implementations differ in their handling of
 character case for logical pathnames like the above. The spec requires
-all capital letters to preserve compatibility across filesystems (VMS,
+all capital letters to preserve compatibility across file systems (VMS,
 HDFS, etc), but most implementations on Windows and Mac permit lower
 case; some do not. If you encounter difficulty with lower case, try
 upper.{{< /alert >}}
@@ -121,9 +121,9 @@ from the use of this program.
 LISP-STAT is an evolving system.  Over time new features will be
 introduced, and existing features that do not work may be changed.
 Every effort will be made to keep LISP-STAT consistent with the
-information in this tutorial, but if this is not possible the help
-information should give accurate information about the current use of
-a commend.
+information in this tutorial, but if this is not possible the
+[reference documentation](/docs/reference) should give accurate
+information about the current use of a command.
 
 ## Starting and Finishing
 
@@ -163,16 +163,17 @@ LISP-STAT package the current package, like this:
 ```lisp
 (in-package :ls-user)
 #<PACKAGE "LS-USER">
-LS-USER> 
+LS-USER>
 ```
 
-The final `LS-USER>` in the window is the Slime prompt (notice how
-it changes when you executed `(in-package)`.  Any characters you type
-while the prompt is active will be added to the line after the
-final prompt. When you press *return*, LISP-STAT will try to interpret
-what you have typed and will print a response.  For example, if you
-type a 1 and press *return* then LISP-STAT will respond by simply
-printing a 1 on the following line and then give you a new prompt:
+The final `LS-USER>` in the window is the Slime prompt. Notice how it
+changes when you executed `(in-package)`. In Slime, the prompt always
+indicates the current package, `*package*`.  Any characters you type
+while the prompt is active will be added to the line after the final
+prompt.  When you press *return*, LISP-STAT will try to interpret what
+you have typed and will print a response.  For example, if you type a
+1 and press *return* then LISP-STAT will respond by simply printing a
+1 on the following line and then give you a new prompt:
 
 ```lisp
     LS-USER> 1
@@ -208,7 +209,8 @@ expression
 ```
 
 In other implementations, the command is `quit`.  One of these methods
-should cause the program to exit and return you to the IDE.
+should cause the program to exit and return you to the IDE.  In Slime,
+you can use the `,` short-cut and then type `sayoonara`.
 
 ## The Basics
 
@@ -253,11 +255,23 @@ or vectors
     #(1 2 3)
 
 Higher dimensional arrays are another form of compound data; they will
-be discussed below in Section [9](#Arrays), "Arrays".
+be discussed below in [Section 9](#Arrays), "Arrays".
 
 All the examples given above can be typed directly into the command
 window as they are shown here. The next subsection describes what
 LISP-STAT will do with these expressions.
+
+
+### Data Frame
+
+A data frame is a collection of name/data pairs.  If you have used R,
+then you'll already be familiar with this concept.  To create a data
+frame from a name and a value (called a `plist`, or *property-list*):
+
+```lisp
+(plist-df '(name #(1 2 3)))
+```
+
 
 ### The Listener and the Evaluator
 
@@ -493,18 +507,20 @@ differences.
 
 4.  `(e+ #(1 2 3) #(4 5 7))`
 
-### Summary Statistics {#Elementary.Summary}
+
+### Summary Statistics {#Summary}
 
 Devore and Peck [@DevorePeck page 54, Table 10] give precipitation
 levels recorded during the month of March in the Minneapolis - St. Paul
 area over a 30 year period. Let's enter these data into LISP-STAT with
 the name `precipitation`:
 
-    LS-USER> (def precipitation
-           #(.77 1.74 .81 1.20 1.95 1.20 .47 1.43 3.37 2.20 3.30
-                 3.09 1.51 2.10 .52 1.62 1.31 .32 .59 .81 2.81 1.87
-                 1.18 1.35 4.75 2.48 .96 1.89 .90 2.05))
-    PRECIPITATION
+```lisp
+(def precipitation
+    #(.77 1.74 .81 1.20 1.95 1.20 .47 1.43 3.37 2.20 3.30
+     3.09 1.51 2.10 .52 1.62 1.31 .32 .59 .81 2.81 1.87
+     1.18 1.35 4.75 2.48 .96 1.89 .90 2.05))
+```
 
 In typing the expression above I have inserted *return* and *tab* a
 few times in order to make the typed expression easier to read.  The
@@ -554,120 +570,167 @@ transformed data are:
     0.384892
 ```
 
-<!--
-### Plots {#Elementary.Plots}
 
-The `histogram` and `boxplot` functions can be used to obtain
+### Plots
+
+For this section we'll be using the Vega-Lite plotting back-end. Load
+it like this:
+
+```lisp
+(ql:quickload :plot/vglt)
+```
+
+The `histogram` and `box-plot` functions can be used to obtain
 graphical representations of this data set:
 
-    LS-USER> (histogram precipitation)
-    #<Object: 3564170, prototype = HISTOGRAM-PROTO>
-    LS-USER> (boxplot precipitation)
-    #<Object: 3423466, prototype = SCATTERPLOT-PROTO>
+```lisp
+(vglt:plot
+	(vglt:histogram
+		(plist-df `(x ,precipitation)) "X" :title "Histogram of precipitation levels"))
+```
+
+{{< figure src="/docs/tutorials/figure-1-histogram.png" >}}
+
+Note how we converted the precipitation data into a data-frame before
+passing it to the `histogram` function.  This is because plotting
+functions work on data frames. Also note the way the data frame was
+constructed using the `plist-df` function.  When I first showed you an
+example of constructing a data frame:
+
+```lisp
+(plist-df '(name #(1 2 3)))
+```
+
+the second value of the plist was a vector. In the histogram plot, the
+second value is a *variable*:
+
+```lisp
+(plist-df `(x ,precipitation))
+```
+
+If you entered this into the evaluator (REPL) without the back-quote
+and comma:
+
+```lisp
+(plist-df '(x precipitation))
+```
+
+you would get an error. This is because within a list, `precipitation`
+is a *symbol*, and `plist-df` expects the vector that `precipitation`
+stands for, in other words its *value*. To get the value, we use a
+sort of template mechanism, that starts with the back-quote character.
+Within a list that starts with this character, a comma signals to the
+evaluator to put the *value* of the symbol there, not the symbol
+itself.  The easiest way to see this is to type both into the
+evaluator:
+
+```
+LS-USER> '(x precipitation)
+(X PRECIPITATION)
+LS-USER> `(x ,precipitation)
+(X
+ #(0.77 1.74 0.81 1.2 1.95 1.2 0.47 1.43 3.37 2.2 3.3 3.09 1.51 2.1 0.52 1.62
+   1.31 0.32 0.59 0.81 2.81 1.87 1.18 1.35 4.75 2.48 0.96 1.89 0.9 2.05))
+```
+
+Note each graph is saved to an HTML file in your system cache
+directory. This location will vary depending on your operating system.
+On MS Windows, it will be in %APPDATALOCAL%/cache.  You can view or
+edits the plots directly if you like.
+
+Let's try a box plot:
+
+```lisp
+(vglt:plot
+ (vglt::box-plot
+  (plist-df `(x ,precipitation)) nil "X" :title "Boxplot of precipitation levels"))
+```
+
+{{< figure src="/docs/tutorials/figure-2-boxplot.png" >}}
+
+The box-plot function can also be used to produce parallel box-plots of
+two or more samples.
+
+It will do so if it is given a list of lists as its
+argument instead of a single list.
 
 
-Each of these commands should cause a window with the appropriate graph
-to appear on your screen. The windows should look something like Figures
-[\[Histogram\]](#Histogram){reference-type="ref" reference="Histogram"}
-and [\[Boxplot1\]](#Boxplot1){reference-type="ref"
-reference="Boxplot1"}.
+As an example, let's use this function to compare the fuel consumption
+for various automobile types.  The data comes from the R `ggplot`
+library and we load it like this:
 
-Note that as each graph appears it becomes the active window. To get
-XLISP-STAT to accept further commands you have to click on the
-XLISP-STAT listener window. You will have to click on the listener
-window between the two commands shown here.
+```lisp
+(defparameter mpg
+	(csv-to-data-frame
+		(rdata:rdata 'rdata:ggplot2 'rdata:mpg)))
+```
 
-The two functions return results that are printed something like this:
+The parallel box-plot is obtained by:
 
-        #<Object: 3564170, prototype = HISTOGRAM-PROTO>
+```lisp
+(vglt:plot
+	  (vglt:box-plot mpg "CLASS" "HWY"
+	                 :title "Boxplot of fuel consumption"))
+```
 
-These result will be used later to identify the window containing the
-plot. For the moment you can ignore them.
-
-When you have several plot windows open you might want to close the
-listener window so you can rearrange the plots more easily. You can do
-this by clicking in the listener window's close box. You can later
-re-open the listener window by selecting the **Show XLISP-STAT** item on
-the **Command** menu.
-
-The boxplot function can also be used to produce parallel boxplots of
-two or more samples. It will do so if it is given a list of lists as its
-argument instead of a single list. As an example, let's use this
-function to compare serum total cholesterol values for samples of rural
-and urban Guatemalans (Devore and Peck [@DevorePeck page 19, Example
-3]):
-
-    > (def urban (list 184 196 217 284 184 236 189 206 179 170 205 190
-                       204 330 217 242 222 242 249 241))
-    URBAN
-    > (def rural (list 166 146 144 204 158 143 158 180 223 194 194 175
-                       171 155 143 145 131 181 148 144 220 129))
-    RURAL
-    >
-
-The parallel boxplot is obtained by
-
-    > (boxplot (list urban rural))
-    #<Object: 3423466, prototype = SCATTERPLOT-PROTO>
-    >
-
-and is shown in Figure [\[Boxplot2\]](#Boxplot2){reference-type="ref"
-reference="Boxplot2"}; the urban group is on the left.
+{{< figure src="/docs/tutorials/figure-3-parallel-box-plot.png" >}}
 
 
 
 ### Exercises {#exercises-2 .unnumbered}
 
 The following exercises involve examples and problems from Devore and
-Peck [@DevorePeck]. The data sets are in files in the folder **Data** on
-the XLISP-STAT distribution disk and can be read in using the item in
-the **File** menu or using the `load` function (see Section
-[5.4](#Shortcuts.Load){reference-type="ref" reference="Shortcuts.Load"}
-below). To use the **Load** item on the **File** menu select this item
-from the menu. This will bring up an **Open File** dialog window. Use
-this dialog to open the **Data** folder on the distribution disk. Now
-select one of the `.lsp` files (`car-prices.lsp` for the first
-exercise) and press the **Open** button. The file will be loaded and
-some variables will be defined for you. Loading file
-`car-prices.lsp` will define the single variable `car-prices`.
-Loading file `heating.lsp` will define two variables,
-`gas-heat` and `electric-heat`.[^3]
+Peck. The data sets are in files in the folder **Datasets** in the
+LISP-STAT distribution directory and can be read in using the `load`
+command.  The short cut for the *Datasets* directory is `LS:DATASETS`,
+so to load `car-prices`, type:
+
+```lisp
+(load #P"LS:DATASETS;car-prices")
+```
+
+at the REPL.  The file will be loaded and some variables will be
+defined for you. Loading file `car-prices.lisp` will define the single
+variable `car-prices`.  Loading file `heating.lisp` will define two
+variables, `gas-heat` and `electric-heat`.[^3]
 
 1.  Devore and Peck [@DevorePeck page 18, Example 2] give advertised
-    prices for a sample of 50 used Japanese subcompact cars. Obtain some
-    plots and summary statistics for this data. Experiment with some
-    transformations of the data as well. The data set is called
-    `car-prices` in the file `car-prices.lsp`. The prices are
-    given in units of \$1000; thus the price 2.39 represents \$2390. The
+    prices for a sample of 50 used Japanese subcompact cars. [Create a
+    data-frame](/docs/tasks/data-frame/#create-data-frames) and obtain
+    some plots and summary statistics for this data.  Experiment with
+    some transformations of the data as well.  The data set is called
+    `car-prices` in the file `car-prices.lisp`.  The prices are given
+    in units of \$1000; thus the price 2.39 represents \$2390.  The
     data have been sorted by their leading digit.
 
 2.  In Exercise 2.40 Devore and Peck [@DevorePeck] give heating costs
-    for a sample of apartments heated by gas and a sample of apartments
-    heated by electricity. Obtain plots and summary statistics for these
-    samples separately and look at a parallel box plot for the two
-    samples. These data sets are called `gas-heat` and
-    `electric-heat` in the file `heating.lsp`.
+    for a sample of apartments heated by gas and a sample of
+    apartments heated by electricity.  Create a data-frame and obtain
+    plots and summary statistics for these samples separately and look
+    at a parallel box plot for the two samples.  These data sets are
+    called `gas-heat` and `electric-heat` in the file `heating.lisp`.
 
+<!--
 ### Two Dimensional Plots {#Elementary.TwoDPlots}
 
-Many single samples are actually collected over time. The precipitation
-data set used above is an example of this kind of data. In some cases it
-is reasonable to assume that the observations are independent of one
-another, but in other cases it is not. One way to check the data for
-some form of serial correlation or trend is to plot the observations
-against time, or against the order in which they were obtained. I will
-use the `plot-points` function to produce a scatterplot of the
-precipitation data versus time. The `plot-points` function is
-called as
+Many single samples are actually collected over time.  The
+precipitation data set used above is an example of this kind of data.
+In some cases it is reasonable to assume that the observations are
+independent of one another, but in other cases it is not.  One way to
+check the data for some form of serial correlation or trend is to plot
+the observations against time, or against the order in which they were
+obtained.  I will use the `plot-points` function to produce a
+scatter-plot of the precipitation data versus time.  The `plot-points`
+function is called as
 
     (plot-points x-variable y-variable)
 
 Our $y$-variable will be `precipitation`, the variable we defined
-earlier. As our $x$-variable we would like to use a sequence of integers
-from 1 to 30. We could type these in ourselves, but there is an easier
-way. The function `iseq`, short for *integer-sequence*, generates a
-list of consecutive integers between two specified values. The general
-form for a call to this function is
+earlier.  As our $x$-variable we would like to use a sequence of
+integers from 1 to 30.  We could type these in ourselves, but there is
+an easier way.  The function `iseq`, short for *integer-sequence*,
+generates a list of consecutive integers between two specified
+values. The general form for a call to this function is
 
     (iseq start end).
 
@@ -689,7 +752,7 @@ There does not appear to be much of a pattern to the data; an
 independence assumption may be reasonable.
 
 Sometimes it is easier to see temporal patterns in a plot if the points
-are connected by lines. Try the above command with `plot-points`
+are connected by lines.  Try the above command with `plot-points`
 replaced by `plot-lines`.
 
 The `plot-lines` function can also be used to construct graphs of
@@ -709,7 +772,7 @@ Thus to draw the plot of $\sin(x)$ using 50 equally spaced points type
 The plot should look like Figure
 [\[Lineplot1\]](#Lineplot1){reference-type="ref" reference="Lineplot1"}.
 
-Scatterplots are of course particularly useful for examining the
+Scatter-plots are of course particularly useful for examining the
 relationship between two numerical observations taken on the same
 subject. Devore and Peck [@DevorePeck Exercise 2.33] give data for HC
 and CO emission recorded for 46 automobiles. The results can be placed
@@ -777,8 +840,8 @@ is equivalent to the expression `(function sin)`. The short form
 the expression for producing the sine plot can be written as
 
     (plot-function #'sin (- pi) pi).
-
 -->
+
 
 ## Generating and Modifying Data
 
@@ -1418,7 +1481,7 @@ off recording to a single file.
 
 `dribble` only records text that is typed, not plots.
 
-<!-- Document how to do this with VegaLite/Plotly/Gnuplot
+<!-- Document how to do this with Vega-lite/Plotly/Gnuplot
 However, you
 can use the standard Macintosh shortcut COMMAND-SHIFT-3 to save a
 MacPaint image of the current screen. You can also choose the **Copy**
@@ -1451,7 +1514,7 @@ in the file `examples.lisp` type [^11].
 The files `precipitation.lisp` and `examples.lisp` now contain a set
 of expression that, when read in with the `load` command, will
 recreate the variables `precipitation` and `purchases`.  You can look
-at these files with an editor like the emacs editor and you can
+at these files with an editor like the Emacs editor and you can
 prepare files with your own data by following these examples.
 
 <!-- Describe the CCL Editor, Hemlock, for MacOS users
@@ -1516,7 +1579,7 @@ initialization code upon start-up.  You can use this file to load any
 data sets you would like to have available or to define functions of
 your own.
 
-<!-- Document this once VegaLite/Plotly is working
+<!-- Document this once Vega-lite/Plotly is working
 ## More Elaborate Plots {#MorePlots}
 
 The plots described so far were designed for exploring the distribution
@@ -1633,10 +1696,10 @@ released.
 -->
 
 <!--
-### Scatterplot Matrices {#MorePlots.Scatmat}
+### Scatter-plot Matrices {#MorePlots.Scatmat}
 
 Another approach to graphing a set of variables is to look at a matrix
-of all possible pairwise scatterplots of the variables. The
+of all possible pairwise scatter-plots of the variables. The
 `scatterplot-matrix` function will produce such a plot. The data
 
     (def hardness (list 45 55 61 66 71 71 81 86 53 60 64 68 79 81 56
@@ -1782,7 +1845,7 @@ evaluates to a list of indices.
 ### Linked Plots
 
 When you brush or select in a scatterplot matrix you are looking at the
-interaction of a set of separate scatterplots[^12]. You can construct
+interaction of a set of separate scatter-plots[^12]. You can construct
 your own set of interacting plots by choosing the **Link View** option
 from the menus of the plots you want to link. For example, using the
 data from Exercise 1 in Section
@@ -2547,7 +2610,7 @@ ancestors. The `send` function will move up the *precedence list*
 of an object's ancestors until a method for a message is found.
 
 Most of the objects encountered so far inherit directly from *prototype*
-objects. Scatterplots inherit from `scatterplot-proto`, histograms
+objects. Scatter-plots inherit from `scatterplot-proto`, histograms
 from `histogram-proto`, regression models from
 `regression-model-proto`. Prototypes are just like any other
 objects. They are essentially *typical* versions of a certain kind of
@@ -2608,6 +2671,7 @@ graphics files loaded on start up. Further details will be given in
 [@MyBook].
 -->
 
+
 ## Matrices and Arrays {#Arrays}
 
 LISP-STAT includes support for multidimensional arrays. In addition to
@@ -2650,6 +2714,7 @@ will return element 1 of row 0 of `A`. The expression
     (select a (list 0 1) (list 0 1))
 
 returns the upper left hand corner of `A`.
+
 
 <!--
 ## Nonlinear Regression
@@ -2783,7 +2848,7 @@ calculations in this section.
 As an example, suppose we would like to model the data on cholesterol
 levels in rural and urban Guatemalans, examined in Section
 [3.2](#Elementary.Summary){reference-type="ref"
-reference="Elementary.Summary"}, as a one way ANOVA model. The boxplots
+reference="Elementary.Summary"}, as a one way ANOVA model. The box-plots
 we obtained in Section [3.2](#Elementary.Summary){reference-type="ref"
 reference="Elementary.Summary"} showed that the samples were skewed and
 the center and spread of the urban sample were larger than the center
@@ -3312,9 +3377,9 @@ Macintosh and UNIX versions. On UNIX systems:
 
 -   UNIX versions of XLISP-STAT are designed to run on a standard
     terminal and therefore do not provide parenthesis matching or
-    indentation support. If you use the *GNU* `emacs` editor you
+    indentation support. If you use the *GNU* `Emacs` editor you
     can obtain both these features by running XLISP-STAT from within
-    `emacs`. Otherwise, for editing files with `vi` you can
+    `Emacs`. Otherwise, for editing files with `vi` you can
     use the `-l` flag to get some Lisp editing support.
 
 -   To quit from the program type
