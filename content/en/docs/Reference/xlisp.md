@@ -1,6 +1,6 @@
 ---
 title: "Code Repository"
-linkTitle: "XLisp"
+linkTitle: "XLisp-Stat"
 weight: 10
 description: >
   Collection of XLisp and Common Lisp statistical routines
