@@ -33,4 +33,5 @@ description: >
 - [Lisp-Stat community](/community)
 - [Lisp-Stat on stackoverflow](https://stackoverflow.com/questions/tagged/xlispstat)
 - [Common Lisp on stackoverflow](https://stackoverflow.com/questions/tagged/common-lisp)
+- [CS 325 Readings (Northwestern Uni)](https://courses.cs.northwestern.edu/325/readings/readings.php)
 
