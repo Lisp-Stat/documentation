@@ -8,7 +8,7 @@ weight: 1
 ---
 
 Lisp-Stat is a domain specific language (DSL) for statistical analysis
-and machine learning. It is targeted at statistics practioners with
+and machine learning.  It is targeted at statistics practioners with
 little or no experience in programming.
 
 Lisp has a history of being deployed for domain experts to use, and
@@ -25,9 +25,9 @@ contemporary until the primary author joined the 'R Core' group.
 
 There are several reasons to prefer Lisp-Stat over R or Python.  The
 first is that it is fast. Lisp compilers produce native executable
-code that is nearly as fast as C.  As part of the Common Lisp, the
+code that is nearly as fast as C.  The Common Lisp
 [numerical tower](https://en.wikipedia.org/wiki/Numerical_tower)
-has built in rational numbers, which is a natural way to work
+has support for rational numbers, which is a natural way to work
 with samples.  For example an experiment may produce 11598 positives
 out of a sample of 25000.  With exact rational arithmatic, there is no
 need to force everything to a float, the value is just what the
@@ -57,18 +57,27 @@ a history of industrial deployments, including:
 If Lisp is good enough for those applications, it very likely can meet
 the needs of an enterprise deployment today.
 
+## Relationship to XLISP-Stat
+
+Although inspired by Tierney's XLisp-Stat, this is a reboot in Common
+Lisp.  XLisp-Stat code is unlikely to run except in trivial cases, but
+existing XLisp-Stat libraries can be ported with the assistance of the
+[XLS-Compat](https://github.com/Lisp-Stat/XLS-compat) system.
+
+In developing the system, I wanted to avoid the [lisp
+curse](http://www.winestockwebdesign.com/Essays/Lisp_Curse.html), so
+selected the best existing libraries where possible, developed what
+didn't exist, and documented them all in an attempt to make the
+learning curve a gentle slope.
+
 ## Library Consolidation
 
-Eventually, we aim for a consolidation of lisp statistical libraries
-in the hopes of achieving a critical mass in the domain.  The reasons
-for moving in this direction were described in an article some years
-ago entitled [Consolidating Common Lisp
+Eventually, we hope for a consolidation of lisp statistical libraries
+in order to a critical mass in the domain.  The reasons for moving in
+this direction were described in an article some years ago entitled
+[Consolidating Common Lisp
 Libraries](https://fare.livejournal.com/169346.html).  Whilst
-historical precedent is against us in this movement, that does not
-mean we won't try.  If any readers would like to merge the Lisp-Stat
-library into a larger, consolidated work, please make contact; we will
-be happy to help.
-
+historical precedent is against us, that does not mean we won't try.
 
 ## Core Systems {#systems}
 Lisp-Stat is composed of several systems (projects), each
@@ -85,10 +94,11 @@ It provides column-centric storage for data sets where each named
 column contains the values for one variable, and each row contains one
 set of observations. For data frames, we use the
 '[tibble](https://www.rdocumentation.org/packages/tibble/versions/3.1.0)'
-from R as inspiration for functionality.
+from the [tidyverse](https://www.tidyverse.org/) as inspiration for
+functionality.
 
 
-Data frame can contain values of any type. If desired, additional
+Data frames can contain values of any type. If desired, additional
 attributes, such as float, the unit and other information may be
 attached to the variable for convenience or efficiency. For example
 you could specify a unit of length, say m/s (meters per second), to
@@ -166,7 +176,7 @@ providing:
 
 ### Lisp-Stat {#lisp-stat}
 
-This is the top level package that uses the other packages to create a
+This is the top level system that uses the other packages to create a
 statistical computing environment.  It is also the location for the
 'unified' interface, where the holes are plugged with third party
 packages. For example
@@ -216,17 +226,19 @@ Generally, we are prioritising these systems for development:
 
 In terms of priority, 1 & 2 are equally rated, and
 special-functions/distributions lower priority because we have a few
-options for them, such as the CFFI for libRmath or lesser quality.  As
-well, the knowledge of numerical methods required for accurate
-implementation is somewhat more limited.
+options for them, such as the CFFI for libRmath or less accurate
+Common Lisp implementations.  As well, the knowledge of numerical
+methods required for accurate implementation is somewhat more limited.
 
 For the most part, implementation priority is determined by the
 features required when working through the [Lisp-Stat
 examples](/docs/examples/) and the [basic
-tutorial](/docs/tutorials/basics).  Being able to execute the code in
-both of these documents is the first MVP milestone. If you see
+tutorial](/docs/tutorials/basics).  Being able to execute all the
+examples in these two documents is the first MVP milestone. If you see
 something in one of these documents that does not work yet it will be
-a good starter issue for a contribution.
+a good starter issue for a contribution (you'll have to look at the
+source for the document, as functionality that isn't implemented will
+have been commented out).
 
 ## Acknowledgements {#acknowledgements}
 
@@ -246,7 +258,7 @@ real-world problems was a great start to the development of Lisp-Stat.
   [Analytics](/docs/examples/analysis)<br/>
   [Plotting](/docs/examples/plotting)
   {{< /card >}}
-  {{< card header="**Tutorials**" >}}
+  {{< card header="**R Users**" >}}
   [Basic tutorial](/docs/tutorial/basics)
   {{< /card >}}
 {{< /cardpane >}}
