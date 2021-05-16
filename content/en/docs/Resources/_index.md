@@ -33,5 +33,11 @@ description: >
 - [Lisp-Stat community](/community)
 - [Lisp-Stat on stackoverflow](https://stackoverflow.com/questions/tagged/xlispstat)
 - [Common Lisp on stackoverflow](https://stackoverflow.com/questions/tagged/common-lisp)
+- [Common-Lisp.net documentation page](https://www.common-lisp.net/documentation)
 - [CS 325 Readings (Northwestern Uni)](https://courses.cs.northwestern.edu/325/readings/readings.php)
 
+## Algorithms
+
+- [cl-competitive](https://github.com/privet-kitty/cl-competitive)
+- [numerical-recipes](https://github.com/Lisp-Stat/xls-archive/tree/master/mathematics/numrecipes)
+- [statistical algorithms](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/algorithms)

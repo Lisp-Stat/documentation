@@ -8,13 +8,13 @@ description: >
 
 ## Overview
 
-A data frame is a collection of observations of sample variables that
-shares many of the properties of arrays and lists.  By design it can be
-manipulated using the same mechanisms used to manipulate lisp arrays.
-This allow you to, for example, transform a data frame into an array
-and use [array-operations](/docs/tasks/array-operations) to manipulate
-it, and then turn it into a data frame again to use in modeling or
-plotting.
+A common lisp data frame is a collection of observations of sample
+variables that shares many of the properties of arrays and lists.  By
+design it can be manipulated using the same mechanisms used to
+manipulate lisp arrays.  This allow you to, for example, transform a
+data frame into an array and use
+[array-operations](/docs/tasks/array-operations) to manipulate it, and
+then turn it into a data frame again to use in modeling or plotting.
 
 {{< alert title="Note" >}}In this document we refer to _column_ and
 _variable_ interchangeably. Likewise _factor_ and _category_ refer to a
@@ -43,12 +43,12 @@ statistics work. Type the following to enter the package:
 (in-package :ls-user)
 ```
 
-## Implementation
+## Common Lisp Implementation
 
-Data frame is implemented as a two-dimensional data structure: a
-vector of vectors for data, and a hash table mapping variable names to
-column vectors.  All columns are of equal length.  This structure
-provides the flexibility required for column oriented
+Data frame is implemented as a two-dimensional common lisp data
+structure: a vector of vectors for data, and a hash table mapping
+variable names to column vectors.  All columns are of equal length.
+This structure provides the flexibility required for column oriented
 manipulation, as well as speed for large data sets.
 
 ## Data variables
@@ -299,10 +299,10 @@ the data transformations are easier to see.
 ```
 
 The next three functions convert a data-frame to and from standard
-lisp data structures.  This is useful if you've got data in Common
-Lisp format and want to work with it in a data frame, or if you've got
-a data frame and want to apply Common Lisp operators on it that don't
-exist in `df`.
+common lisp data structures.  This is useful if you've got data in
+Common Lisp format and want to work with it in a data frame, or if
+you've got a data frame and want to apply Common Lisp operators on it
+that don't exist in `df`.
 
 ### as-alist
 
