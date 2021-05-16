@@ -1406,24 +1406,23 @@ top level reader binds these symbols as follows:
 
 The variables ``, `*` and `**` are probably most useful.
 
-<!--
-For example, if
-you construct a plot but forget to assign the resulting plot object to a
-variable you can recover it using one of the history variables:
+For example, if you read a data-frame but forget to assign the
+resulting object to a variable:
 
-    > (histogram (normal-rand 50))
-    #<Object: 3701682, prototype = HISTOGRAM-PROTO>
-    > (def w *)
-    W
-    > w
-    #<Object: 3701682, prototype = HISTOGRAM-PROTO>
-    >
+```lisp
+(csv-to-data-frame (rdata 'rdata:datasets 'rdata:mtcars))
+WARNING: Missing column name was filled in
+#<DATA-FRAME (32 observations of 12 variables)>
+```
 
-The symbol `W` now has the histogram object as its value and can be used
-to modify the plot, as described in Section
-[6.5](#MorePlots.Modifying){reference-type="ref"
-reference="MorePlots.Modifying"} below.
--->
+you can recover it using one of the history variables:
+
+```lisp
+(def mtcars *)
+; MTCARS
+```
+
+The symbol `MTCARS` now has the data-frame object as its value.
 
 Like most interactive systems, Common Lisp needs a system for
 dynamically managing memory.  The system used depends on the
@@ -1436,13 +1435,13 @@ pause if you are using large amounts of memory.
 
 ### Loading Files {#Shortcuts.Load}
 
-The data for the examples and exercises in this tutorial have been
-stored on files with names ending in `.lisp`. In the LISP-STAT
-system directory they can be found in the folder `Datasets`. Any
-variables you save (see the next subsection for details) will also be
-saved in files of this form. The data in these files can be read into
-LISP-STAT with the `load` function. To load a file named
-`randu.lisp` type the expression
+The data for the examples and exercises in this tutorial, when not
+loaded from the network, have been stored on files with names ending
+in `.lisp`. In the LISP-STAT system directory they can be found in the
+folder `Datasets`. Any variables you save (see the next subsection for
+details) will also be saved in files of this form. The data in these
+files can be read into LISP-STAT with the `load` function. To load a
+file named `randu.lisp` type the expression
 
 ```lisp
 (load #P"LS:DATASETS;RANDU.LISP")
@@ -1479,17 +1478,11 @@ file by the name `myfile`. If you already have a file by that name
 its contents will be lost. Thus you can't use dribble to toggle on and
 off recording to a single file.
 
-`dribble` only records text that is typed, not plots.
-
-<!-- Document how to do this with Vega-lite/Plotly/Gnuplot
-However, you
-can use the standard Macintosh shortcut COMMAND-SHIFT-3 to save a
-MacPaint image of the current screen. You can also choose the **Copy**
-command from the **Edit** menu, or its command key shortcut COMMAND-C,
-while a plot window is the active window to save the contents of the
-plot window to the clip board. You can then open the scrap book from the
-apple menu and paste the plot into the scrap book.
--->
+`dribble` only records text that is typed, not plots.  However, you
+can use the buttons displayed on a plot to save in SVG or PNG format.
+The original HTML plots are saved in your operating system's cache
+directory and can be viewed again until the cache is cleared during a
+system reboot.
 
 Variables you define in LISP-STAT only exist for the duration of the
 current session.  If you quit from LISP-STAT your data will be lost.
@@ -1517,6 +1510,11 @@ recreate the variables `precipitation` and `purchases`.  You can look
 at these files with an editor like the Emacs editor and you can
 prepare files with your own data by following these examples.
 
+To save a data frame, use the
+[data-frame-to-csv](https://lisp-stat.dev/docs/tasks/data-frame/#save-data)
+function.
+
+
 <!-- Describe the CCL Editor, Hemlock, for MacOS users
 ### The LISP-STAT Editor {#Shortcuts.Editor}
 
@@ -1535,42 +1533,26 @@ the **Edit** menu. The returned values are not available, so this is
 only useful for producing side effects, such as defining variables or
 functions.
 -->
-<!-- Document how we want users to read variables from CSV, etc.
+
 ### Reading Data Files
 
-The data files we have used so far in this tutorial have been processed
-to contain LISP-STAT expressions.  LISP-STAT also provides two
-functions for reading raw data files.  The simpler of the two is
-`read-data-file`. The expression
+The data files we have used so far in this tutorial have contained
+Common Lisp expressions.  LISP-STAT also provides functions for
+reading raw data files.  The most commonly used is
+`csv-to-data-frame`.
 
 ```lisp
-(read-data-file file)
+(csv-to-data-frame stream)
 ```
 
-where `file` is a string representing the name of the data file,
-returns a list of all the items in the file.  Items can be separated by
-any amount of white space, but not by commas or other punctuation marks.
- Items can be any valid Lisp expressions.  In particular they can be
-numbers, strings or symbols.  The list can then be manipulated into the
-appropriate form within LISP-STAT.
+where `stream` is a common lisp stream with the data.  Streams can be
+obtained from files, strings or a network and are in _comma separated
+value_ (CSV) format.  The parser supports delimiters other than comma, but in practice we haven't found need for any other.
 
-The function `read-data-columns` is provided for reading data files
-in which each row represents a case and each column a variable. The
-expression
+The character delimited reader should be adequate for most purposes.
+If you have to read a file that is not in a character delimited format
+you can use the raw file handling functions of Common Lisp.
 
-```lisp
-(read-data-columns file cols)
-```
-
-will return a list of `cols` lists, each representing a column of
-the file.  Note that this function determines the column structure from
-the value of `cols`, not from the structure of the file.  The
-entries of `file` can be as for `read-data-file`.
-
-These two functions should be adequate for most purposes.  If you have
-to read a file that does not fit into the form considered here you can
-use the raw file handling functions of Common Lisp
--->
 
 ### User Initialization File
 
