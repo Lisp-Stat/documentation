@@ -22,7 +22,7 @@ Now define the data frame, naming it `mtcars`:
 
 ```lisp
 (define-data-frame mtcars
-	(csv-to-data-frame (rdata:rdata 'rdata:datasets 'rdata:mtcars)))
+	(read-csv (rdata:rdata 'rdata:datasets 'rdata:mtcars)))
 ;;WARNING: Missing column name was filled in
 ;;#<DATA-FRAME (32 observations of 11 variables)>
 ```

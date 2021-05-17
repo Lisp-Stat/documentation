@@ -189,7 +189,7 @@ boilerplate to set up the environment:
 (ql:quickload :ips)         ; data examples
 (ql:quickload :plot/vglt)   ; Vega-Lite plotting
 (in-package :ips)
-(defparameter online (csv-to-data-frame (dex:get ips::eg01-07 :want-stream t)))
+(defparameter online (read-csv (dex:get ips::eg01-07 :want-stream t)))
 (defparameter online-bar-chart (vglt:bar-chart online "SOURCE" "COUNT"))
 ```
 

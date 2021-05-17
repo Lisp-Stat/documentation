@@ -244,7 +244,7 @@ To get started, try loading the classic `mtcars` data set:
 ```lisp
 (ql:quickload :lisp-stat/rdata)
 (define-data-frame mtcars
-  (csv-to-data-frame (rdata:rdata 'rdata:datasets 'rdata:mtcars)))
+  (read-csv (rdata:rdata 'rdata:datasets 'rdata:mtcars)))
 ;"MTCARS"
 ```
 
@@ -436,7 +436,7 @@ CSV, into a data frame.
 Here is a short demonstration of reading from strings:
 
 ```lisp
-(defparameter *d* (dfio:csv-to-data-frame
+(defparameter *d* (dfio:read-csv
                      (format nil "Gender,Age,Height~@
                                   \"Male\",30,180.~@
                                   \"Male\",31,182.7~@
@@ -447,7 +447,7 @@ Here is a short demonstration of reading from strings:
 encountered in CSV files:
 
 ```lisp
-(select (dfio:csv-to-data-frame
+(select (dfio:read-csv
                  (format nil "\"All kinds of wacky number formats\"~%.7~%19.~%.7f2"))
                 t 'all-kinds-of-wacky-number-formats)
 ; => #(0.7d0 19.0d0 70.0)
@@ -461,7 +461,7 @@ read from a file is to use the `uiop` system function
 included with Lisp-Stat like this:
 
 ```lisp
-(csv-to-data-frame
+(read-csv
 	(uiop:read-file-string #P"LS:DATASETS;absorption.csv"))
 ;;    IRON ALUMINUM ABSORPTION 
 ;;  0   61       13          4
@@ -478,7 +478,7 @@ open file so you don't have `uiop` read the whole thing in before
 processing it into a data frame:
 
 ```lisp
-(csv-to-data-frame #P"LS:DATASETS;absorption.csv")
+(read-csv #P"LS:DATASETS;absorption.csv")
 ;;    IRON ALUMINUM ABSORPTION 
 ;;  0   61       13          4
 ;;  1  175       21         18
@@ -501,7 +501,7 @@ HTTP client [dexador](https://github.com/fukamachi/dexador).
 double newline to the data set and this causes problems for cl-csv -->
 
 ```lisp
-(csv-to-data-frame
+(read-csv
  (dex:get
    "https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/master/csv/datasets/iris.csv"
    :want-stream t))
@@ -517,7 +517,7 @@ double newline to the data set and this causes problems for cl-csv -->
 {{< alert title="Note" >}}The input delimiter is hard-coded to comma
 (CSV) in `dfio`; output delimiters can be specified in the save
 function.  This is an inherited behavior and can be changed by
-following the example in the `data-frame-to-csv` function.  In
+following the example in the `write-csv` function.  In
 reality, most text based data we encounter are CSV, and there has not
 been a need for other delimiters for input.{{< /alert >}}
 
@@ -541,18 +541,18 @@ specific to the plotting applications, they are described in the
 To save the `mtcars` data frame to disk, you could use:
 
 ```lisp
-(data-frame-to-csv mtcars
-		           :stream #P"LS:DATASETS;mtcars.csv"
-                   :add-first-row t)         ; add column headers
+(write-csv mtcars
+		   :stream #P"LS:DATASETS;mtcars.csv"
+           :add-first-row t)         ; add column headers
 ```
 
-and to save it to tab-separated values:
+to save it as CSV, or to save it to tab-separated values:
 
 ```lisp
-(data-frame-to-csv mtcars
-	               :separator #\tab
-		           :stream #P"LS:DATASETS;mtcars.tsv"
-		           :add-first-row t)         ; add column headers
+(write-csv mtcars
+	       :separator #\tab
+		   :stream #P"LS:DATASETS;mtcars.tsv"
+		   :add-first-row t)         ; add column headers
 ```
 
 
@@ -574,7 +574,7 @@ frame. We'll use both of these data frames in the examples below.
 
 ```lisp
 (define-data-frame iris
-  (csv-to-data-frame (rdata:rdata 'rdata:datasets 'rdata:iris)))
+  (read-csv (rdata:rdata 'rdata:datasets 'rdata:iris)))
 COMMON-LISP:WARNING: Missing column name was filled in
 "IRIS"
 ```
@@ -894,7 +894,7 @@ reading data-frames from a string example to illustrate column
 operations
 
 ```lisp
-(defparameter *d* (csv-to-data-frame
+(defparameter *d* (read-csv
 		   (format nil "Gender,Age,Height
                               \"Male\",30,180
                               \"Male\",31,182

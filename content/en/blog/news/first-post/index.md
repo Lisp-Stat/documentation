@@ -80,7 +80,7 @@ Load the classic R `mtcars` data set into a data frame:
 
 ```lisp
 (define-data-frame mtcars
-  (csv-to-data-frame (rdata 'datasets 'mtcars)))
+  (read-csv (rdata 'datasets 'mtcars)))
 ```
 
 ### Plotting

@@ -661,7 +661,7 @@ library and we load it like this:
 
 ```lisp
 (defparameter mpg
-	(csv-to-data-frame
+	(read-csv
 		(rdata:rdata 'rdata:ggplot2 'rdata:mpg)))
 ```
 
@@ -1410,7 +1410,7 @@ For example, if you read a data-frame but forget to assign the
 resulting object to a variable:
 
 ```lisp
-(csv-to-data-frame (rdata 'rdata:datasets 'rdata:mtcars))
+(read-csv (rdata 'rdata:datasets 'rdata:mtcars))
 WARNING: Missing column name was filled in
 #<DATA-FRAME (32 observations of 12 variables)>
 ```
@@ -1511,7 +1511,7 @@ at these files with an editor like the Emacs editor and you can
 prepare files with your own data by following these examples.
 
 To save a data frame, use the
-[data-frame-to-csv](https://lisp-stat.dev/docs/tasks/data-frame/#save-data)
+[write-csv](https://lisp-stat.dev/docs/tasks/data-frame/#save-data)
 function.
 
 
@@ -1538,16 +1538,15 @@ functions.
 
 The data files we have used so far in this tutorial have contained
 Common Lisp expressions.  LISP-STAT also provides functions for
-reading raw data files.  The most commonly used is
-`csv-to-data-frame`.
+reading raw data files.  The most commonly used is `read-csv`.
 
 ```lisp
-(csv-to-data-frame stream)
+(read-csv stream)
 ```
 
 where `stream` is a common lisp stream with the data.  Streams can be
 obtained from files, strings or a network and are in _comma separated
-value_ (CSV) format.  The parser supports delimiters other than comma, but in practice we haven't found need for any other.
+value_ (CSV) format.  The parser supports delimiters other than comma.
 
 The character delimited reader should be adequate for most purposes.
 If you have to read a file that is not in a character delimited format
