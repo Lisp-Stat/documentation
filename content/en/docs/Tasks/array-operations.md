@@ -307,11 +307,31 @@ Transposing is a special case of permute:
 ```
 
 ### each
-**`each`** applies a function to its (array) arguments elementwise:
+**`each`** applies a function to its one dimensional array arguments
+elementwise.  It essentially is an element-wise function map on each of
+the vectors:
 
 ```lisp
-(aops:each #'+ #(0 1 2) #(2 3 5)) ; => #(2 4 7)
+(aops:each #'+ #(0 1 2)
+               #(2 3 5)
+			   #(1 1 1)
+; => #(3 5 8)
 ```
+
+<!-- each* does not seem to work. There are no test cases for it in array-operations
+**`each*`** is similar in that is applys FUNCTION to the array
+arguments elementwise, but returns the result as an array with the
+given ELEMENT-TYPE.
+
+```lisp
+(aops:each* 'float
+            #'+
+			#(0 1 2)
+            #(2 3 5)
+			#(1 1 1))
+; => #(3 5 8)
+```
+-->
 
 ### vectorize
 **`vectorize`** is a macro which performs elementwise operations
