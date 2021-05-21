@@ -283,7 +283,7 @@ command.
 | CO2                   | Mauna Loa Atmospheric CO2 Concentration                         |     2 |  468 |
 
 
-## Convert data frames
+## Export data frames
 
 These next few functions are the reverse of the ones above used to
 create them. These are useful when you want to use foreign libraries
@@ -679,6 +679,21 @@ the original:
 
 ```lisp
 (copy mtcars-small)
+;;   X1                 MPG CYL DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
+;; 0 Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+;; 1 Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+;; 2 Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+;; 3 Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+;; 4 Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+
+```
+
+By default only the keys are copied and the original data remains the
+same, i.e. a shallow copy. For a deep copy, use the `copy-array`
+function as the key:
+
+```lisp
+(copy mtcars-small :key #'copy-array)
 ;;   X1                 MPG CYL DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
 ;; 0 Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
 ;; 1 Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
@@ -1257,6 +1272,10 @@ we'll only see the first 6.
 ;; 13 Volvo 142E     21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
 ```
 
+You can mask multiple rows at the same time by using a predicate
+function that accepts the same number of arguments as rows you wish to
+mask.
+
 ### The select system
 `select` is a domain specific language (DSL) for slicing & dicing two
 dimensional data structures, including arrays and data frames.  With
@@ -1275,9 +1294,15 @@ columns](#manipulate-columns).
 ## Expanding a data set
 
 ## Merging data frames
-
-### Missing values
 -->
+
+## Missing values
+
+### Examine
+
+### Recode
+
+### Exclude
 
 
 
