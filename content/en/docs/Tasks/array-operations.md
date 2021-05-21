@@ -368,12 +368,24 @@ But the function is more general than this: the arguments `inner` and
 `outer` allow arbitrary permutations before splitting.
 
 ### recycle
-Finally, **`recycle`** allows you to recycle arrays along inner and outer
-dimensions:
+Finally, **`recycle`** allows you to reuse the elements of the first argument, `object`, to create new arrays by extending the dimensions. The `:outer` keyword repeats the original `object` and `:inner` keyword argument repeats the elements of `object`.  When both `:inner` and `:outer` are `nil`, `object` is returned as is.  Non-array `objects` are intepreted as rank 0 arrays, following the usual semantics.
 
 ```lisp
 (aops:recycle #(2 3) :inner 2 :outer 4)
-  ; => #3A(((2 2) (3 3)) ((2 2) (3 3)) ((2 2) (3 3)) ((2 2) (3 3)))
+; => #3A(((2 2) (3 3))
+         ((2 2) (3 3))
+         ((2 2) (3 3))
+	     ((2 2) (3 3)))
+```
+
+Three dimensional arrays can be tough to get your head around.  In the example above, `:outer` asks for 4 2-element vectors, composed of repeating the elements of `object` twice, i.e. repeat '2' twice and repeat '3' twice.  Compare this with `:inner` as 3:
+
+```lisp
+(aops:recycle #(2 3) :inner 3 :outer 4)
+; #3A(((2 2 2) (3 3 3))
+      ((2 2 2) (3 3 3))
+	  ((2 2 2) (3 3 3))
+	  ((2 2 2) (3 3 3)))
 ```
 
 ## Indexing operations
