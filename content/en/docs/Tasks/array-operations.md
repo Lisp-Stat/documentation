@@ -531,10 +531,10 @@ two row vectors yields a 2x2 array:
 ;;     (3 4))
 ```
 
-Like other function, there are two versions: generalised stacking,
-with rows and columns of type `T`. These end in `*`. Specialised
-versions where the element-type is specified do not have a special
-character at the end of the function name.
+Like other functions, there are two versions: generalised stacking,
+with rows and columns of type `T` and specialised versions where the
+element-type is specified.  The versions allowing you to specialise
+the element type end in `*`.
 
 The stack functions use object dimensions (as returned by `dims` to
 determine how to use the object.
@@ -542,6 +542,30 @@ determine how to use the object.
 - when the object has 0 dimensions, fill a column with the element
 - when the object has 1 dimension, use it as a column
 - when the object has 2 dimensions, use it as a matrix
+
+`copy-row-major-block` is a utility function in the `stacking` package
+that does what it suggests; it copies elements from one array to
+another.  This function should be used to implement copying of
+contiguous row-major blocks of elements.
+
+### rows
+
+`stack-rows-copy` is the method used to implement the copying of objects in `stack-row*`, by copying the elements of `source` to `destination`, starting with the row index `start-row` in the latter.  Elements are coerced to `element-type`.
+
+`stack-rows` and `stack-rows*` stack `objects` row-wise into an array of the given `element-type`, coercing if necessary.  Always return a simple array of rank 2. `stack-rows` always returns an array with elements of type `T`, `stack-rows*` coerces elements to the specified type.
+
+
+### columns
+
+`stack-cols-copy` is a method used to implement the copying of objects in `stack-col*`, by copying the elements of `source` to `destination`, starting with the column index `start-col` in the latter.  Elements are coerced to `element-type`.
+
+`stack-cols` and `stack-cols*` stack `objects` column-wise into an array of the given `element-type`, coercing if necessary.  Always return a simple array of rank 2. `stack-cols` always returns an array with elements of type `T`, `stack-cols*` coerces elements to the specified type.
+
+
+### arbitrary
+
+`stack` and `stack*` stack array arguments along `axis`.  `element-type` determines the element-type
+of the result.
 
 ```lisp
 (defparameter *a1* #(0 1 2))
