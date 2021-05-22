@@ -388,6 +388,18 @@ Three dimensional arrays can be tough to get your head around.  In the example a
 	  ((2 2 2) (3 3 3)))
 ```
 
+### map-array
+
+**`map-array`** maps a function over the elements of an array.
+
+```lisp
+(aops:map-array #2A((1.7 2.1 4.3 5.4)
+                    (0.3 0.4 0.5 0.6))
+				#'log)
+; #2A((0.53062826 0.7419373 1.4586151 1.686399)
+;     (-1.2039728 -0.9162907 -0.6931472 -0.5108256))
+```
+
 ## Indexing operations
 
 ### nested-loop
