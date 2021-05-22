@@ -1296,15 +1296,6 @@ columns](#manipulate-columns).
 ## Merging data frames
 -->
 
-## Missing values
-
-### Examine
-
-### Recode
-
-### Exclude
-
-
 
 ## Summarising data
 
@@ -1372,9 +1363,201 @@ summary *data-frame*
               1 (3%) x 8>
 ```
 
-Note that the `model` column, essentially `row-name` was delete from
+Note that the `model` column, essentially `row-name` was deleted from
 the output when writing this manual.  If the column had been named
 `row-name`, this would have happened automatically.
+
+
+## Missing values
+
+Data sets often contain missing values and we need to both understand
+where and how many are missing, and how to transform or remove them
+for downstream operations.  In Lisp-Stat, missing values are
+represented by the keyword symbol `:na`.  You can control this
+encoding during delimited text import by passing an `a-list`
+containing the mapping.  By default this is a keyword parameter
+`map-alist`:
+
+```lisp
+(map-alist '(("" . :na)
+             ("NA" . :na)))
+```
+
+The default maps blank cells ("") and ones containing "NA" to the
+missing value keyword `:na`.  Some systems encode missing values as
+numeric, e.g. `99`; in this case you can pass in a `map-alist` that
+includes this mapping:
+
+```lisp
+(map-alist '(("" . :na)
+             ("NA" . :na)
+			 (99 . :na)))
+```
+
+
+We will use the R air-quality dataset to illustrate working with
+missing values.  Let's load it now:
+
+```lisp
+(define-data-frame aq
+  (read-csv (rdata:rdata 'rdata:datasets 'rdata:airquality)))
+```
+
+### Examine
+
+To see missing values we use the predicate `missingp`. This works on
+sequences, arrays and data-frames.  It returns a logical sequence,
+array or data-frame indicating which values are missing.  `T`
+indicates a missing value, `NIL` means the value is present.  Here's
+an example of using `missingp` on a vector:
+
+```lisp
+(missingp #(1 2 3 4 5 6 :na 8 9 10))
+;#(NIL NIL NIL NIL NIL NIL T NIL NIL NIL)
+```
+
+and on a data-frame:
+
+```lisp
+ (pprint (missingp aq))
+
+;;     X3  OZONE SOLAR-R WIND TEMP MONTH DAY
+;;   0 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;   1 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;   2 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;   3 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;   4 NIL     T       T NIL  NIL  NIL   NIL
+;;   5 NIL   NIL       T NIL  NIL  NIL   NIL
+;;   6 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;   7 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;   8 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;   9 NIL     T     NIL NIL  NIL  NIL   NIL
+;;  10 NIL   NIL       T NIL  NIL  NIL   NIL
+;;  11 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  12 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  13 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  14 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  15 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  16 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  17 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  18 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  19 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  20 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  21 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  22 NIL   NIL     NIL NIL  NIL  NIL   NIL
+;;  23 NIL   NIL     NIL NIL  NIL  NIL   NIL ..
+```
+
+We can see that the `ozone` variable contains some missing values.  To
+see which rows of `ozone` are missing, we can use the `which`
+function:
+
+```lisp
+(which aq:ozone :predicate #'missingp)
+;#(4 9 24 25 26 31 32 33 34 35 36 38 41 42 44 45 51 52 53 54 55 56 57 58 59 60 64 71 74 82 83 101 102 106 114 118 149)
+```
+
+and to get a count, use the `length` function on this vector:
+
+```lisp
+(length *) ; => 37
+```
+
+It's often convenient to use the `summary` function to get an overview
+of missing values.  We can do this because the `missingp` function is
+a transformation of a data-frame that yields another data-frame of
+boolean values:
+
+```lisp
+(summary (missingp aq))
+;#<DATA-FRAME (7 x 153)
+;  AQ:X3
+;        153 (100%) x NIL
+;  AQ:OZONE
+;           116 (76%) x NIL, 37 (24%) x T
+;  AQ:SOLAR-R
+;             146 (95%) x NIL, 7 (5%) x T
+;  AQ:WIND
+;          153 (100%) x NIL
+;  AQ:TEMP
+;          153 (100%) x NIL
+;  AQ:MONTH
+;           153 (100%) x NIL
+;  AQ:DAY
+;         153 (100%) x NIL>
+```
+
+we can see that `ozone` is missing 37 values, 24% of the total, and
+`solar-r` is missing 7 values.
+
+### Exclude
+
+To exclude missing values from a single column, use the Common Lisp
+`remove` function:
+
+```lisp
+(remove :na aq:ozone)
+;#(41 36 12 18 28 23 19 8 7 16 11 14 18 14 34 6 30 11 1 11 4 32 ...
+```
+
+To ensure that our data-frame includes only complete observations, we
+exclude any row with a missing value. To do this use the
+`drop-missing` function:
+
+```lisp
+(head (drop-missing aq))
+;;   X3 OZONE SOLAR-R WIND TEMP MONTH DAY
+;; 0  1    41     190  7.4   67     5   1
+;; 1  2    36     118  8.0   72     5   2
+;; 2  3    12     149 12.6   74     5   3
+;; 3  4    18     313 11.5   62     5   4
+;; 4  7    23     299  8.6   65     5   7
+;; 5  8    19      99 13.8   59     5   8
+```
+
+### Replace
+
+To replace missing values we can use the transformation functions.
+For example we can recode the missing values in `ozone` by the mean.
+Let's look at the first six rows of the air quality data-frame:
+
+```lisp
+(head aq)
+;;   X3 OZONE SOLAR-R WIND TEMP MONTH DAY
+;; 0  1    41     190  7.4   67     5   1
+;; 1  2    36     118  8.0   72     5   2
+;; 2  3    12     149 12.6   74     5   3
+;; 3  4    18     313 11.5   62     5   4
+;; 4  5    NA      NA 14.3   56     5   5
+;; 5  6    28      NA 14.9   66     5   6
+```
+
+Now replace `ozone` with the mean using the common lisp function
+`nsubstitute`:
+
+```lisp
+(nsubstitute (mean (remove :na aq:ozone)) :na aq:ozone)
+```
+
+and look at `head` again:
+
+```lisp
+(head aq)
+;;   X3             OZONE SOLAR-R WIND TEMP MONTH DAY
+;; 0  1           41.0000     190  7.4   67     5   1
+;; 1  2           36.0000     118  8.0   72     5   2
+;; 2  3           12.0000     149 12.6   74     5   3
+;; 3  4           18.0000     313 11.5   62     5   4
+;; 4  5           42.1293      NA 14.3   56     5   5
+;; 5  6           28.0000      NA 14.9   66     5   6
+```
+
+You could have used the non-destructive `substitute` if you wanted to
+create a new data-frame and leave the original `aq` untouched.
+
+Normally we'd round `mean` up to be consistent, but did not here so
+you can see the values that were replaced.
+
 
 ## Dates & times
 
