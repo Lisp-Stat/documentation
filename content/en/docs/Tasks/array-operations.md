@@ -109,6 +109,18 @@ library also provides `displace` for that purpose:
 (aops:displace *a* 2 1) ; => #(2 3)
 ```
 
+Here's an example of using displace to implement a sliding window over
+some set of values, say perhaps a time-series of stock prices:
+
+```lisp
+(defparameter stocks (aops:linspace 1 100 100))
+(loop for i from 0 to (- (length stocks) 20)
+      do (format t "~A~%" (aops:displace stocks 20 i)))
+#(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20)
+#(2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21)
+#(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22)
+```
+
 ### flatten
 **`flatten`** displaces to a row-major array:
 
@@ -141,6 +153,12 @@ elements that would start with given subscripts:
                  ;        (2 3))
 (aops:sub *b* 0 1) ; => #(2 3)
 (aops:sub *b* 0 1 0) ; => 2
+```
+
+In the case of vectors, `sub` works like `aref`:
+
+```lisp
+(aops:sub #(1 2 3 4 5) 1) ; => 2
 ```
 
 There is also a `(setf sub)` function.
