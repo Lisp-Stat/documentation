@@ -2658,7 +2658,7 @@ graphics files loaded on start up. Further details will be given in
 LISP-STAT includes support for multidimensional arrays. In addition to
 the standard Common Lisp array functions LISP-STAT also includes a
 system called
-[array-operations](http://lisp-stat.dev/reference/array-operations/).
+[array-operations](/docs/tasks/array-operations/).
 
 <!-- document the linear algebra functions, if any, in alexandria or numerical-utilities
 number of linear algebra functions such as `inverse`,
@@ -3738,7 +3738,7 @@ also. They are the functions `interval-slider-dialog` and
     system clock.
 
 [^6]: Help is available both in the REPL, and online at
-    http://lisp-stat.dev/
+    https://lisp-stat.dev/
 
 [^7]: This process of applying a function elementwise to its arguments
     is called *mapping*.

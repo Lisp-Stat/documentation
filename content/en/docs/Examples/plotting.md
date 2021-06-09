@@ -17,6 +17,7 @@ gallery](https://vega.github.io/vega-lite/examples/).
 Load Vega-Lite and network libraries:
 
 ```lisp
+(ql:quickload :lisp-stat)
 (ql:quickload :plot/vglt)
 (ql:quickload :dexador)
 (ql:quickload :access)
@@ -25,6 +26,7 @@ Load Vega-Lite and network libraries:
 ### Load example data
 
 ```lisp
+(in-package :lisp-stat)
 (defparameter vega-cars
   (vglt:vl-to-df
     (dex:get

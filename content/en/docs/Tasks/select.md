@@ -96,8 +96,9 @@ Sequences can be used to make specific selections from the object.  For example:
 (select #(0 1 2) '(2 2 1 0 0))                ; => #(2 2 1 0 0)
 ```
 
+## Masks
 
-### Bit Vectors as Mask {#bit-vectors-as-mask}
+### Bit Vectors {#bit-vectors-as-mask}
 
 Bit vectors can be used to select elements of arrays and sequences
 as well:
@@ -107,6 +108,21 @@ as well:
 (select #(0 1 2 3 4) #*00110)          ; => #(2 3)
 ```
 
+### Which
+`which` returns an index of the positions in SEQUENCE which satisfy PREDICATE.
+
+```lisp
+(defparameter data
+  #(12 127 28 42 39 113 42 18 44 118 44 37 113 124 37 48 127 36 29 31 125
+   139 131 115 105 132 104 123 35 113 122 42 117 119 58 109 23 105 63 27
+   44 105 99 41 128 121 116 125 32 61 37 127 29 113 121 58 114 126 53 114
+   96 25 109 7 31 141 46 13 27 43 117 116 27 7 68 40 31 115 124 42 128 146
+   52 71 118 117 38 27 106 33 117 116 111 40 119 47 105 57 122 109 124
+   115 43 120 43 27 27 18 28 48 125 107 114 34 133 45 120 30 127 31 116))
+(which data :predicate #'evenp)
+; #(0 2 3 6 7 8 9 10 13 15 17 25 26 30 31 34 40 44 46 48 55 56 57 59 60 66 71 74
+;  75 78 79 80 81 82 84 86 88 91 93 98 100 103 107 108 109 112 113 116 117 120)
+```
 
 ## Extensions {#extensions}
 

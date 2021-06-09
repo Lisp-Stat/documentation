@@ -24,6 +24,7 @@ description: >
 - [Common Lisp the Language](https://www.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html)
 - [COMMON LISP: A Gentle Introduction to Symbolic Computation](http://www.cs.cmu.edu/~dst/LispBook/book.pdf)
 - [The Common Lisp Cookbook](https://lispcookbook.github.io/cl-cookbook/)
+- [Common Lisp: An Interactive Approach](https://www.cse.buffalo.edu/~shapiro/Commonlisp/commonLisp.pdf)
 
 
 ## Websites, Forums, Lists
