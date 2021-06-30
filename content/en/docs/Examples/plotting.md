@@ -35,10 +35,10 @@ Load Vega-Lite and network libraries:
 ```
 
 ## Strip plot
-The Vega-Lite [strip plot example
-shows](https://vega.github.io/vega-lite/examples/tick_strip.html) the
-relationship between horsepower and the number of cylinders using tick
-marks.
+The Vega-Lite [strip plot
+example](https://vega.github.io/vega-lite/examples/tick_strip.html)
+shows the relationship between horsepower and the number of cylinders
+using tick marks.
 
 {{< figure src="/docs/examples/vega-cars-strip-plot.png" >}}
 

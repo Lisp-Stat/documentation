@@ -1283,8 +1283,7 @@ dimensional data structures, including arrays and data frames.  With
 specifiers, bit masks and predicates.  The
 [select user manual](/docs/tasks/select/) documents this DSL.
 
-For some additional examples of selecting columns, see [manipulating
-columns](#manipulate-columns).
+For some additional examples of selecting columns, see [column operations](#column-operations).
 
 <!--
 ## Sorting and ordering
