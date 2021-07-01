@@ -157,4 +157,4 @@ Render the plot:
 (plot:plot-from-file (vglt:save-plot 'cars-plot))
 ```
 
-{{< figure src="/docs/getting-started/vega-cars-scatterplot.png" >}}
+{{< figure src="/docs/examples/vega-cars-scatter-plot.png" title="Horsepower vs. MPG scatter plot" >}}
