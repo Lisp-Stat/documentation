@@ -97,6 +97,44 @@ install-info --add-once select.info /c/msys64/mingw64/share/info/dir
 installs the `select` manual into a Lisp-Stat node at the top level of
 the info tree.
 
+### Initialization file
+
+You can put customisations to your environment in the user
+initialisation file, `#P"~/ls-init.lisp"`. It is loaded after the
+internal lisp-stat initialisation file, and settings here override the
+defaults.
+
+Here's an example `ls-init.lisp` file that loads some common R data sets.
+
+```lisp
+;; Define common data sets
+(ql:quickload :lisp-stat/rdata)
+(in-package #:ls-user)
+(define-data-frame mtcars
+    (read-csv (rdata:rdata 'rdata:datasets 'rdata:mtcars)))
+(define-data-frame iris
+    (read-csv (rdata:rdata 'rdata:datasets 'rdata:iris)))
+(define-data-frame tooth-growth
+    (read-csv (rdata:rdata 'rdata:datasets 'rdata:toothgrowth)))
+(define-data-frame plant-growth
+    (read-csv (rdata:rdata 'rdata:datasets 'rdata:plantgrowth)))
+(define-data-frame us-arrests
+    (read-csv (rdata:rdata 'rdata:datasets 'rdata:usarrests)))
+```
+
+With this init file, you can immediately access the data sets, e.g.:
+
+```lisp
+(head iris)
+;;   X2 SEPAL-LENGTH SEPAL-WIDTH PETAL-LENGTH PETAL-WIDTH SPECIES
+;; 0  1          5.1         3.5          1.4         0.2 setosa
+;; 1  2          4.9         3.0          1.4         0.2 setosa
+;; 2  3          4.7         3.2          1.3         0.2 setosa
+;; 3  4          4.6         3.1          1.5         0.2 setosa
+;; 4  5          5.0         3.6          1.4         0.2 setosa
+;; 5  6          5.4         3.9          1.7         0.4 setosa
+```
+
 ## Try it out
 
 Load Lisp-Stat:

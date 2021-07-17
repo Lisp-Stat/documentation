@@ -34,6 +34,14 @@ Load Vega-Lite and network libraries:
 	  :want-stream t)))
 ```
 
+{{< alert title="Note" >}}The plotting system is tested on MS Windows
+and MacOS using Chrome. It is known to work on other platforms,
+notably Ubuntu/Firefox by using the `:browser :default` option to
+`plot-from-file`. This option simply tells the operating system to
+open the browser using it's built in (XDG) mechanism. See [issue
+#2](https://github.com/Lisp-Stat/documentation/issues/2) for more
+details. {{</alert >}}
+
 ## Strip plot
 The Vega-Lite [strip plot
 example](https://vega.github.io/vega-lite/examples/tick_strip.html)
