@@ -233,7 +233,7 @@ methods required for accurate implementation is somewhat more limited.
 For the most part, implementation priority is determined by the
 features required when working through the [Lisp-Stat
 examples](/docs/examples/) and the [basic
-tutorial](/docs/tutorials/basics).  Being able to execute all the
+tutorial](/docs/tutorials/basics/).  Being able to execute all the
 examples in these two documents is the first MVP milestone. If you see
 something in one of these documents that does not work yet it will be
 a good starter issue for a contribution (you'll have to look at the
@@ -255,7 +255,7 @@ real-world problems was a great start to the development of Lisp-Stat.
   [Data Frame](/docs/getting-started/data-frame/)
   {{< /card >}}
   {{< card header="**Examples**" >}}
-  [Analytics](/docs/examples/analysis)<br/>
+  [Analytics](/docs/examples/notebooks)<br/>
   [Plotting](/docs/examples/plotting)
   {{< /card >}}
   {{< card header="**R Users**" >}}

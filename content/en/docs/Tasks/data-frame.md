@@ -1281,7 +1281,7 @@ mask.
 dimensional data structures, including arrays and data frames.  With
 `select` you can create data subsets by range, with sequence
 specifiers, bit masks and predicates.  The
-[select user manual](/docs/tasks/select/) documents this DSL.
+[select user manual](/docs/tasks/subset/select) documents this DSL.
 
 For some additional examples of selecting columns, see [column operations](#column-operations).
 

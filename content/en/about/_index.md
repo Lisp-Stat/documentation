@@ -65,7 +65,7 @@ loaded from the network, local disk or a relational database.
 
 ### Notebooks
 
-[JupyterLab](http://jupyterlab.io/), along with
+[JupyterLab](http://jupyter.org/), along with
 [common-lisp-jupyter](https://github.com/yitzchak/common-lisp-jupyter/)
 are used to provide notebook style environments for reproducible
 research.
