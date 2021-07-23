@@ -168,11 +168,11 @@ Find the sample mean and median:
   [Data Frame](/docs/getting-started/data-frame/)
   {{< /card >}}
   {{< card header="**Examples**" >}}
-  [Analytics](/docs/examples/analysis)<br/>
+  [Analytics](/docs/examples/notebooks)<br/>
   [Plotting](/docs/examples/plotting)
   {{< /card >}}
   {{< card header="**R Users**" >}}
-  [Basic tutorial](/docs/tutorial/basics)
+  [Basic tutorial](/docs/tutorials/basics)
   {{< /card >}}
 {{< /cardpane >}}
 

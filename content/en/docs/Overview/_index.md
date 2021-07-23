@@ -259,7 +259,7 @@ real-world problems was a great start to the development of Lisp-Stat.
   [Plotting](/docs/examples/plotting)
   {{< /card >}}
   {{< card header="**R Users**" >}}
-  [Basic tutorial](/docs/tutorial/basics)
+  [Basic tutorial](/docs/tutorials/basics)
   {{< /card >}}
 {{< /cardpane >}}
 
