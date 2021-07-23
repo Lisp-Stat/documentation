@@ -56,7 +56,7 @@ excellent object oriented environment and a meta-object protocol
 ([MOP](https://en.wikipedia.org/wiki/Metaobject#Metaobject_protocol)).
 
 We have also compiled an archive of [XLISP-STAT
-libraries](/docs/reference/xlisp/) that can be ported with the aid of
+libraries](/docs/resources/xlisp/) that can be ported with the aid of
 a compatibility package (XLS).  This gives Lisp-Stat a leg up on
 ecosystem development; there are many useful statistical routines in
 the archive.
@@ -107,7 +107,7 @@ Lisp-Stat running in a Jupyter-Lab notebook
 
 The [examples](/docs/examples/) show how to create [common
 plots](/docs/examples/plotting/) and the [analytic
-examples](/docs/examples/analysis/) work through the examples of the
+examples](/docs/examples/notebooks/) work through the examples of the
 book _Introduction to the Practice of Statistics_ using Lisp-Stat.
 
 ### Example data sets

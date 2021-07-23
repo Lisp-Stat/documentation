@@ -29,7 +29,10 @@ the entire Lisp-Stat system, at a minimum you will need:
 - [special-functions](https://github.com/Lisp-Stat/special-functions)
 - [numerical-utilities](https://github.com/Lisp-Stat/numerical-utilities)
 - [documentation](https://github.com/Lisp-Stat/documentation)
-- [distributions](https://github.com/Lisp-Stat/distributions)
+- [sqldf](https://github.com/Lisp-Stat/sqldf)
+- [cephes](https://github.com/Lisp-Stat/cephes.cl)
+- [select](https://github.com/Lisp-Stat/select)
+- [array-operations](https://github.com/Lisp-Stat/array-operations)
 - [lisp-stat](https://github.com/Lisp-Stat/lisp-stat)
 
 Other dependencies will be pulled in by Quicklisp.
@@ -48,7 +51,8 @@ git clone https://github.com/Lisp-Stat/documentation.git && \
 git clone https://github.com/Lisp-Stat/lisp-stat.git && \
 git clone https://github.com/Lisp-Stat/plot.git && \
 git clone https://github.com/Lisp-Stat/select.git && \
-git clone https://github.com/Lisp-Stat/array-operations.git
+git clone https://github.com/Lisp-Stat/array-operations.git && \
+git clone https://github.com/Lisp-Stat/sqldf.git
 ```
 
 ### Modify the source
@@ -120,7 +124,7 @@ documentation updates, so it's good to learn this system first.
 
 If you are coming from an existing statistical environment, consider
 porting a XLispStat package that you find useful to Lisp-Stat.  Use
-the [XLS](https://github.com/Lisp-Stat/XLS) compatibility layer to
+the [XLS](https://github.com/Lisp-Stat/XLS-compat) compatibility layer to
 help.  If there is a function missing in XLS, raise an issue and we'll
 create it. Some XLispStat code to browse:
 

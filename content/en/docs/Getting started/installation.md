@@ -23,7 +23,7 @@ If you are an existing emacs user, you can [configure emacs for Common
 Lisp](https://github.com/susam/emacs4cl).
 
 Users new to lisp should also consider going through the [basic
-tutorial](/docs/tutorials/basic), which guides you step-by-step
+tutorial](/docs/tutorials/basics), which guides you step-by-step
 through the basics of working with Lisp as a statistics practitioner.
 
 ## Experienced with Lisp

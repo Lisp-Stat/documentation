@@ -403,7 +403,7 @@ simulations](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/sim
 and a [general purpose
 simulator](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/simulation/simulator). There
 is also the [discrete finite state markov
-chains](https://github.com/Lisp-Stat/xls-archive/tree/master/statisticstemporal/markov/) in
+chains](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/temporal/markov/) in
 the [temporal
 directory](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/temporal/).
 
@@ -411,7 +411,7 @@ directory](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/tempo
 ### Smoothers
 
 [kernel density estimators](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/density/)
-: KDEs based on [Wand](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/density/mvkde/README), [CFFI based KDEs](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/density/naras-kde/README) by B. Narasimhan, and [graphical univariate density estimation](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/density/udina/README).
+: KDEs based on [Wand](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/density/mvkde/README), [CFFI based KDEs](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/density/naras-kde/README) by B. Narasimhan, and [graphical univariate density estimation](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/density/udina-kde/README).
 
 [spline](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/spline/)
 : Regularized bivariate splines with smoothing and tension according

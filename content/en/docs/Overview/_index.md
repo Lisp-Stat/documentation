@@ -202,11 +202,11 @@ quicklisp.
 
 ### Jupyter Lab {#jupyter-lab}
 
-[Jupyter Lab](http://jupyterlab.io/) and
+[Jupyter Lab](http://jupyter.org/) and
 [common-lisp-jupyter](https://github.com/yitzchak/common-lisp-jupyter)
 provide an environment similar to RStudio for working with data and
 performing analysis.  The [Lisp-Stat analytics
-examples](/docs/examples/analysis) use Jupyter Lab to illustrate
+examples](/docs/examples/notebooks) use Jupyter Lab to illustrate
 worked examples based on the book, *Introduction to the Practice of
 Statistics*.
 

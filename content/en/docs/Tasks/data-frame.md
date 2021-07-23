@@ -291,7 +291,7 @@ or common lisp functions to process the data.
 
 For this section of the manual, we are going to work with a subset of
 the `mtcars` data set from above. We'll use the
-[select](/docs/tasks/select/) package to take the first 5 rows so that
+[select](/docs/tasks/subset/select/) package to take the first 5 rows so that
 the data transformations are easier to see.
 
 ```lisp
@@ -403,7 +403,7 @@ specific columns:
 ; #(21 21 22.8d0 21.4d0 18.7d0)
 ```
 
-The functions in [array-operations](docs/tasks/array-operations/) are
+The functions in [array-operations](/docs/tasks/array-operations/) are
 helpful in further dealing with data frames as vectors and arrays. For
 example you could convert this to an array by using
 [aops:combine](/docs/tasks/array-operations/#combine) with
