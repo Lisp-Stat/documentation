@@ -1,6 +1,6 @@
 ---
 title: "Select"
-linkTitle: "Selecting subsets"
+linkTitle: "Slice"
 author: ["Steven Nunez"]
 date: 2021-03-07
 weight: 4

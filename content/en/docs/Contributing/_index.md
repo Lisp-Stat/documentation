@@ -44,9 +44,10 @@ You generally only need to submit a CLA once, so if you have already
 submitted one (even if it was for a different project), you probably
 do not need to do it again. To get the process started, download and
 sign the CLA ([A4](/Individual-Contributor-License-A4.pdf),
-[US-Letter](/Individual-Contributor-License-US-Letter.pdf)), then open
-an issue with the title Contributor License Agreement on Github and
-upload the agreement as an attachment.
+[US-Letter](/Individual-Contributor-License-US-Letter.pdf)), then, in
+your PR (pull request), include a copy in a /LICENSE directory of the
+repository, creating the directory if it doesn't exist. This needs to
+be done only once per contributor.
 
 
 ## Code of Conduct

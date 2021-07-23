@@ -1,6 +1,6 @@
 ---
-title: "Language References"
-linkTitle: "Language"
+title: "Common Lisp References"
+linkTitle: "Lisp"
 weight: 3
 date: 2021-03-07
 ---
