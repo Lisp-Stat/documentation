@@ -523,9 +523,14 @@ been a need for other delimiters for input.{{< /alert >}}
 
 ### From a database
 
-{{< alert color="warning" >}}
-This functionality is currently a work in progress. Expected release date is May 2021.
-{{< /alert >}}
+You can load data from a SQLite table using the
+[sqldf](/docs/tasks/subset/sql/) package, or from other databases with
+the [cl-sql](https://www.cliki.net/CLSQL) package using the same
+patterns in the [sqldf source
+code](https://github.com/Lisp-Stat/sqldf). The read/write functions
+follow the same pattern as CSV,
+e.g. [read-table](/docs/tasks/subset/sql/#read-a-data-frame) and
+[write-table](/docs/tasks/subset/sql/#write-a-data-frame).
 
 
 ## Save data

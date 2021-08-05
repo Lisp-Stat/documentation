@@ -32,38 +32,6 @@ library. `sqldf` is a thin layer for moving data to/from
 `data-frames`.
 
 
-## Roadmap
-
-SQLDF is currently written using an apparently abandoned library,
-[cl-sqlite](https://github.com/TeMPOraL/cl-sqlite).  Pull requests
-from 2012 have been made with no response from the author, and the
-SQLite C API has improved considerably in the 12 years since
-the 'cl-sqlite` FFI was last updated.
-
-We choose CL-SQLite because, at the time of writing, it was the only
-SQLite library with a commercially acceptable license. Since then
-[CLSQL](https://www.cliki.net/CLSQL) has migrated to a BSD license and
-is a better option for new development. Not only does it support
-[CommonSQL](http://www.lispworks.com/documentation/sql-tutorial/), the
-de-facto SQL query syntax for Common Lisp, it also supports several
-additional databases.
-
-Version 2 of SQLDF will use CLSQL, possibly including some of the
-[CSV](https://www.sqlite.org/csv.html) and other extensions available
-in SQLite.  Benchmarks show that SQLite's CSV import is about 15x
-faster than [cl-csv](https://github.com/AccelerationNet/cl-csv), and a
-FFI wrapper of SQLite's CSV importer would be a good addition to
-Lisp-Stat.
-
-### Joins
-
-Joins on tables are not implemented in SQLDF, though there is no
-technical reason they could not be. This will be done as part of the
-CLSQL conversion and involves more advanced SQL
-parsing. [SXQL](https://github.com/fukamachi/sxql) is worth
-investigating as a SQL parser.
-
-
 ## Basic Usage
 
 `sqldf` requires the sqlite shared library from the [SQLite
@@ -90,8 +58,8 @@ To load `sqldf`:
 
 These examples use the R data sets that are loaded using the [example
 ls-init
-file](https://lisp-stat.dev/docs/getting-started/installation/#initialization-file). If
-your init files doesn't do this, go now and load the example datasets
+file](/docs/getting-started/installation/#initialization-file). If
+your init file doesn't do this, go now and load the example datasets
 in the REPL. Mostly these examples are intended to demonstrate
 commonly used queries for users who are new to SQL. If you already
 know SQL, you can skip this section.
@@ -127,7 +95,7 @@ and look at the first few rows:
 ;; 5  6          5.4         3.9          1.7         0.4 setosa
 ```
 
-`X7` is the row number from the data set. Since it was not assigned a
+`X7` is the row name/number from the data set. Since it was not assigned a
 column name in the data set, `lisp-stat` gives it a random name upon
 import (X1, X2, X3, ...).
 
@@ -145,7 +113,7 @@ Now use `sqldf` for a query:
 
 ### Averaging & Grouping
 
-Grouping is often useful during the initial exploratory phase of data
+Grouping is often useful during the exploratory phase of data
 analysis. Here's how to do it with `sqldf`:
 
 ```lisp
@@ -204,3 +172,34 @@ the quickest way to load a data-frame from CSV data is to first read it
 into a SQLite database, and then load the database table into a data
 frame.  In practice, SQLite turn out to be a convenient file format
 for storing data frames.
+
+## Roadmap
+
+SQLDF is currently written using an apparently abandoned library,
+[cl-sqlite](https://github.com/TeMPOraL/cl-sqlite).  Pull requests
+from 2012 have been made with no response from the author, and the
+SQLite C API has improved considerably in the 12 years since
+the 'cl-sqlite` FFI was last updated.
+
+We choose CL-SQLite because, at the time of writing, it was the only
+SQLite library with a commercially acceptable license. Since then
+[CLSQL](https://www.cliki.net/CLSQL) has migrated to a BSD license and
+is a better option for new development. Not only does it support
+[CommonSQL](http://www.lispworks.com/documentation/sql-tutorial/), the
+de-facto SQL query syntax for Common Lisp, it also supports several
+additional databases.
+
+Version 2 of SQLDF will use CLSQL, possibly including some of the
+[CSV](https://www.sqlite.org/csv.html) and other extensions available
+in SQLite.  Benchmarks show that SQLite's CSV import is about 15x
+faster than [cl-csv](https://github.com/AccelerationNet/cl-csv), and a
+FFI wrapper of SQLite's CSV importer would be a good addition to
+Lisp-Stat.
+
+### Joins
+
+Joins on tables are not implemented in SQLDF, though there is no
+technical reason they could not be. This will be done as part of the
+CLSQL conversion and involves more advanced SQL
+parsing. [SXQL](https://github.com/fukamachi/sxql) is worth
+investigating as a SQL parser.

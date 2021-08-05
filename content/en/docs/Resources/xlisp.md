@@ -6,7 +6,7 @@ description: >
   Collection of XLisp and Common Lisp statistical routines
 ---
 
-Below is a partial list of the consoidated XLispStat packages from
+Below is a partial list of the consolidated XLispStat packages from
 UCLA and CMU repositories.  There is a great deal more XLispStat code
 available that was not submitted to these archives, and a search for
 an algorithm or technique that includes the term "xlispstat" will
@@ -116,7 +116,7 @@ of this code and parts thereof."
 
 [nswc](https://github.com/Lisp-Stat/xls-archive/tree/master/mathematics/nswc/)
 : This is an f2cl translation, very incomplete, of the NSWC
-  mathematics library. The fortran, plus a great manual, is [available
+  mathematics library. The FORTRAN, plus a great manual, is [available
   on github](https://github.com/jacobwilliams/nswc).  The report is
   NSWCDD/TR-92/425, by Alfred H. Morris, Jr. dated January 1993. No
   license specified, but this code is commonly considered public
@@ -124,7 +124,7 @@ of this code and parts thereof."
 
 [Numerical Recipes](https://github.com/Lisp-Stat/xls-archive/tree/master/mathematics/numrecipes/)
 : Code from Numerical Recipes in FORTRAN, first edition, translated
-  with Waikato's f2cl and tweaked for Xlisp-Stat by Jan de Leeuw. No
+  with Waikato's f2cl and tweaked for XLisp-Stat by Jan de Leeuw. No
   license specified.
 
 [optimization](https://github.com/Lisp-Stat/xls-archive/tree/master/mathematics/optimization/)
@@ -216,7 +216,7 @@ perspective of a statistical practitioner.
 
 [ElToY](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/introstat/eltoy/)
 : ElToY is a collection of three program written in
-  XLISP-STAT. Dist-toy displays a univarate distribution dynamically
+  XLISP-STAT. Dist-toy displays a univariate distribution dynamically
   linked to its parameters. CLT-toy provides an illustration of the
   central limit theorem for univariate distributions. ElToY provides a
   mechanism for displaying the prior and posterior distributions for a
@@ -229,7 +229,7 @@ perspective of a statistical practitioner.
 ### Multivariate
 
 [Dendro](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/multivariate/cluster/dendro/)
-: Denrdo is for producing dendrograms for agglomerative cluster in
+: Dendro is for producing dendrograms for agglomerative cluster in
   XLISP-STAT.
 
 
@@ -237,7 +237,7 @@ perspective of a statistical practitioner.
 
 [Boxplot Matrix](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/plotting/boxmat)
 : Graphical Display of Analysis of Variance with the Boxplot Matrix.
-  Extension of the standard oneway boxplot to cross-classified data
+  Extension of the standard one-way box plot to cross-classified data
   with multiple observations per cell. Richard M. Heiberger
   <rmh@astro.ocis.temple.edu> No license specified.<br/>
   [[Docs](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/plotting/boxmat/b5.pdf)]
@@ -297,7 +297,7 @@ generate PDF files from LispStat plot objects. Steven D. Majewski
   the model selection methods that proceeded it. This can result in
   overoptimistic and biased inferences.  We first characterize data
   analytic actions as functions acting on regression models.  We
-  investigate the extent of the problem and test bootstrap, jacknife
+  investigate the extent of the problem and test bootstrap, jackknife
   and sample splitting methods for ameliorating it. We also
   demonstrate an interactive XLISP-STAT system for assessing the cost
   of the data analysis while it is taking place.  Julian
@@ -330,7 +330,7 @@ generate PDF files from LispStat plot objects. Steven D. Majewski
 : Implementation of an algorithm to project on the intersection of r
    closed convex sets. Further details and references are in Mathar,
    Cyclic Projections in Data Analysis, Operations Research
-   Proceedings 1988, Spinger, 1989. Jan de Leeuw. No license
+   Proceedings 1988, Springer, 1989. Jan de Leeuw. No license
    specified.
 
 [OIRS](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/regression/oirs/)
@@ -414,7 +414,7 @@ directory](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/tempo
 : KDEs based on [Wand](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/density/mvkde/README), [CFFI based KDEs](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/density/naras-kde/README) by B. Narasimhan, and [graphical univariate density estimation](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/density/udina-kde/README).
 
 [spline](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/smoothers/spline/)
-: Regularized bivariate splines with smoothing and tension according
+: Regularized bi-variate splines with smoothing and tension according
   to Mitasova and Mitas. Cubic splines according to Green and
   Silverman. Jan de Leeuw. No license specified.
 
@@ -477,14 +477,14 @@ obtained from the CMU archive.{{< /alert >}}
 From the description:
 
 Sapaclisp features functions for converting to/from decibels, the
-Fortran sign function, log of the gamma function, manipulating
+FORTRAN sign function, log of the gamma function, manipulating
 polynomials, root finding, simple numerical integration, matrix
 functions, Cholesky and modified Gram-Schmidt (i.e., Q-R) matrix
 decompositions, sample means and variances, sample medians,
 computation of quantiles from various distributions, linear least
 squares, discrete Fourier transform, fast Fourier transform, chirp
 transform, low-pass filters, high-pass filters, band-pass filters,
-sample autocovariance sequence, autoregressive spectral estimates,
+sample auto-covariance sequence, auto-regressive spectral estimates,
 least squares, forward/backward least squares, Burg's algorithm, the
 Yule-Walker method, periodogram, direct spectral estimates, lag window
 spectral estimates, WOSA spectral estimates, sample cepstrum, time
@@ -497,7 +497,7 @@ distribution of this software or derivative works must comply with all
 applicable United States export control laws."
 
 [Times](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/temporal/times/)
-:  XLispstat functions for time series analysis, data editing, data
+:  XLispStat functions for time series analysis, data editing, data
    selection, and other statistical operations.  W. Hatch
    (bts!bill@uunet.uu.net). Public Domain.
 
@@ -543,9 +543,9 @@ investigating have been noted below.
 ### I/O
 
 [formatted-input](https://github.com/Lisp-Stat/xls-archive/tree/master/utilities/IO/formatted-input)
-: A set of xlisp functions that can be used to read ascii files into
+: A set of XLISP functions that can be used to read ASCII files into
   lists of lists, using formatted input. The main function is
-  `read-file`, which has as arguments a filename and a fortran type
+  `read-file`, which has as arguments a filename and a FORTRAN type
   format string (with f, i, x, t, and a formats) Jan Deleeuw
   <deleeuw@laplace.sscnet.ucla.edu> "THIS SOFTWARE CAN BE FREELY
   DISTRIBUTED, USED, AND MODIFIED."
