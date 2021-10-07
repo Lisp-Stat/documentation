@@ -16,30 +16,41 @@ description: >
 ## Load & Configure
 
 First load Lisp-Stat, plotting libraries and data and configure the
-environment.
+environment. We assume you have already obtained the libraries via a package manager like [clpm](https://common-lisp.net/project/clpm/) or [quicklisp](https://www.quicklisp.org/beta/). See the [installation instructions](https://github.com/Lisp-Stat/lisp-stat) on github.
 
 ### Lisp-Stat
 
 ```lisp
-(ql:quickload :lisp-stat)
+(asdf:load-system :lisp-stat)
 (in-package :ls-user)
 ```
 
 ### Vega-Lite
 
 ```lisp
-(ql:quickload :plot/vglt)
+(asdf:load-system :plot/vglt)
+(asdf:load-system :dfio/json)
 ```
 
 ### Data
 
 ```lisp
-(define-data-frame cars
-  (vglt:vl-to-df
+(defparameter cars
+  (dfio:vl-to-df
     (dex:get
 	  "https://raw.githubusercontent.com/vega/vega-datasets/master/data/cars.json"
 	  :want-stream t)))
 ```
+
+<!--
+```lisp
+(defdf cars
+  (dfio:vl-to-df
+    (dex:get vglt:cars :want-stream t)))
+```
+-->
+
+
 
 ## View
 
@@ -96,48 +107,15 @@ Look at a few statistics on the data set.
 ```
 
 ```lisp
-(summary cars)
-```
-```
-  CARS:MILES_PER_GALLON
-                        398 reals, min=9, q25=17.33333317438761d0,
-                        q50=22.727271751923993d0, q75=29.14999923706055d0,
-                        max=46.6d0;
-                        8 (2%) x "NIL"
-  CARS:CYLINDERS
-                 207 (51%) x 4,
-                 108 (27%) x 8,
-                 84 (21%) x 6,
-                 4 (1%) x 3,
-                 3 (1%) x 5
-  CARS:DISPLACEMENT
-                    406 reals, min=68, q25=104.25, q50=147.92307,
-                    q75=277.76923, max=455
-  CARS:HORSEPOWER
-                  400 reals, min=46, q25=75.77778, q50=94.33333, q75=129.57143,
-                  max=230;
-                  6 (1%) x "NIL"
-  CARS:WEIGHT_IN_LBS
-                     406 reals, min=1613, q25=2226, q50=2822.5, q75=3620,
-                     max=5140
-  CARS:ACCELERATION
-                    406 reals, min=8, q25=13.674999999999999d0, q50=15.45d0,
-                    q75=17.16666632692019d0, max=24.8d0
-  CARS:YEAR
-            61 (15%) x "1982-01-01",
-            40 (10%) x "1973-01-01",
-            36 (9%) x "1978-01-01",
-            35 (9%) x "1970-01-01",
-            34 (8%) x "1976-01-01",
-            30 (7%) x "1975-01-01",
-            29 (7%) x "1971-01-01",
-            29 (7%) x "1979-01-01",
-            29 (7%) x "1980-01-01",
-            28 (7%) x "1972-01-01",
-            28 (7%) x "1977-01-01",
-            27 (7%) x "1974-01-01"
-  CARS:ORIGIN
-              254 (63%) x "USA", 79 (19%) x "Japan", 73 (18%) x "Europe">
+LS-USER> (summary cars)
+ORIGIN: 254 (63%) x USA, 79 (19%) x Japan, 73 (18%) x Europe,
+YEAR: 61 (15%) x 1982-01-01, 40 (10%) x 1973-01-01, 36 (9%) x 1978-01-01, 35 (9%) x 1970-01-01, 34 (8%) x 1976-01-01, 30 (7%) x 1975-01-01, 29 (7%) x 1971-01-01, 29 (7%) x 1979-01-01, 29 (7%) x 1980-01-01, 28 (7%) x 1972-01-01, 28 (7%) x 1977-01-01, 27 (7%) x 1974-01-01,
+ACCELERATION: 406 reals, min=8, q25=13.674999999999999d0, q50=15.45d0, q75=17.16666632692019d0, max=24.8d0
+WEIGHT-IN-LBS: 406 reals, min=1613, q25=2226, q50=2822.5, q75=3620, max=5140
+HORSEPOWER: 400 reals, min=46, q25=75.77778, q50=94.33333, q75=129.57143, max=2306 (1%) x NIL,
+DISPLACEMENT: 406 reals, min=68, q25=104.25, q50=147.92307, q75=277.76923, max=455
+CYLINDERS: 207 (51%) x 4, 108 (27%) x 8, 84 (21%) x 6, 4 (1%) x 3, 3 (1%) x 5,
+MILES-PER-GALLON: 398 reals, min=9, q25=17.33333317438761d0, q50=22.727271751923993d0, q75=29.14999923706055d0, max=46.6d08 (2%) x NIL,
 ```
 
 Note: The car models, essentially the row names, have been removed
@@ -148,7 +126,7 @@ from the summary.
 Create a scatter plot specification with default values:
 
 ```lisp
-(defparameter cars-plot (vglt:scatter-plot cars "HORSEPOWER" "MILES_PER_GALLON"))
+(defparameter cars-plot (vglt:scatter-plot cars "HORSEPOWER" "MILES-PER-GALLON"))
 ```
 
 Render the plot:

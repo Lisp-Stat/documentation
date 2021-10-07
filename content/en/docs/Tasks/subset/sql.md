@@ -50,7 +50,7 @@ the certain way to load is to ensure that the library is on the
 To load `sqldf`:
 
 ```lisp
-(ql:quickload :sqldf)
+(asdf:load-system :sqldf)
 (use-package 'sqldf) ;access to the symbols
 ```
 

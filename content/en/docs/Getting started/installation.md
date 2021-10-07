@@ -30,28 +30,21 @@ through the basics of working with Lisp as a statistics practitioner.
 
 We assume an experienced user will have their own Emacs and lisp
 implementation and will want to install according to their own tastes
-and setup. The repo links you need are below, or you can install with
-quicklisp.
+and setup. The repo links you need are below, or you can install with `clpm` or 
+`quicklisp`.
 
 ## Prerequisites
 
 All that is needed is an ANSI Common Lisp implementation. Development
-is done with CCL and SBCL. Other platforms _should_ work, but will not
-have been tested.
+is done with Genera, CCL and SBCL. Other platforms _should_ work, but
+will not have been tested.
 
 ## Installation
 
-### Automated install
-The easiest way to install Lisp-Stat is with Quicklisp:
-
-```lisp
-(ql:quickload :lisp-stat)
-```
-
-### Manual install
+### ASDF
 If you want to modify Lisp-Stat you'll need to retrieve the
 files from github and place them in a directory that is known to
-quicklisp. This long shell command will checkout all the required
+ASDF. This long shell command will checkout all the required
 systems:
 
 ```shell
@@ -63,16 +56,53 @@ git clone https://github.com/Lisp-Stat/numerical-utilities.git && \
 git clone https://github.com/Lisp-Stat/documentation.git && \
 git clone https://github.com/Lisp-Stat/plot.git && \
 git clone https://github.com/Lisp-Stat/select.git && \
+git clone https://github.com/Lisp-Stat/cephes.cl.git && \
+git clone https://github.com/Symbolics/alexandria-plus && \
 git clone https://github.com/Lisp-Stat/lisp-stat.git
 ```
 
-The above assumes you have the default installation directories. Adjust
-accordingly if you have changed this. If Quicklisp claims it cannot
-find the systems, try this at the REPL:
+The above assumes you have the default installation
+directories. Adjust accordingly if you have changed this. If this is
+the first time running Lisp-Stat, use Quicklisp to get the
+dependencies:
+
+```lisp
+(ql:quickload :lisp-stat)
+```
+
+From now on you can load it with:
+
+```lisp
+(asdf:load-system :lisp-stat)
+```
+
+If ASDF claims it can't find the required systems (this might happen
+the first time around), reset the system configuration with:
+
+```lisp
+(asfd:clear-source-registry)
+```
+
+and try again.
+
+### Quicklisp
+If you have quicklisp installed, you can use:
+
+```lisp
+(ql:quickload :lisp-stat)
+```
+
+If Quicklisp claims it cannot find the systems, try this at the REPL:
 
 ```lisp
 (ql:register-local-projects)
 ```
+
+Quicklisp is good at managing the project depencency retrieval, but
+most of the time we use ASDF because of its REPL integration. You only
+have to use Quicklisp once to get the dependencies, then use ASDF for
+day-to-day work.
+
 
 ### Documentation
 
@@ -101,28 +131,28 @@ the info tree.
 
 You can put customisations to your environment in the user
 initialisation file, `#P"~/ls-init.lisp"`. It is loaded after the
-internal lisp-stat initialisation file, and settings here override the
-defaults.
+system initialisation file, and settings in your personal init file
+override the system defaults.
 
 Here's an example `ls-init.lisp` file that loads some common R data sets.
 
 ```lisp
-;; Define common data sets
-(ql:quickload :lisp-stat/rdata)
-(in-package #:ls-user)
-(define-data-frame mtcars
-    (read-csv (rdata:rdata 'rdata:datasets 'rdata:mtcars)))
-(define-data-frame iris
-    (read-csv (rdata:rdata 'rdata:datasets 'rdata:iris)))
-(define-data-frame tooth-growth
-    (read-csv (rdata:rdata 'rdata:datasets 'rdata:toothgrowth)))
-(define-data-frame plant-growth
-    (read-csv (rdata:rdata 'rdata:datasets 'rdata:plantgrowth)))
-(define-data-frame us-arrests
-    (read-csv (rdata:rdata 'rdata:datasets 'rdata:usarrests)))
+(require 'dexador)
+;;; Load default data sets
+(defparameter *default-datasets*
+  '(rdata:iris rdata:toothgrowth rdata:plantgrowth rdata:usarrests)
+  "Data sets loaded as part of personal Lisp-Stat initialisation. Available in every session.")
+
+(progn				  ;do all initialisation here
+  (map nil #'(lambda (x)
+	       (format t "Loading ~A" (make-symbol (symbol-name x)))
+	       (eval `(defdf ,(intern (symbol-name x))
+			  (read-csv ,(symbol-value x)))))
+       *default-datasets*))
 ```
 
-With this init file, you can immediately access the data sets, e.g.:
+With this init file, you can immediately access the data sets in the
+`*default-datasets*` list defined above, e.g.:
 
 ```lisp
 (head iris)
@@ -139,7 +169,7 @@ With this init file, you can immediately access the data sets, e.g.:
 
 Load Lisp-Stat:
 ```lisp
-(ql:quickload :lisp-stat)
+(asdf:load-system :lisp-stat)
 ```
 
 Change to the Lisp-Stat user package:
@@ -156,8 +186,8 @@ Load some data:
 Find the sample mean and median:
 
 ```lisp
-(mean car-prices)
-(median car-prices)
+(mean car-prices)   ; => 2.810199998617172d0
+(median car-prices) ; => 2.55
 ```
 
 ## Next steps

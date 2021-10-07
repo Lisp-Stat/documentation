@@ -147,7 +147,7 @@ There are two ways to plot Lisp-Stat data in Vega-Lite:
 #### Embedding data
 
 To embed the data into the plot specification, use the
-`vglt:df-to-alist` function.  This will transform a data frame into an
+`dfio:df-to-alist` function.  This will transform a data frame into an
 alist format that can be embedded into the Vega-Lite specification.
 For example, let's start with an empty variable `spec`, with only a
 schema in it.  Here is how you would add data to it from a data-frame:
@@ -161,8 +161,8 @@ schema in it.  Here is how you would add data to it from a data-frame:
 For larger data sets, you probably want to save the data to a file or
 network location and use the Vega-Lite 'url' property in the
 specification.  You can write data frames to streams or strings in
-Vega-Lite format using the `vglt:df-to-vl` function.  You can also use
-the inverse of this function: `vglt:vl-to-df` to read a Vega-Lite data
+Vega-Lite format using the `dfio:df-to-vl` function.  You can also use
+the inverse of this function: `dfio:vl-to-df` to read a Vega-Lite data
 array into a data-frame.  This is useful for obtaining sample data
 sets from the Vega-Lite ecosystem.
 
@@ -184,10 +184,15 @@ This example demonstrates rendering data from the Lisp-Stat [notebook
 on categorical variables](/docs/examples/). First some quick
 boilerplate to set up the environment:
 
+```sh
+cd ~/common-lisp && \
+git clone https://github.com/Lisp-Stat/ips
+```
 
 ```lisp
-(ql:quickload :ips)         ; data examples
-(ql:quickload :plot/vglt)   ; Vega-Lite plotting
+(asdf:clear-source-registry)
+(asdf:load-system :ips)         ; data examples
+(asdf:load-system :plot/vglt)   ; Vega-Lite plotting
 (in-package :ips)
 (defparameter online (read-csv (dex:get ips::eg01-07 :want-stream t)))
 (defparameter online-bar-chart (vglt:bar-chart online "SOURCE" "COUNT"))

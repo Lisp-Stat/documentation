@@ -9,20 +9,17 @@ description: >
 ## Load data
 We will use one of the [example data sets from R](https://lisp-stat.dev/docs/tasks/data-frame/#example-datasets),
 [mtcars](https://vincentarelbundock.github.io/Rdatasets/doc/datasets/mtcars.html),
-for these examples. First, load Lisp-Stat and the R data libraries,
-and switch into the Lisp-Stat package:
+for these examples. First, load Lisp-Stat and switch into the Lisp-Stat package:
 
 ```lisp
-(ql:quickload :lisp-stat)
-(ql:quickload :lisp-stat/rdata)
-(in-package   :ls-user)
+(asdf:load-system :lisp-stat)
+(in-package :ls-user)
 ```
 
 Now define the data frame, naming it `mtcars`:
 
 ```lisp
-(define-data-frame mtcars
-	(read-csv (rdata:rdata 'rdata:datasets 'rdata:mtcars)))
+(defdf mtcars (read-csv rdata:mtcars))
 ;;WARNING: Missing column name was filled in
 ;;#<DATA-FRAME (32 observations of 11 variables)>
 ```
@@ -116,10 +113,15 @@ for the duration of the Lisp-Stat session.
 This column is actually the row name, so we'll rename it:
 
 ```lisp
-(replace-key mtcars row-name x1)
+(replace-key! mtcars row-name x1)
 ```
 
-and view the results
+Note that your row may be named something other than `X1`, depending
+on whether or not you have loaded any other data frames with variable
+name replacement. Also note: the '!' at the end of the function name
+is a convention indicating a destructive operation.
+
+Now let's view the results:
 
 ```lisp
 (head mtcars)
@@ -138,7 +140,7 @@ To see the names of the columns, use the `column-names` function:
 
 ```lisp
 (column-names mtcars)
-;; => ("ROW-NAMES" "MPG" "CYL" "DISP" "HP" "DRAT" "WT" "QSEC" "VS" "AM" "GEAR" "CARB")
+;; => ("ROW-NAME" "MPG" "CYL" "DISP" "HP" "DRAT" "WT" "QSEC" "VS" "AM" "GEAR" "CARB")
 ```
 
 ### Dimensions
@@ -147,14 +149,14 @@ We saw the dimensions above in basic information. That was a printed
 for human consumption. To get the values in a form suitable for
 passing to other functions, use the `dims` command:
 
-```
+```lisp
 (aops:dims mtcars) ;; => (32 12)
 ```
 
 Common Lisp specifies dimensions in row-column order, so `mtcars` has
 32 rows and 12 columns.
 
-{{< alert title="Note" >}} Lisp-Stat generally follows the [tidyverse](https://www.tidyverse.org/) philosophy when it comes to row names. By definition, row names are unique, so there is no point including them in a statistical analysis.  Nevertheless, many data sets include row names, so we include some special handling for a column named "row-name".  A column with this name is excluded by default from summaries (and you can include it if you wish).  There is no concept of independent row names as with a R data frame.  A Lisp-Stat data frame is more like a [tibble](https://tibble.tidyverse.org/).
+{{< alert title="Note" >}} Lisp-Stat generally follows the [tidyverse](https://www.tidyverse.org/) philosophy when it comes to row names. By definition, row names are unique, so there is no point including them in a statistical analysis.  Nevertheless, many data sets include row names, so we include some special handling for columns with all distinct values; they are excluded by default from summaries (and you can include it if you wish).  There is no concept of independent row names as with a R data frame.  A Lisp-Stat data frame is more like a [tibble](https://tibble.tidyverse.org/).
 {{< /alert >}}
 
 ## Basic Statistics
@@ -205,80 +207,113 @@ Lisp vector and you can manipulate it like one.
 
 ### Summarise
 
-You can summarise a column with the `column-summary` function:
+You can summarise a column with the `summarize-column` function:
 
 ```lisp
-(column-summary mtcars:mpg)
-;; => 32 reals, min=10.4d0, q25=15.399999698003132d0, q50=19.2d0, q75=22.8d0, max=33.9d0
+LS-USER> (summarize-column 'mtcar:mpg)
+
+MPG (Miles/(US) gallon)
+ n: 32
+ missing: 0
+ min=10.40
+ q25=15.40
+ q50=19.20
+ mean=20.09
+ q75=22.80
+ max=33.90
 ```
 
 or the entire data frame:
 
 ```lisp
-(summary mtcars)
-#<DATA-FRAME (12 x 32)
-  MTCARS:CARB
-              10 (31%) x 4,
-              10 (31%) x 2,
-              7 (22%) x 1,
-              3 (9%) x 3,
-              1 (3%) x 6,
-              1 (3%) x 8
-  MTCARS:GEAR
-              15 (47%) x 3, 12 (38%) x 4, 5 (16%) x 5
-  MTCARS:AM bits, ones: 13 (41%)
-  MTCARS:VS bits, ones: 14 (44%)
-  MTCARS:QSEC
-              32 reals, min=14.5d0, q25=16.884999999999998d0, q50=17.71d0,
-              q75=18.9d0, max=22.9d0
-  MTCARS:WT
-            32 reals, min=1.513d0, q25=2.5425d0, q50=3.325d0,
-            q75=3.6766665957371387d0, max=5.424d0
-  MTCARS:DRAT
-              32 reals, min=2.76d0, q25=3.08d0, q50=3.6950000000000003d0,
-              q75=3.952000046730041d0, max=4.93d0
-  MTCARS:HP
-            32 reals, min=52, q25=96.0, q50=123, q75=186.25, max=335
-  MTCARS:DISP
-              32 reals, min=71.1d0, q25=120.65d0, q50=205.86666333675385d0,
-              q75=334.0, max=472
-  MTCARS:CYL
-             14 (44%) x 8, 11 (34%) x 4, 7 (22%) x 6
-  MTCARS:MPG
-             32 reals, min=10.4d0, q25=15.399999698003132d0, q50=19.2d0,
-             q75=22.8d0, max=33.9d0
+LS-USER> (summary mtcars)
+(
+
+MPG (Miles/(US) gallon)
+ n: 32
+ missing: 0
+ min=10.40
+ q25=15.40
+ q50=19.20
+ mean=20.09
+ q75=22.80
+ max=33.90
+
+CYL (Number of cylinders)
+14 (44%) x 8, 11 (34%) x 4, 7 (22%) x 6,
+
+DISP (Displacement (cu.in.))
+ n: 32
+ missing: 0
+ min=71.10
+ q25=120.65
+ q50=205.87
+ mean=230.72
+ q75=334.00
+ max=472.00
+
+HP (Gross horsepower)
+ n: 32
+ missing: 0
+ min=52
+ q25=96.00
+ q50=123
+ mean=146.69
+ q75=186.25
+ max=335
+
+DRAT (Rear axle ratio)
+ n: 32
+ missing: 0
+ min=2.76
+ q25=3.08
+ q50=3.70
+ mean=3.60
+ q75=3.95
+ max=4.93
+
+WT (Weight (1000 lbs))
+ n: 32
+ missing: 0
+ min=1.51
+ q25=2.54
+ q50=3.33
+ mean=3.22
+ q75=3.68
+ max=5.42
+
+QSEC (1/4 mile time)
+ n: 32
+ missing: 0
+ min=14.50
+ q25=16.88
+ q50=17.71
+ mean=17.85
+ q75=18.90
+ max=22.90
+
+VS (Engine (0=v-shaped, 1=straight))
+ones: 14 (44%)
+
+AM (Transmission (0=automatic, 1=manual))
+ones: 13 (41%)
+
+GEAR (Number of forward gears)
+15 (47%) x 3, 12 (38%) x 4, 5 (16%) x 5,
+
+CARB (Number of carburetors)
+10 (31%) x 4, 10 (31%) x 2, 7 (22%) x 1, 3 (9%) x 3, 1 (3%) x 6, 1 (3%) x 8, )
 ```
 
-Recall that a column named `row-name` is treated specially, notice
+Recall that a column named `model` is
+
+treated specially, notice
 that it is not included in the summary. You can see why it's excluded
 by examining the column's summary:
 
 ```lisp
-(pprint (column-summary mtcars:row-name))
-1 (3%) x "Mazda RX4",
-1 (3%) x "Mazda RX4 Wag",
-1 (3%) x "Datsun 710",
-1 (3%) x "Hornet 4 Drive",
-1 (3%) x "Hornet Sportabout",
-1 (3%) x "Valiant",
-1 (3%) x "Duster 360",
-1 (3%) x "Merc 240D",
-1 (3%) x "Merc 230",
-1 (3%) x "Merc 280",
-1 (3%) x "Merc 280C",
-1 (3%) x "Merc 450SE",
-1 (3%) x "Merc 450SL",
-1 (3%) x "Merc 450SLC",
-1 (3%) x "Cadillac Fleetwood",
-1 (3%) x "Lincoln Continental",
-1 (3%) x "Chrysler Imperial",
-1 (3%) x "Fiat 128",
-1 (3%) x "Honda Civic",
-1 (3%) x "Toyota Corolla",
-1 (3%) x "Toyota Corona",
-1 (3%) x "Dodge Challenger",
-1 (3%) x "AMC Javelin",
-1 (3%) x "Camaro Z28", ..
+LS-USER>(pprint (summarize-column 'mtcars:model)))
+1 (3%) x "Mazda RX4", 1 (3%) x "Mazda RX4 Wag", 1 (3%) x "Datsun 710", 1 (3%) x "Hornet 4 Drive", 1 (3%) x "Hornet Sportabout", 1 (3%) x "Valiant", 1 (3%) x "Duster 360", 1 (3%) x "Merc 240D", 1 (3%) x "Merc 230", 1 (3%) x "Merc 280", 1 (3%) x "Merc 280C", 1 (3%) x "Merc 450SE", 1 (3%) x "Merc 450SL", 1 (3%) x "Merc 450SLC", 1 (3%) x "Cadillac Fleetwood", 1 (3%) x "Lincoln Continental", 1 (3%) x "Chrysler Imperial", 1 (3%) x "Fiat 128", 1 (3%) x "Honda Civic", 1 (3%) x "Toyota Corolla", 1 (3%) x "Toyota Corona", 1 (3%) x "Dodge Challenger", 1 (3%) x "AMC Javelin", 1 (3%) x "Camaro Z28", 1 (3%) x "Pontiac Firebird", 1 (3%) x "Fiat X1-9", 1 (3%) x "Porsche 914-2", 1 (3%) x "Lotus Europa", 1 (3%) x "Ford Pantera L", 1 (3%) x "Ferrari Dino", 1 (3%) x "Maserati Bora", 1 (3%) x "Volvo 142E",
 ```
 
 Columns with unique values in each row aren't very interesting.
@@ -304,14 +339,15 @@ data-frame.
 (unuse-package 'mtcars)
 ```
 
+
 ## Saving data
 
-To save a data frame to a CSV file, use the `data-frame-to-csv`
+To save a data frame to a CSV file, use the `write-csv`
 method. Here we save `mtcars` into the Lisp-Stat datasets directory,
 including the column names:
 
 ```lisp
-(data-frame-to-csv mtcars
-		           :stream #P"LS:DATASETS;mtcars.csv"
-		           :add-first-row t)
+(write-csv
+	mtcars #P"LS:DATASETS;mtcars.csv"
+	:add-first-row t)
 ```

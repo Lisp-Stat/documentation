@@ -20,17 +20,15 @@ found in the R documentation.
 To load the required systems:
 
 ```lisp
-(ql:quickload :lisp-stat)
-(ql:quickload :lisp-stat/rdata)
-(ql:quickload :sqldf)
+(asdf:load-system :lisp-stat)
+(asdf:load-system :sqldf)
 (in-package #:ls-user)
 ```
 
-Now, load the `nycflights13` data set into a data frame:
+Now, load the `nycflights13` flight data into a data frame:
 
 ```lisp
-(define-data-frame flights
-	(read-csv
-		(rdata:rdata 'rdata:nycflights13 'rdata:flights)))
+(defdf flights
+	(read-csv rdata:nycflights13-flights))
 ```
 

@@ -12,7 +12,7 @@ linkTitle = "Lisp-Stat"
 	<a class="btn btn-lg btn-secondary mr-3 mb-4" href="https://github.com/lisp-stat">
 		Download <i class="fab fa-github ml-2 "></i>
 	</a>
-	<p class="lead mt-5">A full stack statistical environment</p>
+	<p class="lead mt-5">A full stack statistical computing environment</p>
 	{{< blocks/link-down color="info" >}}
 </div>
 {{< /blocks/cover >}}
@@ -57,8 +57,8 @@ Install to plotting in five minutes
 {{% blocks/feature icon="fas fa-code" title="Load a R data set" %}}
 <pre style="text-align: left">
   <code>
-(define-data-frame mtcars
-  (rdata 'datasets 'mtcars))
+(defdf mtcars (read-csv rdata:mtcars))
+
 
   </code>
 

@@ -9,7 +9,7 @@ description: >
 {{% pageinfo %}}
 
 This section describes the mechanics of _how_ to contribute code to
-Lisp-Stat at a high level. Legal stuff, community guidelines, code of
+Lisp-Stat. Legal requirements, community guidelines, code of
 conduct, etc. For details on how to contribute code and documentation,
 see links on nav sidebar to the left under Contributing.
 
@@ -28,8 +28,49 @@ Contributor License Agreements (CLAs) are common and accepted in open
 source projects.  We all wish for Lisp-Stat to be used and distributed
 as widely as possible, and for its users to be confident about the
 origins and continuing existence of the code.  The CLA help us achieve
-that goal.
+that goal. Although common, many in the Lisp community are unaware of
+CLA or their importance. Some often asked questions include:
 
+### Why do you need a CLA?
+
+We need a CLA because, by law, all rights reside with the originator
+of a work unless otherwise agreed. The CLA allows the project to
+accept and distribute your contributions. Without your consent via a
+CLA, the project has no rights to ues the code. Here's what Google has
+to say in their [CLA policy page](https://opensource.google/docs/cla/policy/):
+
+*Standard inbound license*
+
+*Using one standard inbound license that grants the receiving company broad permission to use contributed code in products is beneficial to the company and downstream users alike.*
+
+*Technology companies will naturally want to make productive use of any code made available to them. However, if all of the code being received by a company was subject to various inbound licenses with conflicting terms, the process for authorizing the use of the code would be cumbersome because of the need for constant checks for compliance with the various licenses. Whenever contributed code were to be used, the particular license terms for every single file would need to be reviewed to ascertain whether the application would be permitted under the terms of that code’s specific license. This would require considerable human resources and would slow down the engineers trying to utilize the code.*
+
+*The benefits that a company receives under a standard inbound license pass to downstream users as well. Explicit patent permissions and disclaimers of obligations and warranties clarify the recipients’ rights and duties. The broad grant of rights provides code recipients opportunities to make productive use of the software. Adherence to a single standard license promotes consistency and common understanding for all parties involved.*
+
+
+### Why do I have to sign?
+
+In order to be legally binding a certain amount of legal ceremony
+must take place. This varies by jurisdiction. In some places,
+'[clickwrap](https://en.wikipedia.org/wiki/Clickwrap)' or '[browse
+wrap](https://en.wikipedia.org/wiki/Browse_wrap)' agreements are used,
+however these are gray areas of legal validity. A 'wet signature' is
+valid everywhere and avoids ambiguity of assent.
+
+### What does it do?
+
+The CLA essentially does three things. It ensures that the contributor agrees:
+
+1. To allow the project to use the source code and redistribute it
+2. The contribution is theirs to give, e.g. does not belong to their employer or someone else
+3. Does not contain any patented 'stuff'.
+
+### How long will it take?
+
+The entire process should take less than an hour. 30-40 minutes is
+typical.
+
+### Mechanics of the CLA
 The Lisp-Stat project uses CLAs to accept regular contributions from
 individuals and corporations, and to accept larger grants of existing
 software products, for example if you wished to contribute a large

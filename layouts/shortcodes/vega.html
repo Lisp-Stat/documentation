@@ -1,0 +1,7 @@
+<div id='{{ .Get "id" }}'></div>
+<script type="text/javascript">
+  var spec = "{{ .Get "spec" | safeJS }}"
+  vegaEmbed('#{{ .Get "id" }}', spec).then(function(result) {
+  // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+  }).catch(console.error);
+</script>

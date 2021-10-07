@@ -18,7 +18,7 @@ wrote the software used by graphic artists to develop scenes in
 several films prior the rise of Pixar. One of the first statistical
 systems developed,
 [XLisp-Stat](https://en.wikipedia.org/wiki/XLispStat), was a
-contemporary until the primary author joined the 'R Core' group.
+contemporary to R until the primary author joined the 'R Core' group.
 
 
 ## Raisons d'être {#raisons-d-être}
@@ -60,7 +60,7 @@ the needs of an enterprise deployment today.
 ## Relationship to XLISP-Stat
 
 Although inspired by Tierney's XLisp-Stat, this is a reboot in Common
-Lisp.  XLisp-Stat code is unlikely to run except in trivial cases, but
+Lisp.  XLisp-Stat code is unlikely to run except in trivial cases, and
 existing XLisp-Stat libraries can be ported with the assistance of the
 [XLS-Compat](https://github.com/Lisp-Stat/XLS-compat) system.
 
@@ -73,7 +73,7 @@ learning curve a gentle slope.
 ## Library Consolidation
 
 Eventually, we hope for a consolidation of lisp statistical libraries
-in order to a critical mass in the domain.  The reasons for moving in
+in order to achieve a critical mass in the domain.  The reasons for moving in
 this direction were described in an article some years ago entitled
 [Consolidating Common Lisp
 Libraries](https://fare.livejournal.com/169346.html).  Whilst
@@ -97,9 +97,8 @@ set of observations. For data frames, we use the
 from the [tidyverse](https://www.tidyverse.org/) as inspiration for
 functionality.
 
-
 Data frames can contain values of any type. If desired, additional
-attributes, such as float, the unit and other information may be
+attributes, such as the numerical type, unit and other information may be
 attached to the variable for convenience or efficiency. For example
 you could specify a unit of length, say m/s (meters per second), to
 ensure that mathmatical operations on that variable always produce
@@ -142,6 +141,15 @@ functions](https://en.wikipedia.org/wiki/Special_functions) in Common
 Lisp with a focus on high accuracy double-float calculations.  These
 functions are the basis for the statistical distributions functions,
 e.g. gamma, beta, etc.
+
+### Cephes
+
+[Cephes.cl](https://github.com/Lisp-Stat/cephes.cl) is a CFFI wrapper
+over the Cephes Math Library, a high quality C implementation of
+statistical functions. We use this both for an accuracy check (Boost
+uses these to check its accuracy too), and to fill in the gaps where
+we don't yet have common lisp implementations of these functions.
+
 
 <!--
 ### Distributions {#distributions}
@@ -198,7 +206,7 @@ package is the most tested IDE and the one the authors use.  If you
 are using one of the starter lisp packages mentioned in the [getting
 started](/docs/getting-started/installation) section, this will have
 been installed for you. Otherwise, slime/swank is available in
-quicklisp.
+quicklisp and clpm.
 
 ### Jupyter Lab {#jupyter-lab}
 
@@ -225,10 +233,10 @@ Generally, we are prioritising these systems for development:
 3. Special Functions & Distributions
 
 In terms of priority, 1 & 2 are equally rated, and
-special-functions/distributions lower priority because we have a few
-options for them, such as the CFFI for libRmath or less accurate
-Common Lisp implementations.  As well, the knowledge of numerical
-methods required for accurate implementation is somewhat more limited.
+special-functions/distributions lower priority because we have a
+[Cephes](https://github.com/Lisp-Stat/cephes.cl) available now.  As
+well, the knowledge of numerical methods required for accurate
+implementation is somewhat more limited.
 
 For the most part, implementation priority is determined by the
 features required when working through the [Lisp-Stat

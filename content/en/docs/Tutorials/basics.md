@@ -36,7 +36,7 @@ published in ANSI standard document ANSI INCITS 226-1994 (S20018)
 developed as a standardized and improved successor of Maclisp. By the
 early 1980s several groups were already at work on diverse successors
 to MacLisp: Lisp Machine Lisp (aka ZetaLisp), Spice Lisp, NIL and S-1
-Lisp. Common Lisp sought to unify, standardise, and extend the
+Lisp. Common Lisp sought to unify, standardize, and extend the
 features of these MacLisp dialects.  Common Lisp is not an
 implementation, but rather a language specification.  Several
 implementations of the Common Lisp standard are available, including
@@ -54,25 +54,17 @@ interrupting the running application.
 
 The best way to learn about a new computer programming language is
 usually to use it.  You will get most out of this tutorial if you read
-it at your computer and work through the examples yourself.  To make
-this easier the named data sets used in this tutorial have been stored
-in the file `tutorial.lisp` in the `LS:DATASETS` folder of the system.
-To load this file, execute:
+it at your computer and work through the examples yourself. To make
+this tutorial easier the named data sets used in this tutorial have
+been stored in the file `basic.lisp` in the `LS:DATASETS;TUTORIALS`
+folder of the system.  To load this file, execute:
 
 ```lisp
-(load #P"LS:DATASETS;TUTORIAL")
+(load #P"LS:DATASETS;TUTORIALS;basic")
 ```
 
 at the command prompt (REPL). The file will be loaded and some
 variables will be defined for you.
-
-{{< alert title="Note" >}}Implementations differ in their handling of
-character case for logical pathnames like the above. The spec requires
-all capital letters to preserve compatibility across file systems (VMS,
-HDFS, etc), but most implementations on Windows and Mac permit lower
-case; some do not. If you encounter difficulty with lower case, try
-upper.{{< /alert >}}
-
 
 ### Why LISP-STAT Exists {#why-lisp-stat-exists .unnumbered}
 
@@ -88,7 +80,7 @@ Not only does Common Lisp provide a compiler that produces machine
 code, it has native threading, a rich ecosystem of code libraries, and
 a history of industrial deployments, including:
 
-- Credit card authorisation at AMEX (Authorizers Assistant)
+- Credit card authorization at AMEX (Authorizers Assistant)
 - US DoD logistics (and more, that we don't know of)
 - CIA and NSA are big users based on Lisp sales
 - DWave and Rigetti use lisp for programming their quantum computers
@@ -113,8 +105,8 @@ system.
 
 ### Disclaimer {#disclaimer .unnumbered}
 
-LISP-STAT is an experimental program.  It has not been extensively
-tested.  The corporate sponsor, Symbolics Pte Ltd, takes no
+LISP-STAT is an experimental program.  Although it is in daily use on
+several projects, the corporate sponsor, Symbolics Pte Ltd, takes no
 responsibility for losses or damages resulting directly or indirectly
 from the use of this program.
 
@@ -135,7 +127,7 @@ you will see if loading using the
 [Slime](https://common-lisp.net/project/slime/) IDE:
 
 ```lisp
-CL-USER> (ql:quickload :lisp-stat)
+CL-USER> (asdf:load-system :lisp-stat)
 To load "lisp-stat":
   Load 1 ASDF system:
     lisp-stat
@@ -157,7 +149,7 @@ running anything in this implementation of Common Lisp, you will
 probably see output related to the compilation of every module in the
 system.  This could take a while, but only has to be done once.
 
-Once finished, to use the functions provided, you need to make the
+Once completed, to use the functions provided, you need to make the
 LISP-STAT package the current package, like this:
 
 ```lisp
@@ -193,7 +185,7 @@ print the result of evaluating the expression and give you a new prompt:
 As you have probably guessed, this expression means that the numbers 1
 and 2 are to be added together.  The next section will give more
 details on how LISP-STAT expressions work.  In this tutorial I will
-always show interactions with the program as I have done here: The
+sometimes show interactions with the program as I have done here: The
 `LS-USER>` prompt will appear before lines you should type.
 LISP-STAT will supply this prompt when it is ready; you should not
 type it yourself.  In later sections I will omit the new prompt
@@ -261,7 +253,8 @@ All the examples given above can be typed directly into the command
 window as they are shown here. The next subsection describes what
 LISP-STAT will do with these expressions.
 
-
+<!--
+Move this elsewhere. Not strictly needed in the basic tutorial
 ### Data Frame
 
 A data frame is a collection of name/data pairs.  If you have used R,
@@ -270,8 +263,10 @@ frame from a name and a value (called a `plist`, or *property-list*):
 
 ```lisp
 (plist-df '(name #(1 2 3)))
-```
 
+#<DATA-FRAME (3 observations of 1 variables)>
+```
+-->
 
 ### The Listener and the Evaluator
 
@@ -422,9 +417,10 @@ every time we want to compute a statistic for the sample. To avoid
 having to do this I will give this list a name using the `def`
 special form [^2]:
 
-    LS-USER> (def purchases (list 0 2 5 0 3 1 8 0 3 1 1 9 2 4 0 2 9 3 0 1 9 8))
-    PURCHASES
-    LS-USER>
+```lisp
+(def purchases (list 0 2 5 0 3 1 8 0 3 1 1 9 2 4 0 2 9 3 0 1 9 8))
+; PURCHASES
+```
 
 Now the symbol `purchases` has a value associated with it:  Its
 value is our list of 22 numbers. If you give the symbol `purchases`
@@ -435,10 +431,10 @@ that value:
     (0 2 5 0 3 1 8 0 3 1 1 9 2 4 0 2 9 3 0 1 9 8)
 
 {{< alert title="Note" >}}Common Lisp provides two functions to define
-variables `defparameter` and `defvar`. LISP-STAT's `def` uses `defvar`
-under the covers and provides a more convenient interface for working
-with statistical variables.  Statistical functions will work with
-variables defined with any of these{{< /alert >}}
+variables `defparameter` and `defvar`.  Variables defined with
+`defparameter` can be modified without a warning. If you attempt to
+modify a variable defined with `defvar` a warning will be issued and
+you will have to confirm the change. {{< /alert >}}
 
 We can now easily compute various numerical descriptive statistics for
 this data set:
@@ -448,9 +444,9 @@ this data set:
     LS-USER> (median purchases)
     2
     LS-USER> (standard-deviation purchases)
-    3.279544
+    3.2041426
     LS-USER> (interquartile-range purchases)
-    3.5
+    4
 
 LISP-STAT also supports elementwise arithmetic operations on vectors
 of numbers.  Technically, overriding, or 'shadowing' any of the Common
@@ -474,8 +470,10 @@ large. Get into the habit of using vectors with Lisp-Stat {{< /alert >}}
 
 Now we can add 1 to each of the purchases:
 
-    LS-USER> (e+ 1 purchases-2)
+```
+LS-USER> (e+ 1 purchases-2)
     (1 3 6 1 4 2 9 1 4 2 2 10 3 5 1 3 10 4 1 2 10 9)
+```
 
 and after adding 1 we can compute the natural logarithms of the results:
 
@@ -570,14 +568,14 @@ transformed data are:
     0.384892
 ```
 
-
+<!-- Remove this until version 2.0 of plotting is complete
 ### Plots
 
 For this section we'll be using the Vega-Lite plotting back-end. Load
 it like this:
 
 ```lisp
-(ql:quickload :plot/vglt)
+(asdf:load-system :plot/vglt)
 ```
 
 The `histogram` and `box-plot` functions can be used to obtain
@@ -654,15 +652,13 @@ two or more samples.
 It will do so if it is given a list of lists as its
 argument instead of a single list.
 
-
 As an example, let's use this function to compare the fuel consumption
 for various automobile types.  The data comes from the R `ggplot`
 library and we load it like this:
 
 ```lisp
-(defparameter mpg
-	(read-csv
-		(rdata:rdata 'rdata:ggplot2 'rdata:mpg)))
+(defdf mpg (read-csv rdata:mpg)
+  "Fuel economy data from 1999 to 2008 for 38 popular models of cars")
 ```
 
 The parallel box-plot is obtained by:
@@ -709,7 +705,7 @@ variables, `gas-heat` and `electric-heat`.[^3]
     plots and summary statistics for these samples separately and look
     at a parallel box plot for the two samples.  These data sets are
     called `gas-heat` and `electric-heat` in the file `heating.lisp`.
-
+-->
 <!--
 ### Two Dimensional Plots {#Elementary.TwoDPlots}
 
@@ -1033,12 +1029,25 @@ will return the list
 
     (1 2 3 4 5 6 7 8).
 
+For vectors, we use the more general function `concatenate`, which
+operates on *sequences*, that is objects of either `list` or `vector`:
+
+```lisp
+LS-USER> (concatenate 'vector #(1 2) #(3 4))
+#(1 2 3 4)
+```
+
+Notice that we had to indicate the return type, using the `'vector`
+argument to `concatenate`. We could also have said `'list` to have it
+return a list, and it would have coerced the arguments to the correct
+type.
+
 ### Modifying Data
 
 So far when I have asked you to type in a list of numbers I have been
 assuming that you will type the list correctly.  If you made an error
 you had to retype the entire `def` expression.  Since you can use
-cut--and--paste this is really not too serious.  However it would be
+cut & paste this is really not too serious.  However it would be
 nice to be able to replace the values in a list after you have typed
 it in.  The `setf` special form is used for this. Suppose you would
 like to change the 12 in the list `x` used in the Section
@@ -1080,11 +1089,11 @@ changes the values of elements 0 and 2 to 15 and 16:
     (15 7 16 9 11 3 14 2)
 
 {{< alert color="warning" title="Caution" >}} Lisp symbols are merely labels for
-different items. When you assign a name to an item with the `def`
-command you are not producing a new item. Thus
+different items. When you assign a name to an item with the `defvar` or `defparameter`
+commands you are not producing a new item. Thus
 
-    (def x (list 1 2 3 4))
-    (def y x)
+    (defparameter x (list 1 2 3 4))
+    (defparameter y x)
 
 means that `x` and `y` are two different names for the same
 thing.{{< /alert >}}
@@ -1098,7 +1107,7 @@ changes to `x` then you must do so explicitly using, say, the
 expression
 
 ```lisp
-(def y (copy-list x))
+(defparameter y (copy-list x))
 ```
 
 will make a copy of `x` and set the value of `y` to that copy.
@@ -1375,9 +1384,9 @@ variables you have defined (using `def`).  The function
 
 If you are working with very large variables you may occasionally want
 to free up some space by getting rid of some variables you no longer
-need.  You can do this using the `undef` function:
+need.  You can do this using the `undef-var` function:
 
-    LS-USER> (undef 'co)
+    LS-USER> (undef-var 'co)
     CO
     LS-USER> (variables)
     HC
@@ -1410,7 +1419,7 @@ For example, if you read a data-frame but forget to assign the
 resulting object to a variable:
 
 ```lisp
-(read-csv (rdata 'rdata:datasets 'rdata:mtcars))
+LS-USER> (read-csv rdata:mtcars)
 WARNING: Missing column name was filled in
 #<DATA-FRAME (32 observations of 12 variables)>
 ```
@@ -1418,7 +1427,7 @@ WARNING: Missing column name was filled in
 you can recover it using one of the history variables:
 
 ```lisp
-(def mtcars *)
+(defparameter mtcars *)
 ; MTCARS
 ```
 
@@ -1450,14 +1459,15 @@ file named `randu.lisp` type the expression
 or just
 
 ```lisp
-(load "randu")
+(load #P"LS:DATASETS;randu")
 ```
 
 If you give `load` a name that does not end in `.lisp` then
-load will add this suffix.
+`load` will add this suffix.
 
 ### Saving Your Work
 
+#### Save a Session
 If you want to record a session with LISP-STAT you can do so using the
 `dribble` function. The expression
 
@@ -1480,23 +1490,24 @@ off recording to a single file.
 
 `dribble` only records text that is typed, not plots.  However, you
 can use the buttons displayed on a plot to save in SVG or PNG format.
-The original HTML plots are saved in your operating system's cache
-directory and can be viewed again until the cache is cleared during a
-system reboot.
+The original HTML plots are saved in your operating system's `TEMP`
+directory and can be viewed again until the directory is cleared
+during a system reboot.
 
+#### Saving Variables
 Variables you define in LISP-STAT only exist for the duration of the
 current session.  If you quit from LISP-STAT your data will be lost.
 To preserve your data you can use the `savevar` function.  This
-function allows you to save one or more variables into a file.  Again
+function allows you to save one a variable into a file.  Again
 a new file is created and any existing file by the same name is
 destroyed.  To save the variable `precipitation` in a file called
-`precipitation.lisp` type
+`precipitation` type
 
 ```lisp
 (savevar 'precipitation "precipitation")
 ```
 
-Do not add the `.lisp` suffix yourself; `savevar` will supply
+Do not add the `.lisp` suffix yourself; `save` will supply
 it. To save the two variables `precipitation` and `purchases`
 in the file `examples.lisp` type [^11].
 
@@ -1510,10 +1521,21 @@ recreate the variables `precipitation` and `purchases`.  You can look
 at these files with an editor like the Emacs editor and you can
 prepare files with your own data by following these examples.
 
-To save a data frame, use the
-[write-csv](https://lisp-stat.dev/docs/tasks/data-frame/#save-data)
-function.
+<!--
+Removed until we can cohesively put data frames into the tutorial
+#### Saving Data Frames
+To save a data frame, use the `save` function. For example to save the
+`mpg` data frame you would use:
 
+```lisp
+(save mpg #P"LS:DATASETS;mpg.lisp")
+```
+
+
+For more information on saving data frames see the [save section in
+the manual](https://lisp-stat.dev/docs/tasks/data-frame/#save-data)
+function.
+-->
 
 <!-- Describe the CCL Editor, Hemlock, for MacOS users
 ### The LISP-STAT Editor {#Shortcuts.Editor}
@@ -1544,7 +1566,7 @@ reading raw data files.  The most commonly used is `read-csv`.
 (read-csv stream)
 ```
 
-where `stream` is a common lisp stream with the data.  Streams can be
+where `stream` is a Common Lisp stream with the data.  Streams can be
 obtained from files, strings or a network and are in _comma separated
 value_ (CSV) format.  The parser supports delimiters other than comma.
 
@@ -1559,6 +1581,14 @@ Each Common Lisp implementation provides a way to execute
 initialization code upon start-up.  You can use this file to load any
 data sets you would like to have available or to define functions of
 your own.
+
+LISP-STAT also has an initialization file, `ls-init.lisp`, in your
+home directory. Typically you will use the lisp implementation
+initialization file for global level initialization, and
+`ls-init.lisp` for data related customizations. See the section
+[Initialization
+file](/docs/getting-started/installation/#initialization-file) in the
+manual for more information.
 
 <!-- Document this once Vega-lite/Plotly is working
 ## More Elaborate Plots {#MorePlots}
@@ -2039,10 +2069,10 @@ Here is the help information for `:point-selected` in a histogram:
     > (send h :help :point-selected)
     :POINT-SELECTED
     Method args: (point &optional selected)
-    Sets or returns selection status (true or NIL) of POINT. Sends 
+    Sets or returns selection status (true or NIL) of POINT. Sends
     :ADJUST-POINT-SCREEN-STATES message if states are set. Vectorized.
     NIL
-    > 
+    >
 
 Thus you can use this message to determine whether a point is currently
 selected and also to select or unselect it. Again rearrange the windows
@@ -2656,7 +2686,7 @@ graphics files loaded on start up. Further details will be given in
 ## Matrices and Arrays {#Arrays}
 
 LISP-STAT includes support for multidimensional arrays. In addition to
-the standard Common Lisp array functions LISP-STAT also includes a
+the standard Common Lisp array functions, LISP-STAT also includes a
 system called
 [array-operations](/docs/tasks/array-operations/).
 
@@ -2677,11 +2707,9 @@ be pasted into expressions and will be read as an array by the LISP
 reader.[^21]  For matrices you can use the function `print-matrix`
 to get a slightly more readable representation:
 
-    LS-USER> (print-matrix '#2a((1 2 3)(4 5 6)))
-    #2a(
-        (1 2 3)
-        (4 5 6)
-       )
+    LS-USER> (print-matrix '#2a((1 2 3)(4 5 6)) *standard-output*)
+        1 2 3
+        4 5 6
     NIL
 
 The `select` function can be used to extract elements or sub-arrays
@@ -3018,7 +3046,7 @@ result.
 ### Exercises {#exercises-8 .unnumbered}
 
 1.  The data set used in this example consists of sets of measurements
-    for ten aircraft. Data for five of the aricraft are contained in the
+    for ten aircraft. Data for five of the aircraft are contained in the
     variable `failure-times` in the file `aircraft.lsp`. The
     calculations of this section used the data for the second aircraft.
     Examine the data for the remaining four aircraft.

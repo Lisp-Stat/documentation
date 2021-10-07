@@ -6,8 +6,13 @@ description: >
   Example plots
 ---
 
+<!-- For our visualisations -->
+<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
 The plots here show equivalents to the [Vega-Lite example
-gallery](https://vega.github.io/vega-lite/examples/). 
+gallery](https://vega.github.io/vega-lite/examples/).
 
 
 ## Preliminaries
@@ -17,18 +22,21 @@ gallery](https://vega.github.io/vega-lite/examples/).
 Load Vega-Lite and network libraries:
 
 ```lisp
-(ql:quickload :lisp-stat)
-(ql:quickload :plot/vglt)
-(ql:quickload :dexador)
-(ql:quickload :access)
+(asdf:load-system :lisp-stat)
+(asdf:load-system :plot/vglt)
+(asdf:load-system :dexador)
+(asdf:load-system :access)
 ```
 
-### Load example data
+### Load car data
+
+Many of the examples in this section use the vega-lite version of the
+classic `mtcars` data set.
 
 ```lisp
 (in-package :lisp-stat)
 (defparameter vega-cars
-  (vglt:vl-to-df
+  (dfio:vl-to-df
     (dex:get
 	  "https://raw.githubusercontent.com/vega/vega-datasets/master/data/cars.json"
 	  :want-stream t)))
@@ -38,47 +46,57 @@ Load Vega-Lite and network libraries:
 and MacOS using Chrome. It is known to work on other platforms,
 notably Ubuntu/Firefox by using the `:browser :default` option to
 `plot-from-file`. This option simply tells the operating system to
-open the browser using it's built in (XDG) mechanism. See [issue
+open the browser using its built in (XDG) mechanism. See [issue
 #2](https://github.com/Lisp-Stat/documentation/issues/2) for more
 details. {{</alert >}}
 
-## Strip plot
-The Vega-Lite [strip plot
-example](https://vega.github.io/vega-lite/examples/tick_strip.html)
-shows the relationship between horsepower and the number of cylinders
-using tick marks.
+## Histograms
 
-{{< figure src="/docs/examples/vega-cars-strip-plot.png" >}}
+### Basic
 
-In this example we will show how to build a spec from beginning to
-end, without using a plot template.
+For this simple [histogram
+example](https://vega.github.io/vega-lite/examples/histogram.html)
+we'll use the IMDB film rating data set. Load it into a data frame:
 
-JSON
-```json
-{
-  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Shows the relationship between horsepower and the number of cylinders using tick marks.",
-  "data": {"url": "data/cars.json"},
-  "mark": "tick",
-  "encoding": {
-    "x": {"field": "Horsepower", "type": "quantitative"},
-    "y": {"field": "Cylinders", "type": "ordinal"}
-  }
-}
-```
-
-Lisp-Stat
 ```lisp
-(defparameter cars-strip-plot
-  (line-up-first
-	(vglt:spec)
-    (vglt:add "description" "Shows the relationship between horsepower and the number of cylinders using tick marks.")
-	(vglt:add "data" `(("values" . ,(vglt:df-to-alist vega-cars))))
-	(vglt:add "mark" "tick")
-	(vglt:add "encoding" '(("x" ("field" . "HORSEPOWER") ("type" . "quantitative") ("title" . "Horsepower"))
-	                       ("y" ("field" . "CYLINDERS")  ("type" . "ordinal") ("title" . "Cylinders"))))))
-(plot:plot-from-file (vglt:save-plot 'cars-strip-plot))
+(defparameter imdb
+  (dfio:vl-to-df
+    (dex:get
+	  "https://raw.githubusercontent.com/vega/vega-datasets/master/data/movies.json"
+	  :want-stream t)))
 ```
+
+and plot a basic histogram
+
+```lisp
+(vglt:plot (vglt:histogram imdb "IMDB-RATING"))
+```
+
+{{< vega id="imdb" spec="/docs/examples/imdb-histogram.vg.json" >}}
+
+<!--
+And here's the same image as a PNG:
+
+{{< figure src="/docs/examples/imdb-histogram.png" >}}
+
+
+<div id="imdb2"></div>
+<script type="text/javascript">
+  var spec = "/docs/examples/imdb-histogram.vg.json"
+  vegaEmbed('#imdb2', spec).then(function(result) {
+  // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+  }).catch(console.error);
+</script>
+
+
+### Relative frequency
+
+Relative frequency histogram. The data is binned with first
+transform. The number of values per bin and the total number are
+calculated in the second and third transform to calculate the relative
+frequency in the last transformation step.
+-->
+
 
 ## Scatter plots
 
@@ -108,7 +126,7 @@ JSON
 Lisp-Stat
 ```lisp
 (defparameter cars-scatter-plot
-  (vglt:scatter-plot vega-cars "HORSEPOWER" "MILES_PER_GALLON"))
+  (vglt:scatter-plot vega-cars "HORSEPOWER" "MILES-PER-GALLON"))
 (plot:plot-from-file (vglt:save-plot 'cars-scatter-plot))
 ```
 
@@ -169,13 +187,13 @@ JSON
 Lisp-Stat
 ```lisp
 (defparameter cars-scatter-text-plot
-   (line-up-first
+   (alexandria-2:line-up-first
     (vglt:spec)
-	(vglt:add "data" `(("values" . ,(vglt:df-to-alist vega-cars))))
+	(vglt:add "data" `(("values" . ,(dfio:df-to-alist vega-cars))))
 	(vglt:add "transform" #((("calculate" . "datum.ORIGIN[0]") ("as" . "OriginInitial"))))
 	(vglt:add "mark" "text")
 	(vglt:add "encoding" '(("x" ("field" . "HORSEPOWER") ("type" . "quantitative") ("title" . "Horsepower"))
-	                       ("y" ("field" . "MILES_PER_GALLON") ("type" . "quantitative") ("title" . "Miles per Gallon"))
+	                       ("y" ("field" . "MILES-PER-GALLON") ("type" . "quantitative") ("title" . "Miles per Gallon"))
 	                       ("color" . (("field" . "ORIGIN") ("type" . "nominal")))
 					       ("text" . (("field" . "OriginInitial") ("type" . "nominal")))))))
 (plot:plot-from-file (vglt:save-plot 'cars-scatter-text-plot))
@@ -305,12 +323,12 @@ JSON
 Lisp-Stat equivalent
 ```lisp
 (defparameter cars-interactive-splom
-  (line-up-first
+  (alexandria-2:line-up-first
    (vglt:spec)
-   (vglt:add "repeat" '(("row" . #("HORSEPOWER" "ACCELERATION" "MILES_PER_GALLON"))
-			            ("column" . #("MILES_PER_GALLON" "ACCELERATION" "HORSEPOWER"))))
+   (vglt:add "repeat" '(("row" . #("HORSEPOWER" "ACCELERATION" "MILES-PER-GALLON"))
+			            ("column" . #("MILES-PER-GALLON" "ACCELERATION" "HORSEPOWER"))))
    (vglt:add "spec"
-             `(("data" ("values" . ,(vglt:df-to-alist vega-cars)))
+             `(("data" ("values" . ,(dfio:df-to-alist vega-cars)))
 		      ("mark" . "point")
 		      ("params" . #(
 			        (("name" . "brush")
@@ -334,4 +352,42 @@ Lisp-Stat equivalent
 							                       ("type" . "nominal"))
 					                  ("value" . "grey"))))))))
 (plot:plot-from-file (vglt:save-plot 'cars-interactive-splom))
+```
+
+## Strip plot
+The Vega-Lite [strip plot
+example](https://vega.github.io/vega-lite/examples/tick_strip.html)
+shows the relationship between horsepower and the number of cylinders
+using tick marks.
+
+{{< figure src="/docs/examples/vega-cars-strip-plot.png" >}}
+
+In this example we will show how to build a spec from beginning to
+end, without using a plot template.
+
+JSON
+```json
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Shows the relationship between horsepower and the number of cylinders using tick marks.",
+  "data": {"url": "data/cars.json"},
+  "mark": "tick",
+  "encoding": {
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Cylinders", "type": "ordinal"}
+  }
+}
+```
+
+Lisp-Stat
+```lisp
+(defparameter cars-strip-plot
+  (alexandria-2:line-up-first
+	(vglt:spec)
+    (vglt:add "description" "Shows the relationship between horsepower and the number of cylinders using tick marks.")
+	(vglt:add "data" `(("values" . ,(dfio:df-to-alist vega-cars))))
+	(vglt:add "mark" "tick")
+	(vglt:add "encoding" '(("x" ("field" . "HORSEPOWER") ("type" . "quantitative") ("title" . "Horsepower"))
+	                       ("y" ("field" . "CYLINDERS")  ("type" . "ordinal") ("title" . "Cylinders"))))))
+(plot:plot-from-file (vglt:save-plot 'cars-strip-plot))
 ```
