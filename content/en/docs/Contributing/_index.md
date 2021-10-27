@@ -48,14 +48,18 @@ to say in their [CLA policy page](https://opensource.google/docs/cla/policy/):
 *The benefits that a company receives under a standard inbound license pass to downstream users as well. Explicit patent permissions and disclaimers of obligations and warranties clarify the recipients’ rights and duties. The broad grant of rights provides code recipients opportunities to make productive use of the software. Adherence to a single standard license promotes consistency and common understanding for all parties involved.*
 
 
-### Why do I have to sign?
+### How do I sign?
 
-In order to be legally binding a certain amount of legal ceremony
-must take place. This varies by jurisdiction. In some places,
-'[clickwrap](https://en.wikipedia.org/wiki/Clickwrap)' or '[browse
+In order to be legally binding a certain amount of legal ceremony must
+take place. This varies by jurisdiction. As an individual
+'[clickwrap](https://en.wikipedia.org/wiki/Clickwrap)' or '[browser
 wrap](https://en.wikipedia.org/wiki/Browse_wrap)' agreements are used,
-however these are gray areas of legal validity. A 'wet signature' is
-valid everywhere and avoids ambiguity of assent.
+For corporations, a 'wet signature' is required because it is valid
+everywhere and avoids ambiguity of assent.
+
+If you are an individual contributor, making a pull request from a
+personal account, the [cla-assistant](https://cla-assistant.io/) will
+automatically prompt you to digitally sign as part of the PR.
 
 ### What does it do?
 
@@ -64,11 +68,6 @@ The CLA essentially does three things. It ensures that the contributor agrees:
 1. To allow the project to use the source code and redistribute it
 2. The contribution is theirs to give, e.g. does not belong to their employer or someone else
 3. Does not contain any patented 'stuff'.
-
-### How long will it take?
-
-The entire process should take less than an hour. 30-40 minutes is
-typical.
 
 ### Mechanics of the CLA
 The Lisp-Stat project uses CLAs to accept regular contributions from
@@ -82,13 +81,8 @@ contribution; this simply gives us permission to use and redistribute
 your contributions as part of the project.
 
 You generally only need to submit a CLA once, so if you have already
-submitted one (even if it was for a different project), you probably
-do not need to do it again. To get the process started, download and
-sign the CLA ([A4](/Individual-Contributor-License-A4.pdf),
-[US-Letter](/Individual-Contributor-License-US-Letter.pdf)), then, in
-your PR (pull request), include a copy in a /LICENSE directory of the
-repository, creating the directory if it doesn't exist. This needs to
-be done only once per contributor.
+submitted one (even if it was for a different project), you do not
+need to do it again.
 
 
 ## Code of Conduct
