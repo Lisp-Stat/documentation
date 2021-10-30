@@ -210,7 +210,7 @@ Lisp vector and you can manipulate it like one.
 You can summarise a column with the `summarize-column` function:
 
 ```lisp
-LS-USER> (summarize-column 'mtcar:mpg)
+LS-USER> (summarize-column 'mtcars:mpg)
 
 MPG (Miles/(US) gallon)
  n: 32
@@ -305,9 +305,7 @@ CARB (Number of carburetors)
 10 (31%) x 4, 10 (31%) x 2, 7 (22%) x 1, 3 (9%) x 3, 1 (3%) x 6, 1 (3%) x 8, )
 ```
 
-Recall that a column named `model` is
-
-treated specially, notice
+Recall that the column named `model` is treated specially, notice
 that it is not included in the summary. You can see why it's excluded
 by examining the column's summary:
 

@@ -6,13 +6,6 @@ description: >
   Some ideas on how contribute to Lisp-Stat
 ---
 
-## SQLite
-
-There isn't a good, maintained wrapper for SQLite that doesn't have a
-restricted license. Using CFFI and autowrap, create a lisp interface
-for SQLite. This will allow us to use sqldf with something other than
-PostgreSQL.
-
 ## Special Functions
 
 The functions underlying the statistical distributions require skills
@@ -34,7 +27,7 @@ learn. Suitable for beginners to Common Lisp or statistics.
 
 ## Jupyter-Lab Integrations
 
-Jupyter Lab has two nice integrations into Pandas, the Python version
+Jupyter Lab has two nice integrations with Pandas, the Python version
 of Data-Frame, that would make great contributions:
 [Qgrid](https://github.com/quantopian/qgrid), which allows editing a
 data frame in Jupyter Lab, and [Jupyter

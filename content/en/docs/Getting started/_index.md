@@ -8,7 +8,7 @@ description: >
 
 ## Prerequisites
 
-- SBCL or CCL Common Lisp
+- SBCL ~~or CCL~~ Common Lisp
 - MacOS or Windows 10
 - Quicklisp
 - Chrome

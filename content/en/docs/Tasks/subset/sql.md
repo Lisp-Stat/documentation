@@ -43,9 +43,9 @@ your operating systems package manager.
 to locate the SQLite shared library. In most cases, this means CFFI
 will use the system default search paths. If you encounter errors in
 loading the library, consult the CFFI documentation. For MS Windows,
-the certain way to load is to ensure that the library is on the
-`PATH`, _regardless of whether you install via MSYS or natively_}
-{{</alert >}}
+the certain way to successfully load the DLL is to ensure that the
+library is on the `PATH`, _regardless of whether you install via MSYS
+or natively_.  {{</alert >}}
 
 To load `sqldf`:
 

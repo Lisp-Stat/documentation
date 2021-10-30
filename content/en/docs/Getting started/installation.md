@@ -30,7 +30,7 @@ through the basics of working with Lisp as a statistics practitioner.
 
 We assume an experienced user will have their own Emacs and lisp
 implementation and will want to install according to their own tastes
-and setup. The repo links you need are below, or you can install with `clpm` or 
+and setup. The repo links you need are below, or you can install with `clpm` or
 `quicklisp`.
 
 ## Prerequisites
@@ -129,10 +129,19 @@ the info tree.
 
 ### Initialization file
 
-You can put customisations to your environment in the user
-initialisation file, `#P"~/ls-init.lisp"`. It is loaded after the
-system initialisation file, and settings in your personal init file
-override the system defaults.
+You can put customisations to your environment in either your
+implementation's init file, or in a separate and load it from the
+implementation's init file. For example, I keep my customisations in
+`#P"~/ls-init.lisp"` and load it from SBCL's init file `~/.sbclrc` in
+a Lisp-Stat initialisation section like this:
+
+```lisp
+;;; Lisp-Stat
+(asdf:load-system :lisp-stat)
+(load #P"~/ls-init.lisp")
+```
+
+Settings in your personal lisp-stat init file override the system defaults.
 
 Here's an example `ls-init.lisp` file that loads some common R data sets.
 
