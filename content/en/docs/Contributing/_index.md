@@ -29,14 +29,16 @@ source projects.  We all wish for Lisp-Stat to be used and distributed
 as widely as possible, and for its users to be confident about the
 origins and continuing existence of the code.  The CLA help us achieve
 that goal. Although common, many in the Lisp community are unaware of
-CLA or their importance. Some often asked questions include:
+CLAs or their importance.
+
+Some often asked questions include:
 
 ### Why do you need a CLA?
 
 We need a CLA because, by law, all rights reside with the originator
 of a work unless otherwise agreed. The CLA allows the project to
 accept and distribute your contributions. Without your consent via a
-CLA, the project has no rights to ues the code. Here's what Google has
+CLA, the project has no rights to use the code. Here's what Google has
 to say in their [CLA policy page](https://opensource.google/docs/cla/policy/):
 
 *Standard inbound license*
@@ -53,7 +55,7 @@ to say in their [CLA policy page](https://opensource.google/docs/cla/policy/):
 In order to be legally binding a certain amount of legal ceremony must
 take place. This varies by jurisdiction. As an individual
 '[clickwrap](https://en.wikipedia.org/wiki/Clickwrap)' or '[browser
-wrap](https://en.wikipedia.org/wiki/Browse_wrap)' agreements are used,
+wrap](https://en.wikipedia.org/wiki/Browse_wrap)' agreements are used.
 For corporations, a 'wet signature' is required because it is valid
 everywhere and avoids ambiguity of assent.
 

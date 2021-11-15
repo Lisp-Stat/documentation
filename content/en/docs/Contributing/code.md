@@ -6,7 +6,8 @@ description: >
   How to contribute code to Lisp-Stat
 ---
 
-First, ensure you have signed a [contributor license
+First, if you are contributing on behalf of your employer, ensure you
+have signed a [contributor license
 agreement](/docs/contributing/#contributor-license-agreement). Then
 follow these steps for contributing to Lisp-Stat:
 
@@ -80,7 +81,7 @@ The following sections provide tips for working on the project:
 Please consider the following before submitting a pull request:
 
 - Code should be formatted according to the [Google Common Lisp Style Guide](https://google.github.io/styleguide/lispguide.xml)
-- All code should include unit tests. Currently we use [fiveam](https://github.com/lispci/fiveam) as the test framework for new projects, but are looking at [Parachute](https://github.com/Shinmera/parachute) and [Rove](https://github.com/fukamachi/rove) as more extensible alternatives.
+- All code should include unit tests. Older projects use [fiveam](https://github.com/lispci/fiveam) as the test framework for new projects. New project should use [Parachute](https://github.com/Shinmera/parachute).
 - Contributions should pass existing unit tests
 - New unit tests should be provided to demonstrate bugs and fixes
 - [Indentation in Common Lisp](https://dept-info.labri.fr/~idurand/enseignement/lst-info/PFS/Common/Strandh-Tutorial/indentation.html) is important for readability. Contributions should adhere to these guidelines. For the most part, a properly configured Emacs will do this automatically.

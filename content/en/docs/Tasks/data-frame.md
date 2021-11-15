@@ -18,12 +18,7 @@ then turn it into a data frame again to use in modeling or plotting.
 
 {{< alert title="Note" >}}In this document we refer to _column_ and
 _variable_ interchangeably. Likewise _factor_ and _category_ refer to a
-variable type. Where necessary we distinguish the terminology.
-
-The examples assume that you are `in-package :LS-USER`. If not, you
-will need to use a package prefix if following along.  All the samples
-may be copied to the clipboard using the `copy` button in the
-upper-right corner of the sample code box.{{</alert >}}
+variable type. Where necessary we distinguish the terminology.{{</alert >}}
 
 ### Load/install
 
@@ -36,12 +31,18 @@ independently.
 (asdf:load-system :lisp-stat)
 ```
 
-Within the Lisp-Stat system, the `LS-USER` package is set-up for
-statistics work. Type the following to enter the package:
+Within the Lisp-Stat system, the `LS-USER` package is the package for
+you to do statistics work. Type the following to enter the package:
 
 ```lisp
 (in-package :ls-user)
 ```
+
+{{< alert title="Note" >}}The examples assume that you are `in-package
+:LS-USER`. You should make a habit of always working from the `LS-USER`
+package.  All the samples may be copied to the clipboard using the
+`copy` button in the upper-right corner of the sample code
+box.{{</alert >}}
 
 ## Common Lisp Implementation
 
