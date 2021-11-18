@@ -35,7 +35,7 @@ environment. We assume you have already obtained the libraries via a package man
 ### Data
 
 ```lisp
-(defparameter cars
+(defdf cars
   (dfio:vl-to-df
     (dex:get
 	  "https://raw.githubusercontent.com/vega/vega-datasets/master/data/cars.json"
