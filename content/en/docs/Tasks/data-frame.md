@@ -1043,7 +1043,7 @@ function.  Using the `mtcars-small` data frame, defined in [export data
 frames](/docs/tasks/data-frame/#export-data-frames) above:
 
 ```lisp
-(column mtcars-small 'mpg)
+(column mtcars-small 'mtcars:mpg)
 ;; #(21 21 22.8d0 21.4d0 18.7d0)
 ```
 
@@ -1068,7 +1068,7 @@ To get all the columns as a vector, use the `columns` function:
 You can also return a subset of the columns by passing in a selection:
 
 ```lisp
-(columns mtcars-small '(mpg wt))
+(columns mtcars-small '(mtcars:mpg mtcars:wt))
 ;; #(#(21 21 22.8d0 21.4d0 18.7d0) #(2.62d0 2.875d0 2.32d0 3.215d0 3.44d0))
 ```
 
@@ -1529,9 +1529,17 @@ condition.  For example if you want to know how many cars have a MPG
 (miles-per-galleon) rating greater than 20, you could use:
 
 ```lisp
-(count-rows mtcars 'mpg #'(lambda (x) (< 20 x)))
+(use-package 'mtcars)
+(count-rows mtcars 'mtcars:mpg #'(lambda (x) (< 20 x)))
 ; => 14
 ```
+
+Notice the first line `(use-package 'mtcars)`. This makes all of the
+symbols that name variables accessible in the LS-USER package. For
+large projects, you might want to configure the data frame package,
+for example importing `CL` and doing your work from there. This is
+mostly useful when you have several large, complicated datasets and
+want to work with all of them at the REPL.
 
 ### do-rows
 
