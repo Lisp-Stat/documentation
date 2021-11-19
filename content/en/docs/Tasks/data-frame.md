@@ -498,7 +498,7 @@ specific columns:
 
 The functions in [array-operations](/docs/tasks/array-operations/) are
 helpful in further dealing with data frames as vectors and arrays. For
-example you could convert data frame to a transposed array by using
+example you could convert a data frame to a transposed array by using
 [aops:combine](/docs/tasks/array-operations/#combine) with the
 `columns` function:
 
@@ -709,7 +709,7 @@ part of this data:
 ;; 5   6          5.4         3.9          1.7         0.4 setosa
 ```
 
-Notice a couple of things.  First, there is a column `X27`. In fact if
+Notice a couple of things.  First, there is a column `X29`. In fact if
 you look back at previous data frame output in this tutorial you will
 notice various columns named `X` followed by some number.  This is
 because the column was not given a name in the data set, so a name was
@@ -721,9 +721,10 @@ We will see how to clean this up this data frame in the next sections.
 The second thing to note is the row numbers on the far left side.
 When Lisp-Stat prints a data frame it automatically adds row
 numbers. Row and column numbering in Lisp-Stat start at 0.  In R they
-start with 1.  Row numbers make it convenient to selection sections from
-a data frame, but they are not part of the data and cannot be selected
-or manipulated.  They only appear when a data frame is printed.
+start with 1.  Row numbers make it convenient to select data sections
+from a data frame, but they are not part of the data and cannot be
+selected or manipulated themselves.  They only appear when a data
+frame is printed.
 
 ### Access a variable
 
@@ -756,7 +757,7 @@ Note that with `select` we passed the _symbol_ 'mpg (you can
 tell it's a symbol because of the quote in front of it).
 
 So, the rule here is, if you want the _value_, refer to it directly,
-e.g. `mtcars$mpg`. If you are referring to the _column_, use the
+e.g. `mtcars:mpg`. If you are referring to the _column_, use the
 symbol. Data frame operations typically require the symbol, where as
 Common Lisp and other packages that take vectors use the direct access
 form.
@@ -1149,7 +1150,7 @@ Now let's add multiple columns destructively using `add-columns!`
 
 As part of the recoding and data cleansing process, you will want to add
 properties to your variables. In Common Lisp, these are `plists` that
-reside on the variable symbols, e.g. `mtcars$mpg`.  In R they are
+reside on the variable symbols, e.g. `mtcars:mpg`.  In R they are
 known as `attributes`.  By default, there are three properties for
 each variable: type, unit and label (documentation).  When you load
 from external formats, like CSV, these properties are all `nil`; when
@@ -1179,7 +1180,7 @@ so loads the column as a mixture of integers and floats. Let's reload
 and look at the `mpg` variable:
 
 ```lisp
-LS-USER> mtcars$mpg
+LS-USER> mtcars:mpg
 #(21 21 22.8d0 21.4d0 18.7d0 18.1d0 14.3d0 24.4d0 22.8d0 19.2d0 17.8d0 16.4d0
   17.3d0 15.2d0 10.4d0 10.4d0 14.7d0 32.4d0 30.4d0 33.9d0 21.5d0 15.5d0 15.2d0
   13.3d0 19.2d0 27.3d0 26 30.4d0 15.8d0 19.7d0 15 21.4d0)
@@ -1199,7 +1200,7 @@ all this for us. Notice the changes after we run the function:
 ```lisp
 LS-USER> (coerce-types mtcars)
 NIL
-LS-USER> mtcars$mpg
+LS-USER> mtcars:mpg
 #(21.0d0 21.0d0 22.8d0 21.4d0 18.7d0 18.1d0 14.3d0 24.4d0 22.8d0 19.2d0 17.8d0
   16.4d0 17.3d0 15.2d0 10.4d0 10.4d0 14.7d0 32.4d0 30.4d0 33.9d0 21.5d0 15.5d0
   15.2d0 13.3d0 19.2d0 27.3d0 26.0d0 30.4d0 15.8d0 19.7d0 15.0d0 21.4d0)
@@ -1396,7 +1397,7 @@ Now check that it worked:
 ;; 1 Mazda RX4 Wag  21   6  160 110  3.9 2.875 17.02  0  1    4    4
 ```
 
-We can now refer to `mtcars$model`
+We can now refer to `mtcars:model`
 
 ```lisp
 mtcars:model
@@ -1834,11 +1835,11 @@ frame, and then print them as you wish.
 You can also describe or summarize individual columns:
 
 ```lisp
-LS-USER> (describe 'mtcars$mpg)
-LS-USER:MTCARS$MPG
+LS-USER> (describe 'mtcars:mpg)
+MTCARS:MPG
   [symbol]
 
-MTCARS$MPG names a symbol macro:
+MPG names a symbol macro:
   Expansion: (AREF (COLUMNS MTCARS) 1)
 
 Symbol-plist:
@@ -1848,7 +1849,7 @@ Symbol-plist:
 ```
 
 ```lisp
-LS-USER> (summarize-column 'mtcars$mpg)
+LS-USER> (summarize-column 'mtcars:mpg)
 
 MPG (Miles/(US) gallon)
  n: 32
@@ -1945,7 +1946,7 @@ see which rows of `ozone` are missing, we can use the `which`
 function:
 
 ```lisp
-(which aq$ozone :predicate #'missingp)
+(which aq:ozone :predicate #'missingp)
 ;#(4 9 24 25 26 31 32 33 34 35 36 38 41 42 44 45 51 52 53 54 55 56 57 58 59 60 64 71 74 82 83 101 102 106 114 118 149)
 ```
 
@@ -1980,7 +1981,7 @@ To exclude missing values from a single column, use the Common Lisp
 `remove` function:
 
 ```lisp
-(remove :na aq$ozone)
+(remove :na aq:ozone)
 ;#(41 36 12 18 28 23 19 8 7 16 11 14 18 14 34 6 30 11 1 11 4 32 ...
 ```
 
