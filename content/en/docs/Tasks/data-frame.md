@@ -126,7 +126,7 @@ working with data frames easier. You use it the same way you'd use
 `defparameter`, for example:
 
 ```lisp
-(defdf foo <any-function returning a data frame>
+(defdf foo <any-function returning a data frame> )
 ```
 
 We'll use both ways of defining data frames in this manual. The access
@@ -306,7 +306,7 @@ saves the data in lisp format.
 
 #### All datasets
 
-To work with all of the R data sets, we recommend you use git to
+To work with all of the R data sets, we recommend you use `git` to
 download the repository to your hard drive. For example I downloaded the
 example data to the `s:` drive like this:
 
@@ -389,7 +389,7 @@ that don't exist in `df`.
 Just like it says on the tin, `as-alist` takes a data frame and
 returns an `alist` version of it (formatted here for clearer output --
 a pretty printer that outputs an alist in this format would be a
-welcome addition to CL/Lisp-Stat)
+welcome addition to Lisp-Stat)
 
 ```lisp
 (as-alist mtcars-small)
@@ -492,7 +492,7 @@ You can also pass a selection to the `columns` function to return
 specific columns:
 
 ```lisp
-(columns mtcars-small 'mpg)
+(columns mtcars-small 'mtcars:mpg)
 ; #(21 21 22.8d0 21.4d0 18.7d0)
 ```
 
@@ -734,7 +734,7 @@ convention.
 
 
 ```lisp
-mtcars$mpg
+mtcars:mpg
 ; #(21 21 22.8D0 21.4D0 18.7D0 18.1D0 14.3D0 24.4D0 22.8D0 19.2D0 17.8D0 16.4D0
   17.3D0 15.2D0 10.4D0 10.4D0 14.7D0 32.4D0 30.4D0 33.9D0 21.5D0 15.5D0 15.2D0
   13.3D0 19.2D0 27.3D0 26 30.4D0 15.8D0 19.7D0 15 21.4D0)

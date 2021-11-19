@@ -10,10 +10,10 @@ description: >
 
 ## Overview {#Overview}
 
-`sqldf` is a library for querying data in a lisp `data-frame` using
+`sqldf` is a library for querying data in a `data-frame` using
 SQL, optimised for memory consumption.  Any query that can be done in
 SQL can also be done in the API, but since SQL is widely known, many
-developers find it more convenient to use SQL.
+developers find it more convenient to use.
 
 To use SQL to query a data frame, the developer uses the `sqldf`
 function, using the data frame name (converted to SQL identifier
@@ -71,9 +71,10 @@ ensure you are in the LS-USER package {{</alert >}}
 
 This example shows how to limit the number of rows output by the
 query. It also illustrates changing the column name to meet SQL
-identifier requirements.  In particular the data frame data set has
+identifier requirements.  In particular, the R CSV file has
 `sepal.length` for a column name, which is converted to `sepal-length`
-for the data frame, and we query it with `sepal_length`.
+for the data frame, and we query it with `sepal_length` for SQL
+because '-' is not a valid character in SQL identifers.
 
 First, let's see how big the `iris` data set is:
 
@@ -147,7 +148,7 @@ For each species, show the two rows with the largest sepal lengths:
 
 Recall the note above about X7 being the row id. This may be different
 depending on how many other data frames with an unnamed column have
-been imported.
+been imported in your Lisp-Stat session.
 
 ## SQLite access
 
@@ -168,10 +169,10 @@ the column names to be lisp like by converting "." and "\_" to
 "-". Note that the CSV reading tools of SQLite (for example,
 [DB-Browser for SQLite](https://sqlitebrowser.org/) are _much_ faster
 than the lisp libraries, sometimes 15x faster.  This means that often
-the quickest way to load a data-frame from CSV data is to first read it
-into a SQLite database, and then load the database table into a data
-frame.  In practice, SQLite turn out to be a convenient file format
-for storing data frames.
+the quickest way to load a data-frame from CSV data is to first read
+it into a SQLite database, and then load the database table into a
+data frame.  In practice, SQLite also turns out to be a convenient
+file format for storing data frames.
 
 ## Roadmap
 
@@ -179,7 +180,7 @@ SQLDF is currently written using an apparently abandoned library,
 [cl-sqlite](https://github.com/TeMPOraL/cl-sqlite).  Pull requests
 from 2012 have been made with no response from the author, and the
 SQLite C API has improved considerably in the 12 years since
-the 'cl-sqlite` FFI was last updated.
+the `cl-sqlite` FFI was last updated.
 
 We choose CL-SQLite because, at the time of writing, it was the only
 SQLite library with a commercially acceptable license. Since then

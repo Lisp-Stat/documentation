@@ -5,7 +5,7 @@ author: ["Steven Nunez"]
 date: 2021-03-07
 weight: 4
 description: >
-  Selecting subsets of data
+  Selecting Cartesian subsets of data
 ---
 
 ## Overview {#Overview}
