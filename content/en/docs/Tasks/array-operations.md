@@ -128,6 +128,7 @@ some set of values, say perhaps a time-series of stock prices:
 aops:flatten *a*) ; => #(1 2 3 4 5 6)
 ```
 
+### split
 The real fun starts with `split`, which splits off sub-arrays nested
 within a given axis:
 
@@ -202,9 +203,11 @@ Finally, **`reshape`** can be used to displace arrays into a different
 shape:
 
 ```lisp
-(aops:reshape *a* '(3 2)) ; => #2A((1 2)
-                          ;        (3 4)
-						  ;        (5 6))
+(aops:reshape #2A((1 2 3)
+                  (4 5 6)) '(3 2))
+; => #2A((1 2)
+;        (3 4)
+;        (5 6))
 ```
 
 You can use `t` for one of the dimensions, to be filled in
@@ -244,9 +247,9 @@ When the resulting element type cannot be inferred, functions that
 create and transform arrays are provided in pairs; one of these will
 allow you to specify the array-element-type of the result, while the
 other assumes it is `t`.  The former ends with a `*`, and the
-`element-type` is always its first argument.  I give examples for the
-versions without `*`, use the other when you are optimizing your code
-and you are sure you can constrain to a given element-type.
+`element-type` is always its first argument.  Examples are given for
+the versions without `*`; use the other when you are optimizing your
+code and you are sure you can constrain to a given element-type.
 
 *Element traversal order of these functions is unspecified*.  The
 reason for this is that the library may use parallel code in the
@@ -292,22 +295,35 @@ For example:
 
 ### generate
 **`generate`** (and `generate*`) allow you to generate arrays using
-functions.
+functions. The function signatures are:
+
+```
+generate* (element-type function dimensions &optional arguments)
+generate (function dimensions &optional arguments)
+```
+
+Where `arguments` are passed to `function`. Possible arguments are:
+
+ - no arguments, when ARGUMENTS is nil
+ - the position (= row major index), when ARGUMENTS is :POSITION
+ - a list of subscripts, when ARGUMENTS is :SUBSCRIPTS
+ - both when ARGUMENTS is :POSITION-AND-SUBSCRIPTS
+
 
 ```lisp
 (aops:generate (lambda () (random 10)) 3) ; => #(6 9 5)
+
 (aops:generate #'identity '(2 3) :position) ; => #2A((0 1 2)
                                             ;        (3 4 5))
+
 (aops:generate #'identity '(2 2) :subscripts)
 ; => #2A(((0 0) (0 1))
 ;        ((1 0) (1 1)))
+
 (aops:generate #'cons '(2 2) :position-and-subscripts)
 ; => #2A(((0 0 0) (1 0 1))
 ;        ((2 1 0) (3 1 1)))
 ```
-
-Depending on the last argument, the function will be called with the
-(row-major) position, the subscripts, both, or no argument.
 
 ### permute
 **`permute`** can permute subscripts (you can also invert, complement, and
@@ -376,7 +392,7 @@ the function that calculates the sum. `margin` automates that for you:
 
 ```lisp
 (aops:margin (lambda (column)
-             (reduce #'+ column))
+               (reduce #'+ column))
            #2A((0 1)
                (2 3)
                (5 7)) 0) ; => #(7 11)
