@@ -1,6 +1,5 @@
 ---
 title: "SQLDF"
-linkTitle: "SQL"
 author: ["Steven Nunez"]
 date: 2021-03-07
 weight: 5
@@ -160,7 +159,17 @@ these functions are exported for general use.
 to a database. Each take a connection to a database, which may be file
 or memory based, a table name and a data frame. Multiple data frames,
 with different table names, may be written to a single SQLite file
-this way.
+this way.  For example, to write `iris` to disk:
+
+```lisp
+LS-USER> (defparameter *conn* (sqlite:connect #P"c:/Users/lisp-stat/data/iris.db3")) ;filel to save to
+*CONN*
+
+LS-USER> (sqldf::create-df-table *conn* 'iris iris) ; create the table * schema
+NIL
+LS-USER> (sqldf:write-table *conn* 'iris iris) ; write the data
+NIL
+```
 
 ### Read a data frame
 
