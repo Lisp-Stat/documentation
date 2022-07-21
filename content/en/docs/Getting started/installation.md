@@ -1,17 +1,17 @@
 ---
 title: "Installation"
-date: 2021-04-27
+date: 2022-06-18
 weight: 1
 description: >
-  Automated and manual installation
+  Installing and configuring Lisp-Stat
 ---
 
 ## New to Lisp
 
 If you are a Lisp newbie and want to get started as fast as possible,
-then Portacle is probably your best option. Portacle is a
-multi-platform IDE for Common Lisp that includes Emacs, SBCL, Git,
-Quicklisp, all configured and ready to use.
+then Portacle is your best option.  Portacle is a multi-platform IDE
+for Common Lisp that includes Emacs, SBCL, Git, Quicklisp, all
+configured and ready to use.
 
 <div class="mx-auto">
 	<a class="btn btn-lg btn-primary mr-3 mb-4" href="https://portacle.github.io/">
@@ -19,28 +19,97 @@ Quicklisp, all configured and ready to use.
 	</a>
 </div>
 
-If you are an existing emacs user, you can [configure emacs for Common
-Lisp](https://github.com/susam/emacs4cl).
+Users new to lisp should also consider going through the Lisp-Stat
+[basic tutorial](/docs/tutorials/basics), which guides you
+step-by-step through the basics of working with Lisp as a statistics
+practitioner.
 
-Users new to lisp should also consider going through the [basic
-tutorial](/docs/tutorials/basics), which guides you step-by-step
-through the basics of working with Lisp as a statistics practitioner.
+If you currently use emacs for other languages, you can [configure
+emacs for Common Lisp](https://github.com/susam/emacs4cl).
 
 ## Experienced with Lisp
 
 We assume an experienced user will have their own Emacs and lisp
 implementation and will want to install according to their own tastes
-and setup. The repo links you need are below, or you can install with `clpm` or
-`quicklisp`.
+and setup. The repo links you need are below, or you can install with
+`clpm` or `quicklisp`.
 
 ## Prerequisites
 
-All that is needed is an ANSI Common Lisp implementation. Development
-is done with Genera, CCL and SBCL. Other platforms _should_ work, but
-will not have been tested.
+All that is needed is an ANSI Common Lisp implementation.  Development
+is done with Genera and SBCL.  Other platforms _should_ work, but will
+not have been tested, nor can we offer support (maintaining & testing
+on multiple implementations requires more resources than the project
+has available).  Note that CCL is not in good health, and there are a
+few numerical bugs that remain unfixed.  A shame, as we really liked
+CCL.
 
 ## Installation
 
+The easiest way to install Lisp-Stat is via
+[Quicklisp](https://www.quicklisp.org/beta/), a library manager for
+Common Lisp.  It works with your existing Common Lisp implementation to
+download, install, and load any of over 1,500 libraries with a few
+simple commands.
+
+Quicklisp is like a package manager in Linux.  It can load packages
+from the local file system, or download them if required.  If you have
+quicklisp installed, you can use:
+
+```lisp
+(ql:quickload :lisp-stat)
+```
+
+Quicklisp is good at managing the project dependency retrieval, but
+most of the time we use ASDF because of its REPL integration.  You only
+have to use Quicklisp once to get the dependencies, then use ASDF for
+day-to-day work.
+
+You can install additional Lisp-Stat modules in the same way.  For example to install the `SQLDF` module:
+
+```lisp
+(ql:quickload :sqldf)
+```
+
+## Loading
+
+Once you have obtained Lisp-Stat via Quicklisp, you can load in one of two ways:
+
+- ASDF
+- Quicklisp
+
+### Loading with ASDF
+
+```lisp
+(asdf:load-system :lisp-stat)
+```
+
+If you are using emacs, you can use the [slime
+shortcuts](https://slime.common-lisp.dev/doc/html/Shortcuts.html) to
+load systems by typing `,` and then `load-system` in the mini-buffer.
+This is what the Lisp-Stat developers use most often, the shortcuts
+are a helpful part of the workflow.
+
+### Loading with Quicklisp
+
+To load with Quicklisp:
+```lisp
+(ql:quickload :lisp-stat)
+```
+
+Quicklisp uses the same ASDF command as above to load Lisp-Stat.
+
+## Updating Lisp-Stat
+
+When a new release is announced, you can update via Quicklisp like so:
+
+```lisp
+(ql:update-dist "lisp-stat")
+```
+
+
+
+<!--
 ### ASDF
 If you want to modify Lisp-Stat you'll need to retrieve the
 files from github and place them in a directory that is known to
@@ -61,9 +130,9 @@ git clone https://github.com/Symbolics/alexandria-plus && \
 git clone https://github.com/Lisp-Stat/lisp-stat.git
 ```
 
-The above assumes you have the default installation
-directories. Adjust accordingly if you have changed this. If this is
-the first time running Lisp-Stat, use Quicklisp to get the
+The above assumes you are using the default installation directories
+(~/common-lisp/).  Adjust accordingly if you have changed this. If
+this is the first time running Lisp-Stat, use Quicklisp to get the
 dependencies:
 
 ```lisp
@@ -84,34 +153,39 @@ the first time around), reset the system configuration with:
 ```
 
 and try again.
-
-### Quicklisp
-If you have quicklisp installed, you can use:
-
-```lisp
-(ql:quickload :lisp-stat)
-```
-
-If Quicklisp claims it cannot find the systems, try this at the REPL:
-
-```lisp
-(ql:register-local-projects)
-```
-
-Quicklisp is good at managing the project depencency retrieval, but
-most of the time we use ASDF because of its REPL integration. You only
-have to use Quicklisp once to get the dependencies, then use ASDF for
-day-to-day work.
+-->
 
 
-### Documentation
+## IDEs {#ides}
+There are a couple of IDE's to consider:
 
-Lisp-Stat reference manuals are generated with the
-[declt](https://github.com/didierverna/declt) system. This produces
-high quality PDFs, markdown, HTML and Info output.  The API reference
-manuals are available in HTML in the [reference](/docs/reference)
-section of this website; PDF and Info files that can be download from
-the individual systems `docs/` directory.
+### Emacs {#emacs}
+
+Emacs, with the [slime](https://common-lisp.net/project/slime/)
+package is the most tested IDE and the one the authors use.  If you
+are using one of the starter lisp packages mentioned in the [getting
+started](/docs/getting-started/installation) section, this will have
+been installed for you. Otherwise, slime/swank is available in
+quicklisp and clpm.
+
+### Jupyter Lab {#jupyter-lab}
+
+[Jupyter Lab](http://jupyter.org/) and
+[common-lisp-jupyter](https://github.com/yitzchak/common-lisp-jupyter)
+provide an environment similar to RStudio for working with data and
+performing analysis.  The [Lisp-Stat analytics
+examples](/docs/examples/statistics) use Jupyter Lab to illustrate
+worked examples based on the book, *Introduction to the Practice of
+Statistics*.
+
+### Visual Studio Code
+
+This is a very popular IDE, with improving support for Common Lisp.
+If you already use this editor, it is worth investigating to see if
+the Lisp support is sufficient for you to perform an analysis.
+
+
+## Documentation
 
 You can install the info manuals into the emacs help system and this
 allows searching and browsing from within the editing environment.  To
@@ -124,16 +198,28 @@ installation:
 install-info --add-once select.info /c/msys64/mingw64/share/info/dir
 ```
 
-installs the `select` manual into a Lisp-Stat node at the top level of
-the info tree.
+installs the `select` manual at the top level of the info tree.  You
+can also install the common lisp hyperspec and browse documentation
+for the base Common Lisp system.  This really is the best way to use
+documentation whilst programming Common Lisp and Lisp-Stat.  See the
+[emacs external
+documentation](https://www.emacswiki.org/emacs/ExternalDocumentation)
+and "[How do I install a piece of Texinfo
+documentation?](https://www.gnu.org/software/emacs/manual/html_node/efaq/Installing-Texinfo-documentation.html)"
+for more information on installing help files in emacs.
 
-### Initialization file
+See [getting help](/docs/getting-started/getting-help/) for
+information on how to access Info documentation as you code.  This is
+the mechanism used by Lisp-Stat developers because you don't have to
+leave the emacs editor to look up function documentation in a browser.
+
+## Initialization file
 
 You can put customisations to your environment in either your
-implementation's init file, or in a separate and load it from the
-implementation's init file. For example, I keep my customisations in
-`#P"~/ls-init.lisp"` and load it from SBCL's init file `~/.sbclrc` in
-a Lisp-Stat initialisation section like this:
+implementation's init file, or in a personal init file and load it
+from the implementation's init file.  For example, I keep my
+customisations in `#P"~/ls-init.lisp"` and load it from SBCL's init
+file `~/.sbclrc` in a Lisp-Stat initialisation section like this:
 
 ```lisp
 ;;; Lisp-Stat
@@ -143,21 +229,18 @@ a Lisp-Stat initialisation section like this:
 
 Settings in your personal lisp-stat init file override the system defaults.
 
-Here's an example `ls-init.lisp` file that loads some common R data sets.
+Here's an example `ls-init.lisp` file that loads some common R data sets:
 
 ```lisp
-(require 'dexador)
-;;; Load default data sets
 (defparameter *default-datasets*
-  '(rdata:iris rdata:toothgrowth rdata:plantgrowth rdata:usarrests)
-  "Data sets loaded as part of personal Lisp-Stat initialisation. Available in every session.")
+  '("tooth-growth" "plant-growth" "usarrests" "iris" "mtcars")
+  "Data sets loaded as part of personal Lisp-Stat initialisation.
+  Available in every session.")
 
-(progn				  ;do all initialisation here
-  (map nil #'(lambda (x)
-	       (format t "Loading ~A" (make-symbol (symbol-name x)))
-	       (eval `(defdf ,(intern (symbol-name x))
-			  (read-csv ,(symbol-value x)))))
-       *default-datasets*))
+(map nil #'(lambda (x)
+	     (format t "Loading ~A~%" x)
+	     (data x))
+	     *default-datasets*)
 ```
 
 With this init file, you can immediately access the data sets in the
@@ -189,29 +272,30 @@ Change to the Lisp-Stat user package:
 Load some data:
 
 ```lisp
-(load #P"LS:DATASETS;CAR-PRICES")
+(data :sg-weather)
 ```
 
 Find the sample mean and median:
 
 ```lisp
-(mean car-prices)   ; => 2.810199998617172d0
-(median car-prices) ; => 2.55
+(mean sg-weather:precipitation) ;=> .0714
+(median sg-weather:max-temps)   ;=> 31.55
 ```
 
 ## Next steps
 
 {{< cardpane >}}
   {{< card header="**Get Started**" >}}
-  [Load & plot](/docs/getting-started/)<br/>
-  [Data Frame](/docs/getting-started/data-frame/)
+  [Get Help](/docs/getting-started/getting-help)<br/>
+  [Plot in 5 minutes](/docs/getting-started/)
   {{< /card >}}
   {{< card header="**Examples**" >}}
-  [Analytics](/docs/examples/notebooks)<br/>
+  [Analytics](/docs/examples/statistics)<br/>
   [Plotting](/docs/examples/plotting)
   {{< /card >}}
   {{< card header="**R Users**" >}}
-  [Basic tutorial](/docs/tutorials/basics)
+  [Basic tutorial](/docs/tutorials/basics)<br/>
+  [Data Frame](/docs/tutorials/data-frame/)
   {{< /card >}}
 {{< /cardpane >}}
 

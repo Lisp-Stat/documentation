@@ -1,7 +1,7 @@
 ---
 title: "Basics"
 date: 2021-02-20
-weight: 4
+weight: 1
 description: >
   An introduction to the basics of LISP-STAT
 ---
@@ -692,7 +692,7 @@ variables, `gas-heat` and `electric-heat`.[^3]
 
 1.  Devore and Peck [@DevorePeck page 18, Example 2] give advertised
     prices for a sample of 50 used Japanese subcompact cars. [Create a
-    data-frame](/docs/tasks/data-frame/#create-data-frames) and obtain
+    data-frame](/docs/manuals/data-frame/#create-data-frames) and obtain
     some plots and summary statistics for this data.  Experiment with
     some transformations of the data as well.  The data set is called
     `car-prices` in the file `car-prices.lisp`.  The prices are given
@@ -1533,7 +1533,7 @@ To save a data frame, use the `save` function. For example to save the
 
 
 For more information on saving data frames see the [save section in
-the manual](https://lisp-stat.dev/docs/tasks/data-frame/#save-data)
+the manual](https://lisp-stat.dev/docs/manuals/data-frame/#save-data)
 function.
 -->
 
@@ -2688,7 +2688,7 @@ graphics files loaded on start up. Further details will be given in
 LISP-STAT includes support for multidimensional arrays. In addition to
 the standard Common Lisp array functions, LISP-STAT also includes a
 system called
-[array-operations](/docs/tasks/array-operations/).
+[array-operations](/docs/manuals/array-operations/).
 
 <!-- document the linear algebra functions, if any, in alexandria or numerical-utilities
 number of linear algebra functions such as `inverse`,

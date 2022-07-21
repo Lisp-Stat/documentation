@@ -71,7 +71,7 @@ of this code and parts thereof."
 : Common Lisp implementation of "Quickprop", a variation on
   back-propagation. For a description of the Quickprop algorithm, see
   [Faster-Learning Variations on Back-Propagation: An Empirical
-  Study](ce.sharif.edu/courses/84-85/2/ce667/resources/root/Seminar_no_3/qp_tr.pdf)
+  Study](http://ce.sharif.edu/courses/84-85/2/ce667/resources/root/Seminar_no_3/qp_tr.pdf)
   by Scott E. Fahlman in Proceedings of the 1988 Connectionist Models
   Summer School, Morgan-Kaufmann, 1988. Scott E. Fahlman. Public
   domain. <br/>
@@ -215,7 +215,7 @@ statistical concepts.  They are generally simple in nature from a the
 perspective of a statistical practitioner.
 
 [ElToY](https://github.com/Lisp-Stat/xls-archive/tree/master/statistics/introstat/eltoy/)
-: ElToY is a collection of three program written in
+: ElToY is a collection of three programs written in
   XLISP-STAT. Dist-toy displays a univariate distribution dynamically
   linked to its parameters. CLT-toy provides an illustration of the
   central limit theorem for univariate distributions. ElToY provides a

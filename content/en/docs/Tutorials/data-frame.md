@@ -1,0 +1,376 @@
+---
+title: "Data Frame"
+date: 2022-06-18
+weight: 2
+description: >
+  A Data Frame Primer
+---
+
+## Load data frame
+```lisp
+(ql:quickload :data-frame)
+```
+
+## Load data
+We will use one of the [example data sets from R](/docs/manuals/data-frame/#example-datasets),
+[mtcars](https://vincentarelbundock.github.io/Rdatasets/doc/datasets/mtcars.html),
+for these examples.  First, switch into the Lisp-Stat package:
+
+```lisp
+(in-package :ls-user)
+```
+
+Now load the data:
+
+```lisp
+(data :mtcars-example)
+;; WARNING: Missing column name was filled in
+;; T
+```
+
+
+## Examine data
+
+Lisp-Stat's printing system is integrated with the [Common Lisp Pretty
+Printing](https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node253.html)
+facility.  To control aspects of printing, you can use the built in
+lisp pretty printing configuration system.  By default Lisp-Stat sets
+`*print-pretty*` to `nil`.
+
+### Basic information
+Type the name of the data frame at the REPL to get a simple one-line
+summary.
+
+```lisp
+mtcars
+;; #<DATA-FRAME MTCARS (32 observations of 12 variables)
+;; Motor Trend Car Road Tests>
+```
+
+### Printing data
+
+By default, the `head` function will print the first 6 rows:
+
+```lisp
+(head mtcars)
+;;   X1                 MPG CYL DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
+;; 0 Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+;; 1 Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+;; 2 Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+;; 3 Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+;; 4 Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+;; 5 Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
+```
+
+and `tail` the last 6 rows:
+
+```lisp
+(tail mtcars)
+;;   X1              MPG CYL  DISP  HP DRAT    WT QSEC VS AM GEAR CARB
+;; 0 Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.7  0  1    5    2
+;; 1 Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.9  1  1    5    2
+;; 2 Ford Pantera L 15.8   8 351.0 264 4.22 3.170 14.5  0  1    5    4
+;; 3 Ferrari Dino   19.7   6 145.0 175 3.62 2.770 15.5  0  1    5    6
+;; 4 Maserati Bora  15.0   8 301.0 335 3.54 3.570 14.6  0  1    5    8
+;; 5 Volvo 142E     21.4   4 121.0 109 4.11 2.780 18.6  1  1    4    2
+```
+
+`print-data` can be used to print the whole data frame:
+
+```lisp
+(print-data mtcars)
+
+;;    X1                   MPG CYL  DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
+;;  0 Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+;;  1 Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+;;  2 Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+;;  3 Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+;;  4 Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+;;  5 Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+;;  6 Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+;;  7 Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+;;  8 Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+;;  9 Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+;; 10 Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+;; 11 Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+;; 12 Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+;; 13 Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+;; 14 Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+;; 15 Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+;; 16 Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+;; 17 Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+;; 18 Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+;; 19 Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+;; 20 Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+;; 21 Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+;; 22 AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+;; 23 Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4 ..
+```
+
+The two dots ".." at the end indicate that output has been truncated.
+Lisp-Stat sets the default for pretty printer `*print-lines*` to 25
+rows and output more than this is truncated.  If you'd like to print
+all rows, set this value to `nil`, `(setf *print-lines* nil)`
+
+Notice the column named `X1`. This is the name given to the column by
+the data reading function.  Note the warning that was issued during the
+import.  Missing columns are named X1, X2, ..., X*n* in increasing order
+for the duration of the Lisp-Stat session.
+
+This column is actually the row name, so we'll rename it:
+
+```lisp
+(rename! mtcars 'model 'x1)
+```
+
+The keys of a data frame are symbols, so you need to quote them to
+prevent the reader from trying to evaluate them to a value.
+
+Note that your row may be named something other than `X1`, depending
+on whether or not you have loaded any other data frames with variable
+name replacement.  Also note: the `!` at the end of the function
+name. This is a convention indicating a destructive operation; a copy
+will not be returned, it's the actual data that will be modified.
+
+Now let's view the results:
+
+```lisp
+(head mtcars)
+;;   MODEL              MPG CYL DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
+;; 0 Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+;; 1 Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+;; 2 Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+;; 3 Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+;; 4 Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+;; 5 Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
+```
+
+### Column names
+
+To see the names of the columns, use the `column-names` function:
+
+```lisp
+(column-names mtcars)
+;; => ("MODEL" "MPG" "CYL" "DISP" "HP" "DRAT" "WT" "QSEC" "VS" "AM" "GEAR" "CARB")
+```
+
+Remember we mentioned that the keys (column names) are symbols?
+Compare the above to the keys of the data frame:
+
+```lisp
+(keys mtcars)
+;; => #(MODEL MPG CYL DISP HP DRAT WT QSEC VS AM GEAR CARB)
+```
+
+These symbols are printed without double quotes.  If a function takes
+a *key*, it must be quoted, e.g. `'mpg` and not `mpg` or `"mpg"`
+
+### Dimensions
+
+We saw the dimensions above in basic information. That was a printed
+for human consumption. To get the values in a form suitable for
+passing to other functions, use the `dims` command:
+
+```lisp
+(aops:dims mtcars) ;; => (32 12)
+```
+
+Common Lisp specifies dimensions in row-column order, so `mtcars` has
+32 rows and 12 columns.
+
+{{< alert title="Note" >}} Lisp-Stat generally follows the [tidyverse](https://www.tidyverse.org/) philosophy when it comes to row names. By definition, row names are unique, so there is no point including them in a statistical analysis.  Nevertheless, many data sets include row names, so we include some special handling for columns with all distinct values; they are excluded by default from summaries (and you can include it if you wish).  There is no concept of independent row names as with a R data frame.  A Lisp-Stat data frame is more like a [tibble](https://tibble.tidyverse.org/).
+{{< /alert >}}
+
+## Basic Statistics
+
+### Minimum & Maximum
+
+To get the minimum or maximum of a column, say `mpg`, you can use several
+Common Lisp methods.  Let's see what `mpg` looks like by typing
+the name of the column into the REPL:
+
+```lisp
+ mtcars:mpg
+;; => #(21 21 22.8d0 21.4d0 18.7d0 18.1d0 14.3d0 24.4d0 22.8d0 19.2d0 17.8d0 16.4d0 17.3d0 15.2d0 10.4d0 10.4d0 14.7d0 32.4d0 30.4d0 33.9d0 21.5d0 15.5d0 15.2d0 13.3d0 19.2d0 27.3d0 26 30.4d0 15.8d0 19.7d0 15 21.4d0)
+```
+
+You could, for example, use something like this to find the minimum:
+
+```lisp
+(reduce #'min mtcars:mpg) ;; => 10.4d0
+```
+
+or the Lisp-Stat function `sequence-maximum` to find the maximum
+
+```lisp
+(sequence-maximum mtcars:mpg) ;; => 33.9d0
+```
+
+or perhaps you'd prefer
+[alexandria:extremum](https://www.crategus.com/books/alexandria/pages/alexandria.0.dev_fun_extremum.html),
+a general-purpose tool to find the minimum in a different way:
+
+```lisp
+(extremum mtcars:mpg #'<) ;; => 10.4d0
+```
+
+The important thing to note is that `mtcars:mpg` is a standard Common
+Lisp vector and you can manipulate it like one.
+
+### Mean & standard deviation
+
+```lisp
+(mean mtcars:mpg) ;; => 20.090625000000003d0
+```
+
+```lisp
+(standard-deviation mtcars:mpg) ;; => 5.932029552301219d0
+```
+
+### Summarise
+
+You can summarise a column with the `summarize-column` function:
+
+```lisp
+(summarize-column 'mtcars:mpg)
+
+MPG (Miles/(US) gallon)
+ n: 32
+ missing: 0
+ min=10.40
+ q25=15.40
+ q50=19.20
+ mean=20.09
+ q75=22.80
+ max=33.90
+```
+
+or the entire data frame:
+
+```lisp
+LS-USER> (summary mtcars)
+(
+
+MPG (Miles/(US) gallon)
+ n: 32
+ missing: 0
+ min=10.40
+ q25=15.40
+ q50=19.20
+ mean=20.09
+ q75=22.80
+ max=33.90
+
+CYL (Number of cylinders)
+14 (44%) x 8, 11 (34%) x 4, 7 (22%) x 6,
+
+DISP (Displacement (cu.in.))
+ n: 32
+ missing: 0
+ min=71.10
+ q25=120.65
+ q50=205.87
+ mean=230.72
+ q75=334.00
+ max=472.00
+
+HP (Gross horsepower)
+ n: 32
+ missing: 0
+ min=52
+ q25=96.00
+ q50=123
+ mean=146.69
+ q75=186.25
+ max=335
+
+DRAT (Rear axle ratio)
+ n: 32
+ missing: 0
+ min=2.76
+ q25=3.08
+ q50=3.70
+ mean=3.60
+ q75=3.95
+ max=4.93
+
+WT (Weight (1000 lbs))
+ n: 32
+ missing: 0
+ min=1.51
+ q25=2.54
+ q50=3.33
+ mean=3.22
+ q75=3.68
+ max=5.42
+
+QSEC (1/4 mile time)
+ n: 32
+ missing: 0
+ min=14.50
+ q25=16.88
+ q50=17.71
+ mean=17.85
+ q75=18.90
+ max=22.90
+
+VS (Engine (0=v-shaped, 1=straight))
+ones: 14 (44%)
+
+AM (Transmission (0=automatic, 1=manual))
+ones: 13 (41%)
+
+GEAR (Number of forward gears)
+15 (47%) x 3, 12 (38%) x 4, 5 (16%) x 5,
+
+CARB (Number of carburetors)
+10 (31%) x 4, 10 (31%) x 2, 7 (22%) x 1, 3 (9%) x 3, 1 (3%) x 6, 1 (3%) x 8, )
+```
+
+Recall that the column named `model` is treated specially, notice
+that it is not included in the summary.  You can see why it's excluded
+by examining the column's summary:
+
+```lisp
+LS-USER>(pprint (summarize-column 'mtcars:model)))
+1 (3%) x "Mazda RX4", 1 (3%) x "Mazda RX4 Wag", 1 (3%) x "Datsun 710", 1 (3%) x "Hornet 4 Drive", 1 (3%) x "Hornet Sportabout", 1 (3%) x "Valiant", 1 (3%) x "Duster 360", 1 (3%) x "Merc 240D", 1 (3%) x "Merc 230", 1 (3%) x "Merc 280", 1 (3%) x "Merc 280C", 1 (3%) x "Merc 450SE", 1 (3%) x "Merc 450SL", 1 (3%) x "Merc 450SLC", 1 (3%) x "Cadillac Fleetwood", 1 (3%) x "Lincoln Continental", 1 (3%) x "Chrysler Imperial", 1 (3%) x "Fiat 128", 1 (3%) x "Honda Civic", 1 (3%) x "Toyota Corolla", 1 (3%) x "Toyota Corona", 1 (3%) x "Dodge Challenger", 1 (3%) x "AMC Javelin", 1 (3%) x "Camaro Z28", 1 (3%) x "Pontiac Firebird", 1 (3%) x "Fiat X1-9", 1 (3%) x "Porsche 914-2", 1 (3%) x "Lotus Europa", 1 (3%) x "Ford Pantera L", 1 (3%) x "Ferrari Dino", 1 (3%) x "Maserati Bora", 1 (3%) x "Volvo 142E",
+```
+
+Columns with unique values in each row aren't very interesting.
+
+<!--
+Since we now have both packages for data frames and the column/varible symbols in LS-USER, we can't 'use' any more
+## "Use" a data frame
+
+By `use`-ing a data frame package you can avoid having to type the
+name of the data frame before the variable and directly refer to the
+variable name.  This is similar to R's `attach` function.
+
+```lisp
+(use-package 'mtcars)
+```
+
+```lisp
+(mean mpg) ;; => 20.090625000000003d0
+```
+
+the `unuse-package` function stops using the symbols from the
+data-frame.
+
+```lisp
+(unuse-package 'mtcars)
+```
+-->
+
+## Saving data
+
+To save a data frame to a CSV file, use the `write-csv`
+method.  Here we save `mtcars` into the Lisp-Stat datasets directory,
+including the column names:
+
+```lisp
+(write-csv
+	mtcars #P"LS:DATA;mtcars.csv"
+	:add-first-row t)
+```
+

@@ -34,7 +34,7 @@ description: >
 - [Lisp-Stat community](/community)
 - [Lisp-Stat on stackoverflow](https://stackoverflow.com/questions/tagged/xlispstat)
 - [Common Lisp on stackoverflow](https://stackoverflow.com/questions/tagged/common-lisp)
-- [Common-Lisp.net documentation page](https://www.common-lisp.net/documentation)
+- [Common-Lisp.net documentation page](https://common-lisp.net/documentation)
 - [CS 325 Readings (Northwestern Uni)](https://courses.cs.northwestern.edu/325/readings/readings.php)
 
 ## Algorithms

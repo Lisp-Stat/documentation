@@ -1,0 +1,1 @@
+{"data":{"url":"/data/point-mark-line-plot-data.json"},"$schema":"https://vega.github.io/schema/vega-lite/v5.json","title":"Stock prices of 5 Tech Companies over Time","mark":{"type":"line","point":true},"encoding":{"x":{"field":"date","timeUnit":"year"},"y":{"field":"price","type":"quantitative","aggregate":"mean"},"color":{"field":"symbol","type":"nominal"}}}

@@ -144,7 +144,7 @@ You could also look at [CRAN](https://cran.r-project.org/), which
 contains thousands of high-quality packages.
 
 For specific ideas that would help, see the
-[ideas](/docs/contributing/ideas) page.
+[ideas](/docs/contributing/ideas/) page.
 
 #### Issue Guidelines
 

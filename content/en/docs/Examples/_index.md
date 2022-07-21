@@ -1,7 +1,7 @@
 ---
 title: "Examples"
 linkTitle: "Examples"
-weight: 3
+weight: 4
 date: 2021-04-27
 description: >
   Using Lisp-Stat in the real world

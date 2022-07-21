@@ -1,0 +1,1 @@
+{"data":{"url":"/data/table-heatmap-data.json"},"$schema":"https://vega.github.io/schema/vega-lite/v5.json","mark":"rect","encoding":{"x":{"field":"cylinders","type":"nominal","title":"Number of cylinders"},"y":{"field":"origin","type":"nominal","title":"Country of origin"},"color":{"field":"horsepower","aggregate":"mean"}},"config":{"axis":{"grid":true,"tickBand":"extent"}}}

@@ -1,0 +1,1 @@
+{"data":{"url":"/data/area-chart-data.json"},"$schema":"https://vega.github.io/schema/vega-lite/v5.json","title":"Unemployment across industries","width":300,"height":200,"mark":"area","encoding":{"x":{"field":"date","timeUnit":"yearmonth","axis":{"format":"%Y"}},"y":{"field":"count","aggregate":"sum","title":"count"}}}

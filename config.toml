@@ -175,7 +175,7 @@ enable = false
 # End user relevant links. These will show up on left side of footer and in the community page if you have one.
 [[params.links.user]]
 	name = "User mailing list"
-	url = "https://groups.google.com/g/lisp-stat"
+	url = "https://groups.google.com/g/lisp-stat/"
 	icon = "fa fa-envelope"
         desc = "Discussion and help from your fellow users"
 # [[params.links.user]]
@@ -185,14 +185,14 @@ enable = false
 #         desc = "Follow us on Twitter to get the latest news!"
 [[params.links.user]]
 	name = "Stack Overflow"
-	url = "https://stackoverflow.com/questions/tagged/xlispstat"
+	url = "https://stackoverflow.com/questions/tagged/xlispstat/"
 	icon = "fab fa-stack-overflow"
         desc = "Practical questions and curated answers"
 
 # Developer relevant links. These will show up on right side of footer and in the community page if you have one.
 [[params.links.developer]]
 	name = "GitHub"
-	url = "https://github.com/lisp-stat"
+	url = "https://github.com/Lisp-Stat/"
 	icon = "fab fa-github"
         desc = "Development takes place here"
 # [[params.links.developer]]
@@ -202,7 +202,7 @@ enable = false
 #         desc = "Chat with other project developers"
 [[params.links.developer]]
 	name = "Developer discussion"
-	url = "https://github.com/Lisp-Stat/lisp-stat/discussions"
+	url = "https://github.com/Lisp-Stat/lisp-stat/discussions/"
 	icon = "fa fa-envelope"
         desc = "Discuss development issues around the project"
 

@@ -1,0 +1,1 @@
+{"data":{"url":"/data/strip-plot-data.json"},"$schema":"https://vega.github.io/schema/vega-lite/v5.json","title":"Vega Cars","mark":"tick","encoding":{"x":{"field":"horsepower","type":"quantitative"},"y":{"field":"cylinders","type":"ordinal"}}}

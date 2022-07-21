@@ -1,63 +1,53 @@
 ---
 title: "Getting Started"
 linkTitle: "Getting Started"
+vega: true
 weight: 2
 description: >
   Install to plotting in five minutes
 ---
 
+If you have a working installation of SBCL, Google Chrome and
+Quicklisp you can be up and running in 5 minutes.
+
 ## Prerequisites
 
-- SBCL ~~or CCL~~ Common Lisp
-- MacOS or Windows 10
+- Steel Bank Common Lisp (SBCL)
+- MacOS, Linux or Windows 10+
 - Quicklisp
 - Chrome
 
-## Load & Configure
+## Loading
 
-First load Lisp-Stat, plotting libraries and data and configure the
-environment. We assume you have already obtained the libraries via a package manager like [clpm](https://common-lisp.net/project/clpm/) or [quicklisp](https://www.quicklisp.org/beta/). See the [installation instructions](https://github.com/Lisp-Stat/lisp-stat) on github.
+First load Lisp-Stat, Plot and sample data.  We will use Quicklisp for
+this, which will both download the system if it isn't already
+available, and compile and load it.
 
 ### Lisp-Stat
 
 ```lisp
-(asdf:load-system :lisp-stat)
-(in-package :ls-user)
+(ql:quickload :lisp-stat)
+(in-package :ls-user)     ;access to Lisp-Stat functions
 ```
 
-### Vega-Lite
+### Plotting
 
 ```lisp
-(asdf:load-system :plot/vglt)
-(asdf:load-system :dfio/json)
+(ql:quickload :plot/vega)
 ```
 
 ### Data
 
 ```lisp
-(defdf cars
-  (dfio:vl-to-df
-    (dex:get
-	  "https://raw.githubusercontent.com/vega/vega-datasets/master/data/cars.json"
-	  :want-stream t)))
+(data :vgcars)
 ```
-
-<!--
-```lisp
-(defdf cars
-  (dfio:vl-to-df
-    (dex:get vglt:cars :want-stream t)))
-```
--->
-
-
 
 ## View
 
-Print the data frame (showing the first 25 rows by default)
+Print the `vgcars` data-frame (showing the first 25 rows by default)
 
 ```lisp
-(pprint cars)
+(print-data vgcars)
 ;; ORIGIN YEAR       ACCELERATION WEIGHT_IN_LBS HORSEPOWER DISPLACEMENT CYLINDERS MILES_PER_GALLON NAME
 ;; USA    1970-01-01         12.0          3504        130        307.0         8             18.0 chevrolet chevelle malibu
 ;; USA    1970-01-01         11.5          3693        165        350.0         8             15.0 buick skylark 320
@@ -88,7 +78,7 @@ Print the data frame (showing the first 25 rows by default)
 Show the last few rows:
 
 ```lisp
-(tail cars)
+(tail vgcars)
 ;; ORIGIN YEAR       ACCELERATION WEIGHT_IN_LBS HORSEPOWER DISPLACEMENT CYLINDERS MILES_PER_GALLON NAME
 ;; USA    1982-01-01         17.3          2950         90          151         4               27 chevrolet camaro
 ;; USA    1982-01-01         15.6          2790         86          140         4               27 ford mustang gl
@@ -103,36 +93,68 @@ Show the last few rows:
 Look at a few statistics on the data set.
 
 ```lisp
-(mean cars:acceleration) ; => 15.5197
+(mean vgcars:acceleration) ; => 15.5197
 ```
 
+The `summary` command, that works in data frames or individual variables, summarises the variable.  Below is a summary with some variables elided.
 ```lisp
-LS-USER> (summary cars)
-ORIGIN: 254 (63%) x USA, 79 (19%) x Japan, 73 (18%) x Europe,
-YEAR: 61 (15%) x 1982-01-01, 40 (10%) x 1973-01-01, 36 (9%) x 1978-01-01, 35 (9%) x 1970-01-01, 34 (8%) x 1976-01-01, 30 (7%) x 1975-01-01, 29 (7%) x 1971-01-01, 29 (7%) x 1979-01-01, 29 (7%) x 1980-01-01, 28 (7%) x 1972-01-01, 28 (7%) x 1977-01-01, 27 (7%) x 1974-01-01,
-ACCELERATION: 406 reals, min=8, q25=13.674999999999999d0, q50=15.45d0, q75=17.16666632692019d0, max=24.8d0
-WEIGHT-IN-LBS: 406 reals, min=1613, q25=2226, q50=2822.5, q75=3620, max=5140
-HORSEPOWER: 400 reals, min=46, q25=75.77778, q50=94.33333, q75=129.57143, max=2306 (1%) x NIL,
-DISPLACEMENT: 406 reals, min=68, q25=104.25, q50=147.92307, q75=277.76923, max=455
-CYLINDERS: 207 (51%) x 4, 108 (27%) x 8, 84 (21%) x 6, 4 (1%) x 3, 3 (1%) x 5,
-MILES-PER-GALLON: 398 reals, min=9, q25=17.33333317438761d0, q50=22.727271751923993d0, q75=29.14999923706055d0, max=46.6d08 (2%) x NIL,
-```
+LS-USER> (summary vgcars)
 
-Note: The car models, essentially the row names, have been removed
-from the summary.
+"ORIGIN": 254 (63%) x "USA", 79 (19%) x "Japan", 73 (18%) x "Europe"
+
+"YEAR": 61 (15%) x "1982-01-01", 40 (10%) x "1973-01-01", 36 (9%) x "1978-01-01", 35 (9%) x "1970-01-01", 34 (8%) x "1976-01-01", 30 (7%) x "1975-01-01", 29 (7%) x "1971-01-01", 29 (7%) x "1979-01-01", 29 (7%) x "1980-01-01", 28 (7%) x "1972-01-01", 28 (7%) x "1977-01-01", 27 (7%) x "1974-01-01"
+
+ACCELERATION (1/4 mile time)
+ n: 406
+ missing: 0
+ min=8
+ q25=13.67
+ q50=15.45
+ mean=15.52
+ q75=17.17
+ max=24.80
+
+WEIGHT-IN-LBS (Weight in lbs)
+ n: 406
+ missing: 0
+ min=1613
+ q25=2226
+ q50=2822.50
+ mean=2979.41
+ q75=3620
+ max=5140
+...
+
+```
+<!--
+Note: We have removed the car models, essentially the row names, from
+the summary in the table above.  Normally this would be done
+automatically by the system, but this data set has a few repeated row
+names, and only a human can determine whether or not they are
+significant.  For this demonstration, they are not.
+-->
 
 ## Plot
 
-Create a scatter plot specification with default values:
+Create a scatter plot specification comparing horsepower and miles per
+gallon:
 
 ```lisp
-(defparameter cars-plot (vglt:scatter-plot cars "HORSEPOWER" "MILES-PER-GALLON"))
+(vega:defplot hp-mpg
+  `(:mark :point
+    :title "Vega Cars"
+    :data ,vgcars
+    :encoding (:x vgcars:horsepower
+	           :y vgcars:miles-per-gallon)))
 ```
 
 Render the plot:
 
 ```lisp
-(plot:plot-from-file (vglt:save-plot 'cars-plot))
+(plot:plot-from-file (vega:write-html hp-mpg))
 ```
 
-{{< figure src="/docs/examples/vega-cars-scatter-plot.png" title="Horsepower vs. MPG scatter plot" >}}
+{{< vega id="foo" spec="/plots/hp-mpg.vl.json" >}}
+
+
+

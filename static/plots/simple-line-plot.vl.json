@@ -1,0 +1,1 @@
+{"data":{"url":"/data/simple-line-plot-data.json"},"$schema":"https://vega.github.io/schema/vega-lite/v5.json","title":"Google's stock price from 2004 to early 2010","mark":"line","encoding":{"x":{"field":"date","type":"temporal"},"y":{"field":"price","type":"quantitative"}}}

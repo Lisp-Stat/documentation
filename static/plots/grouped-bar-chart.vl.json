@@ -1,0 +1,1 @@
+{"data":{"url":"/data/grouped-bar-chart-data.json"},"$schema":"https://vega.github.io/schema/vega-lite/v5.json","mark":"bar","encoding":{"x":{"field":"category"},"y":{"field":"value","type":"quantitative"},"xOffset":{"field":"group"},"color":{"field":"group"}}}

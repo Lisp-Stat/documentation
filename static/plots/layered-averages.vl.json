@@ -1,0 +1,1 @@
+{"data":{"url":"/data/layered-averages-data.json"},"$schema":"https://vega.github.io/schema/vega-lite/v5.json","layer":[{"mark":{"type":"point","opacity":0.30000001192092896},"encoding":{"x":{"field":"date","timeUnit":"year"},"y":{"field":"price","type":"quantitative"}}},{"mark":"line","encoding":{"x":{"field":"date","timeUnit":"year"},"y":{"field":"price","aggregate":"mean"}}}]}

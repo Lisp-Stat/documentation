@@ -1,0 +1,1 @@
+{"data":{"url":"/data/area-with-overlay-data.json"},"$schema":"https://vega.github.io/schema/vega-lite/v5.json","title":"Google's stock price","mark":{"type":"area","line":true,"point":true},"encoding":{"x":{"field":"date","type":"temporal","title":"Date"},"y":{"field":"price","type":"quantitative","title":"Closing price"}}}

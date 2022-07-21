@@ -1,0 +1,1 @@
+{"data":{"url":"/data/hp-mpg-data.json"},"$schema":"https://vega.github.io/schema/vega-lite/v5.json","title":"Horsepower vs. MPG","mark":"point","encoding":{"x":{"field":"horsepower","type":"quantitative"},"y":{"field":"milesPerGallon","type":"quantitative"}}}

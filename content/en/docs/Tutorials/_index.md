@@ -1,7 +1,7 @@
 ---
 title: "Tutorials"
 linkTitle: "Tutorials"
-weight: 8
+weight: 5
 date: 2021-03-07
 description: >
   End to end demonstrations of statistical analysis

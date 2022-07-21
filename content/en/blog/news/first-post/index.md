@@ -4,6 +4,7 @@ title: "Statistical Analysis with Lisp-Stat"
 linkTitle: "Announcing Lisp-Stat"
 description: "Version 1.0-beta"
 author: Steve Nunez
+vega: true
 resources:
 - src: "**.{png,jpg}"
   title: "Image #:counter"
@@ -34,7 +35,7 @@ system had to:
 
 Common Lisp was the only framework that met all these requirements.
 And, it is not the first time lisp has been used in a statistical
-setting.  [XLISP-STAT](https://en.wikipedia.org/wiki/XLispStat), our
+setting.  [XLISP-STAT](https://en.wikipedia.org/wiki/XLispStat/), our
 spiritual predecessor, was a contemporary of R in the early days of
 development.  Wikipedia says about it: "XLispStat was historically
 influential in the field of statistical visualization" and its author,
@@ -45,7 +46,7 @@ Luke Tierney, was a member of the original R core team.
 
 Lisp-Stat provides support for vectorized mathematical operations, a
 super-set of common lisp [array
-operations](/docs/tasks/array-operations/), and a comprehensive set of
+operations](/docs/manuals/array-operations/), and a comprehensive set of
 statistical methods that are implemented using the latest numerical
 algorithms.  In addition, Common Lisp provides a dynamic programming
 environment that includes a
@@ -64,7 +65,7 @@ the archive.
 ## Getting Started
 
 If you are familiar with R, and want to understand how to do similar
-things with Lisp-Stat, the [basic tutorial](/docs/tutorials/basics) is
+things with Lisp-Stat, the [basic tutorial](/docs/tutorials/basics/) is
 the place to begin.  If you have a Common Lisp installation and want
 give Lisp-Stat a quick try, start with [Install to Plot in 5
 minutes](/docs/getting-started/).  For newcomers to lisp, see the
@@ -79,8 +80,7 @@ All the basics for descriptive statistical analysis.
 Load the classic R `mtcars` data set into a data frame:
 
 ```lisp
-(define-data-frame mtcars
-  (read-csv (rdata 'datasets 'mtcars)))
+(data :mtcars)
 ```
 
 ### Plotting
@@ -88,13 +88,18 @@ Load the classic R `mtcars` data set into a data frame:
 The [plotting examples](/docs/examples/plotting/) show how to plot the
 horsepower vs. miles-per-gallon of the similar Vega-Lite data set:
 
-```
-(defparameter cars-scatter-plot
-  (vglt:scatter-plot vega-cars "HORSEPOWER" "MILES_PER_GALLON"))
-(plot:plot-from-file (vglt:save-plot 'cars-scatter-plot))
+```lisp
+(plot:plot
+  (vega:defplot hp-mpg
+  `(:title "Horsepower vs. MPG"
+    :data ,vgcars
+    :mark :point
+	:encoding (:x (:field :horsepower :type :quantitative)
+	           :y (:field :miles-per-gallon :type :quantitative)))))
 ```
 
-{{< figure src="/docs/examples/vega-cars-colored-scatter-plot.png" >}}
+{{< vega id="ex-hp-mpg" spec="/plots/hp-mpg.vl.json" >}}
+
 
 ### Jupyter notebooks
 For reproducible research and sharing.
@@ -105,14 +110,14 @@ Lisp-Stat running in a Jupyter-Lab notebook
 
 ### Examples & Tutorials
 
-The [examples](/docs/examples/) show how to create [common
-plots](/docs/examples/plotting/) and the [analytic
-examples](/docs/examples/notebooks/) work through the examples of the
+The [examples](/docs/examples/plotting/) show how to create commonly
+used statistical plots and the [analytic
+examples](/docs/examples/statistics/) work through the examples of the
 book _Introduction to the Practice of Statistics_ using Lisp-Stat.
 
 ### Example data sets
 
-About 1500 [R data sets](/docs/tasks/data-frame/#example-datasets) can be
+About 1500 [R data sets](/docs/manuals/data-frame/#example-datasets) can be
 loaded using the `rdata` package.
 
 ### Where do I get help?
@@ -120,9 +125,9 @@ loaded using the `rdata` package.
 The [community page](/community) page describes how the project is
 structured.  Help can be obtained from:
 
-- [Lisp-Stat mailing list](https://groups.google.com/g/lisp-stat)
-- [Stack overflow](https://stackoverflow.com/questions/tagged/xlispstat)
-- [Github discussion](https://github.com/Lisp-Stat/lisp-stat/discussions)
+- [Lisp-Stat mailing list](https://groups.google.com/g/lisp-stat/)
+- [Stack overflow](https://stackoverflow.com/questions/tagged/xlispstat/)
+- [Github discussion](https://github.com/Lisp-Stat/lisp-stat/discussions/)
 
 ## Where did it come from?
 

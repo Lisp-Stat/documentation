@@ -21,9 +21,9 @@ linkTitle = "Lisp-Stat"
 {{% blocks/lead color="primary" %}}
 
 Lisp-Stat provides a statistical computing engine suitable for all
-phases of the machine learning lifecycle. Ideal for AI DevOps,
+phases of the machine learning life-cycle. Ideal for AI DevOps,
 Lisp-Stat covers desktop exploration through to production API
-endpoints. Lisp-Stat provides a secure, safe and managable environment.
+endpoints. Lisp-Stat provides a secure, safe and manageable environment.
 
 
 {{% /blocks/lead %}}
@@ -57,9 +57,16 @@ Install to plotting in five minutes
 {{% blocks/feature icon="fas fa-code" title="Load a R data set" %}}
 <pre style="text-align: left">
   <code>
-(defdf mtcars (read-csv rdata:mtcars))
+    (data :mtcars)
+    (head mtcars)
 
-
+;;   MODEL              MPG CYL DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
+;; 0 Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+;; 1 Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+;; 2 Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+;; 3 Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+;; 4 Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+;; 5 Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
   </code>
 
 
