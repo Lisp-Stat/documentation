@@ -97,16 +97,16 @@ inserted with a comma (`,`).  We'll use this pattern frequently.
    `(:mark :bar
      :data ,seattle-weather
      :encoding (:x (:time-unit :month
-		    :field :date
-		    :type :ordinal
-		    :title "Month of the year")
+		            :field :date
+		            :type :ordinal
+		            :title "Month of the year")
                 :y (:aggregate :count
-		    :type :quantitative)
-		:color (:field :weather
-			:type :nominal
-			:title "Weather type"
-			:scale (:domain #("sun" "fog" "drizzle" "rain" "snow")
-				:range  #("#e7ba52", "#c7c7c7", "#aec7e8", "#1f77b4", "#9467bd")))))))
+		            :type :quantitative)
+		        :color (:field :weather
+			            :type :nominal
+			            :title "Weather type"
+	            :scale (:domain #("sun" "fog" "drizzle" "rain" "snow")
+				        :range  #("#e7ba52", "#c7c7c7", "#aec7e8", "#1f77b4", "#9467bd")))))))
 ```
 
 ### Population pyramid
@@ -142,15 +142,15 @@ course).
 		  (:calculate "datum.sex == 2 ? 'Female' : 'Male'" :as :gender)
 		  (:calculate "datum.sex == 2 ? -datum.people : datum.people" :as :signed-people))
      :encoding (:x (:aggregate :sum
-		    :field :signed-people
-		    :title "population")
+		            :field :signed-people
+		            :title "population")
                 :y (:field :age
-		    :axis nil
-		    :sort :descending)
-		:color (:field :gender
-			:scale (:range #("#675193" "#ca8861"))))
+		            :axis nil
+		            :sort :descending)
+		        :color (:field :gender
+		        :scale (:range #("#675193" "#ca8861"))))
      :config (:view (:stroke nil)
-	      :axis (:grid :false)))))
+	          :axis (:grid :false)))))
 ```
 
 ## Histograms & density
@@ -180,8 +180,9 @@ Use a relative frequency histogram to compare data sets with different
 numbers of observations.
 
 The data is binned with first transform. The number of values per bin
-and the total number are calculated in the second and third transform
-to calculate the relative frequency in the last transformation step.
+and the total number are calculated in the second and the third
+transform to calculate the relative frequency in the last
+transformation step.
 
 ```lisp
 (plot:plot
@@ -244,23 +245,23 @@ If you haven't already loaded the `imdb` data set, do so now:
      :data ,penguins
      :mark :bar
      :transform #((:density |BODY-MASS-(G)|
-		   :groupby #(:species)
-		   :extent #(2500 6500)))
+		           :groupby #(:species)
+		           :extent #(2500 6500)))
      :encoding (:x (:field :value
-		    :type :quantitative
-		    :title "Body Mass (g)")
-		:y (:field :density
-		    :type :quantitative
-		    :stack :zero)
-		:color (:field :species
-			:type :nominal)))))
+		            :type :quantitative
+		            :title "Body Mass (g)")
+		        :y (:field :density
+		            :type :quantitative
+		            :stack :zero)
+		        :color (:field :species
+			            :type :nominal)))))
 ```
 
 Note the use of the [multiple escape
 characters](http://www.lispworks.com/documentation/lw71/CLHS/Body/02_ade.htm)
 (|) surrounding the field `BODY-MASS-(G)`.  This is required because
 the JSON data set has parenthesis in the variable names, and these are
-a reserved character in Common Lisp.  The JSON importer wrapped these
+reserved characters in Common Lisp.  The JSON importer wrapped these
 in the escape character.
 
 ## Scatter plots
@@ -377,37 +378,37 @@ Lisp-Stat equivalent
  (vega:defplot linear-regression
    `(:data ,imdb
      :layer #((:mark (:type :point
-	              :filled t)
+	                  :filled t)
 	       :encoding (:x (:field :rotten-tomatoes-rating
-			      :type :quantitative
-			      :title "Rotten Tomatoes Rating")
-			  :y (:field :imdb-rating
-			      :type :quantitative
-			      :title "IMDB Rating")))
+			              :type :quantitative
+			              :title "Rotten Tomatoes Rating")
+			          :y (:field :imdb-rating
+			              :type :quantitative
+			              :title "IMDB Rating")))
 
 	       (:mark (:type :line
-		       :color "firebrick")
+		           :color "firebrick")
 		:transform #((:regression :imdb-rating
-			      :on :rotten-tomatoes-rating))
+			          :on :rotten-tomatoes-rating))
 		:encoding (:x (:field :rotten-tomatoes-rating
-			       :type :quantitative
-			       :title "Rotten Tomatoes Rating")
-			   :y (:field :imdb-rating
-			       :type :quantitative
-			       :title "IMDB Rating")))
+			           :type :quantitative
+			           :title "Rotten Tomatoes Rating")
+			       :y (:field :imdb-rating
+			           :type :quantitative
+			           :title "IMDB Rating")))
 
 	      (:transform #((:regression :imdb-rating
-			     :on :rotten-tomatoes-rating
-			     :params t)
-			    (:calculate "'R²: '+format(datum.rSquared, '.2f')"
-			     :as :r2))
-	       :mark (:type :text
-		      :color "firebrick"
-		      :x :width
-		      :align :right
-		      :y -5)
-	       :encoding (:text (:type :nominal
-				 :field :r2)))))))
+			             :on :rotten-tomatoes-rating
+			             :params t)
+		                (:calculate "'R²: '+format(datum.rSquared, '.2f')"
+			             :as :r2))
+	    :mark (:type :text
+		       :color "firebrick"
+		       :x :width
+		       :align :right
+		       :y -5)
+	    :encoding (:text (:type :nominal
+			       :field :r2)))))))
 ```
 
 ### Loess regression
@@ -420,23 +421,23 @@ Lisp-Stat equivalent
    `(:data ,imdb
      :layer #((:mark (:type :point
 	              :filled t)
-	       :encoding (:x (:field :rotten-tomatoes-rating
-			      :type :quantitative
-			      :title "Rotten Tomatoes Rating")
-			  :y (:field :imdb-rating
-			      :type :quantitative
-			      :title "IMDB Rating")))
+	           :encoding (:x (:field :rotten-tomatoes-rating
+			                  :type :quantitative
+			                  :title "Rotten Tomatoes Rating")
+			              :y (:field :imdb-rating
+			                  :type :quantitative
+			                  :title "IMDB Rating")))
 
-	       (:mark (:type :line
-		       :color "firebrick")
-		:transform #((:loess :imdb-rating
-			      :on :rotten-tomatoes-rating))
-		:encoding (:x (:field :rotten-tomatoes-rating
-			       :type :quantitative
-			       :title "Rotten Tomatoes Rating")
-			   :y (:field :imdb-rating
-			       :type :quantitative
-			       :title "IMDB Rating")))))))
+	          (:mark (:type :line
+		              :color "firebrick")
+		      :transform #((:loess :imdb-rating
+			                :on :rotten-tomatoes-rating))
+		      :encoding (:x (:field :rotten-tomatoes-rating
+			                 :type :quantitative
+			                 :title "Rotten Tomatoes Rating")
+			             :y (:field :imdb-rating
+			                 :type :quantitative
+			                 :title "IMDB Rating")))))))
 ```
 
 ### Residuals
@@ -456,19 +457,19 @@ everything in sequential order. The graph is for all films before
      :transform #((:joinaggregate #((:op :mean ;we could do this above using alexandria:thread-first
 				     :field :imdb-rating
 				     :as :average-rating)))
-		  (:calculate "datum['imdbRating'] - datum.averageRating"
-		   :as :rating-delta))
+		           (:calculate "datum['imdbRating'] - datum.averageRating"
+		            :as :rating-delta))
      :mark :point
      :encoding (:x (:field :release-date
-		    :type :temporal
-		    :title "Release Date")
-		:y (:field :rating-delta
-		    :type :quantitative
-		    :title "Rating Delta")
-		:color (:field :rating-delta
-			:type :quantitative
-			:scale (:domain-mid 0)
-			:title "Rating Delta")))))
+		            :type :temporal
+		            :title "Release Date")
+		        :y (:field :rating-delta
+		            :type :quantitative
+		            :title "Rating Delta")
+		        :color (:field :rating-delta
+			            :type :quantitative
+			            :scale (:domain-mid 0)
+			            :title "Rating Delta")))))
 ```
 
 ### Query
@@ -486,37 +487,37 @@ dimensions of data.  Drag the sliders to highlight different points.
    `(:data ,vgcars
      :transform #((:calculate "year(datum.year)" :as :year))
      :layer #((:params #((:name :cyl-year
-			 :value #((:cylinders 4
-				   :year 1799))
-			 :select (:type :point
-				  :fields #(:cylinders :year))
-			 :bind (:cylinders (:input :range
-					    :min 3
-					    :max 8
-					    :step 1)
-				:year (:input :range
-				       :min 1969
-				       :max 1981
-				       :step 1))))
-	       :mark :circle
-	       :encoding (:x (:field :horsepower
-			      :type :quantitative)
-			  :y (:field :miles-per-gallon
-			      :type :quantitative)
-			  :color (:condition (:param :cyl-year
-					      :field :origin
-					      :type :nominal)
-				  :value "grey")))
+			   :value #((:cylinders 4
+				         :year 1799))
+			   :select (:type :point
+				        :fields #(:cylinders :year))
+			   :bind (:cylinders (:input :range
+				                  :min 3
+					              :max 8
+					              :step 1)
+				      :year (:input :range
+				             :min 1969
+				             :max 1981
+				             :step 1))))
+	           :mark :circle
+	           :encoding (:x (:field :horsepower
+			                  :type :quantitative)
+			              :y (:field :miles-per-gallon
+			                  :type :quantitative)
+			              :color (:condition (:param :cyl-year
+					              :field :origin
+					              :type :nominal)
+				                  :value "grey")))
 
 	      (:transform #((:filter (:param :cyl-year)))
 	       :mark :circle
 	       :encoding (:x (:field :horsepower
-			      :type :quantitative)
-			  :y (:field :miles-per-gallon
-			      :type :quantitative)
-			  :color (:field :origin
-				  :type :nominal)
-			  :size (:value 100)))))))
+			              :type :quantitative)
+			          :y (:field :miles-per-gallon
+			              :type :quantitative)
+			          :color (:field :origin
+				              :type :nominal)
+			          :size (:value 100)))))))
 ```
 
 ### External links
@@ -532,15 +533,15 @@ You can add external links to plots.
      :mark :point
      :transform #((:calculate "'https://www.google.com/search?q=' + datum.name", :as :url))
      :encoding (:x (:field :horsepower
-		    :type :quantitative)
-		:y (:field :miles-per-gallon
-		    :type :quantitative)
-		:color (:field :origin
-			:type :nominal)
-		:tooltip (:field :name
-			  :type :nominal)
-		:href (:field :url
-		       :type :nominal)))))
+		            :type :quantitative)
+		        :y (:field :miles-per-gallon
+		            :type :quantitative)
+		        :color (:field :origin
+			            :type :nominal)
+		        :tooltip (:field :name
+			              :type :nominal)
+		        :href (:field :url
+		               :type :nominal)))))
 ```
 
 ### Strip plot
@@ -631,9 +632,9 @@ will parse the field as an integer instead of a date.
      :data ,(filter-rows stocks '(string= symbol "GOOG"))
      :mark :line
      :encoding (:x (:field :date
-		    :type  :temporal)
-		:y (:field :price
-		    :type  :quantitative)))))
+		            :type  :temporal)
+		        :y (:field :price
+		            :type  :quantitative)))))
 ```
 
 ### Point markers
@@ -651,12 +652,12 @@ point markers on top of line.
      :data ,stocks
      :mark (:type :line :point t)
      :encoding (:x (:field :date
-		    :time-unit :year)
-		:y (:field :price
-		    :type :quantitative
-		    :aggregate :mean)
-		:color (:field :symbol
-			:type nominal)))))
+		            :time-unit :year)
+		        :y (:field :price
+		            :type :quantitative
+		            :aggregate :mean)
+		        :color (:field :symbol
+			            :type nominal)))))
 ```
 
 
@@ -674,8 +675,8 @@ generate the proper types and labels for x, y and color channels.
      :data ,stocks
      :mark :line
      :encoding (:x (:field stocks:date)
- :y (:field stocks:price)
-		:color (:field stocks:symbol)))))
+                :y (:field stocks:price)
+		        :color (:field stocks:symbol)))))
 ```
 
 ### Step
@@ -688,9 +689,9 @@ generate the proper types and labels for x, y and color channels.
    `(:title "Google's stock price from 2004 to early 2010"
      :data ,(filter-rows stocks '(string= symbol "GOOG"))
      :mark (:type :line
-	    :interpolate "step-after")
+	        :interpolate "step-after")
      :encoding (:x (:field stocks:date)
-		:y (:field stocks:price)))))
+		        :y (:field stocks:price)))))
 ```
 
 
@@ -705,8 +706,8 @@ generate the proper types and labels for x, y and color channels.
      :data ,stocks
      :mark :line
      :encoding (:x (:field stocks:date)
-		:y (:field stocks:price)
-		:stroke-dash (:field stocks:symbol)))))
+		        :y (:field stocks:price)
+		        :stroke-dash (:field stocks:symbol)))))
 ```
 
 ### Confidence interval
@@ -720,16 +721,16 @@ Line chart with a confidence interval band.
  (vega:defplot line-chart-ci
    `(:data ,vgcars
      :encoding (:x (:field :year
-		    :time-unit :year))
+		            :time-unit :year))
      :layer #((:mark (:type :errorband
-		      :extent :ci)
-	       :encoding (:y (:field :miles-per-gallon
-			      :type :quantitative
-			      :title "Mean of Miles per Gallon (95% CIs)")))
+		              :extent :ci)
+	           :encoding (:y (:field :miles-per-gallon
+			                  :type :quantitative
+			                  :title "Mean of Miles per Gallon (95% CIs)")))
 
-	      (:mark :line
-	       :encoding (:y (:field :miles-per-gallon
-			      :aggregate :mean)))))))
+	          (:mark :line
+	           :encoding (:y (:field :miles-per-gallon
+			                  :aggregate :mean)))))))
 ```
 
 ## Area charts
@@ -747,11 +748,11 @@ Line chart with a confidence interval band.
      :data ,unemployment-ind
      :mark :area
      :encoding (:x (:field :date
-		    :time-unit :yearmonth
-		    :axis (:format "%Y"))
-		:y (:field :count
-		    :aggregate :sum
-		    :title "count")))))
+		            :time-unit :yearmonth
+		            :axis (:format "%Y"))
+		        :y (:field :count
+		            :aggregate :sum
+		            :title "count")))))
 ```
 
 ### Stacked
@@ -769,13 +770,13 @@ Stacked area plots
      :data ,unemployment-ind
      :mark :area
      :encoding (:x (:field :date
-		    :time-unit :yearmonth
-		    :axis (:format "%Y"))
-		:y (:field :count
-		    :aggregate :sum
-		    :title "count")
-		:color (:field :series
-			:scale (:scheme "category20b"))))))
+		            :time-unit :yearmonth
+		            :axis (:format "%Y"))
+		        :y (:field :count
+		            :aggregate :sum
+		            :title "count")
+		        :color (:field :series
+			            :scale (:scheme "category20b"))))))
 ```
 
 ### Horizon graph
@@ -797,27 +798,27 @@ more details on Horizon Graphs.
      :width 300
      :height 50
      :data (:x ,(aops:linspace 1 20 20)
-	    :y #(28 55 43 91 81 53 19 87 52 48 24 49 87 66 17 27 68 16 49 15))
+	        :y #(28 55 43 91 81 53 19 87 52 48 24 49 87 66 17 27 68 16 49 15))
      :encoding (:x (:field :x
-		    :scale (:zero :false
-			    :nice :false))
-		:y (:field :y
-		    :type :quantitative
-		    :scale (:domain #(0 50))
-		    :axis (:title "y")))
+		            :scale (:zero :false
+			        :nice :false))
+		        :y (:field :y
+		            :type :quantitative
+		            :scale (:domain #(0 50))
+		            :axis (:title "y")))
      :layer #((:mark (:type :area
-		     :clip t
-		     :orient :vertical
-		     :opacity 0.6))
-	      (:transform #((:calculate "datum.y - 50"
-			     :as :ny))
-	       :mark (:type :area
-		      :clip t
-		      :orient :vertical)
-	       :encoding (:y (:field "ny"
-			      :type :quantitative
-			      :scale (:domain #(0 50)))
-			  :opacity (:value 0.3))))
+		              :clip t
+		              :orient :vertical
+		              :opacity 0.6))
+	          (:transform #((:calculate "datum.y - 50"
+			                 :as :ny))
+	           :mark (:type :area
+		              :clip t
+		              :orient :vertical)
+	           :encoding (:y (:field "ny"
+			                  :type :quantitative
+			                  :scale (:domain #(0 50)))
+			              :opacity (:value 0.3))))
      :config (:area (:interpolate :monotone)))))
 ```
 
@@ -833,10 +834,10 @@ Area chart with overlaying lines and point markers.
    `(:title "Google's stock price"
      :data ,(filter-rows stocks '(string= symbol "GOOG"))
      :mark (:type :area
-	    :line t
-	    :point t)
+	        :line t
+	        :point t)
      :encoding (:x (:field stocks:date)
-		:y (:field stocks:price)))))
+		        :y (:field stocks:price)))))
 ```
 
 Note the use of the variable symbols, e.g. `stocks:price` to fill in
@@ -856,16 +857,16 @@ the variable's information instead of `:type :quantitative :title ...`
      :data ,unemployment-ind
      :mark :area
      :encoding (:x (:field :date
-		    :time-unit "yearmonth"
-		    :axis (:domain :false
-			   :format "%Y"
-			   :tick-size 0))
-		:y (:field count
-		    :aggregate :sum
-		    :axis null
-		    :stack :center)
-		:color (:field :series
-			:scale (:scheme "category20b"))))))
+		            :time-unit "yearmonth"
+		            :axis (:domain :false
+			        :format "%Y"
+			        :tick-size 0))
+		        :y (:field count
+		            :aggregate :sum
+		            :axis null
+		            :stack :center)
+		        :color (:field :series
+			            :scale (:scheme "category20b"))))))
 ```
 
 
@@ -881,9 +882,9 @@ the variable's information instead of `:type :quantitative :title ...`
    `(:data ,vgcars
      :mark :rect
      :encoding (:x (:field vgcars:cylinders)
-		:y (:field vgcars:origin)
-		:color (:field :horsepower
-			:aggregate :mean))
+		        :y (:field vgcars:origin)
+		        :color (:field :horsepower
+			            :aggregate :mean))
      :config (:axis (:grid t :tick-band :extent)))))
 ```
 
@@ -898,23 +899,23 @@ Layering text over a table heatmap
  (vega:defplot heatmap-labels
    `(:data ,vgcars
      :transform #((:aggregate #((:op :count :as :num-cars))
-		   :groupby #(:origin :cylinders)))
+		           :groupby #(:origin :cylinders)))
      :encoding (:x (:field :cylinders
-		    :type :ordinal)
-		:y (:field :origin
-		    :type :ordinal))
+		            :type :ordinal)
+		        :y (:field :origin
+		            :type :ordinal))
      :layer #((:mark :rect
-	       :encoding (:color (:field :num-cars
-				  :type :quantitative
-				  :title "Count of Records"
-				  :legend (:direction :horizontal
-					   :gradient-length 120))))
-	      (:mark :text
-	       :encoding (:text (:field :num-cars
-				 :type :quantitative)
-			  :color (:condition (:test "datum['numCars'] < 40"
-					      :value :black)
-				  :value :white))))
+	           :encoding (:color (:field :num-cars
+				                  :type :quantitative
+				                  :title "Count of Records"
+				                  :legend (:direction :horizontal
+					              :gradient-length 120))))
+	          (:mark :text
+	           :encoding (:text (:field :num-cars
+				                 :type :quantitative)
+			                     :color (:condition (:test "datum['numCars'] < 40"
+					                     :value :black)
+				                         :value :white))))
      :config (:axis (:grid t
 		     :tick-band :extent)))))
 ```
@@ -933,15 +934,15 @@ Layering text over a table heatmap
      :width 300
      :height 200
      :encoding (:x (:bin (:maxbins 60)
-		    :field :imdb-rating
-		    :type :quantitative
-			:title "IMDB Rating")
-		:y (:bin (:maxbins 40)
-		    :field :rotten-tomatoes-rating
-		    :type :quantitative
-			:title "Rotten Tomatoes Rating")
-		:color (:aggregate :count
-			:type :quantitative))
+		            :field :imdb-rating
+		            :type :quantitative
+			        :title "IMDB Rating")
+		        :y (:bin (:maxbins 40)
+		            :field :rotten-tomatoes-rating
+		            :type :quantitative
+			        :title "Rotten Tomatoes Rating")
+		        :color (:aggregate :count
+			            :type :quantitative))
      :config (:view (:stroke :transparent)))))
 ```
 
@@ -958,9 +959,9 @@ Layering text over a table heatmap
 	    :value #(4 6 10 3 7 8))
      :mark :arc
      :encoding (:theta (:field :value
-			:type :quantitative)
-		:color (:field :category
-			:type :nominal)))))
+			            :type :quantitative)
+		        :color (:field :category
+			            :type :nominal)))))
 ```
 
 ### Donut chart
@@ -971,12 +972,12 @@ Layering text over a table heatmap
 (plot:plot
  (vega:defplot donut-chart
    `(:data (:category ,(aops:linspace 1 6 6)
-	    :value #(4 6 10 3 7 8))
+	        :value #(4 6 10 3 7 8))
      :mark (:type :arc :inner-radius 50)
      :encoding (:theta (:field :value
-			:type :quantitative)
-		:color (:field :category
-			:type :nominal)))))
+			            :type :quantitative)
+		        :color (:field :category
+			            :type :nominal)))))
 ```
 
 ### Radial plot
@@ -994,22 +995,22 @@ also demonstrates a way to add labels to circular plots.
  (vega:defplot radial-plot
    `(:data (:value #(12 23 47 6 52 19))
      :layer #((:mark (:type :arc
-		      :inner-radius 20
-		      :stroke "#fff"))
-	      (:mark (:type :text
-		      :radius-offset 10)
-	       :encoding (:text (:field :value
-				 :type :quantitative))))
+		              :inner-radius 20
+		              :stroke "#fff"))
+	          (:mark (:type :text
+		              :radius-offset 10)
+	           :encoding (:text (:field :value
+				          :type :quantitative))))
      :encoding (:theta (:field :value
-			:type :quantitative
-			:stack t)
-		:radius (:field :value
-			 :scale (:type :sqrt
-				 :zero t
-				 :range-min 20))
-		:color (:field :value
-			:type :nominal
-			:legend nil)))))
+			            :type :quantitative
+			            :stack t)
+	            :radius (:field :value
+			             :scale (:type :sqrt
+				         :zero t
+				         :range-min 20))
+		        :color (:field :value
+			            :type :nominal
+			            :legend nil)))))
 ```
 
 ## Transformations
@@ -1030,18 +1031,18 @@ using Vega-Lite.
      :transform #((:joinaggregate #((:op :mean ;we could do this above using alexandria:thread-first
 				     :field :imdb-rating
 				     :as :average-rating)))
-		  (:filter "(datum['imdbRating'] - datum.averageRating) > 2.5"))
+		          (:filter "(datum['imdbRating'] - datum.averageRating) > 2.5"))
      :layer #((:mark :bar
-	       :encoding (:x (:field :imdb-rating
-			      :type :quantitative
-			      :title "IMDB Rating")
-			  :y (:field :title
-			      :type :ordinal
-			      :title "Title")))
-	      (:mark (:type :rule :color "red")
-	       :encoding (:x (:aggregate :average
-			      :field :average-rating
-			      :type :quantitative)))))))
+	           :encoding (:x (:field :imdb-rating
+			                  :type :quantitative
+			                  :title "IMDB Rating")
+			              :y (:field :title
+			                  :type :ordinal
+			                  :title "Title")))
+	          (:mark (:type :rule :color "red")
+	           :encoding (:x (:aggregate :average
+			                  :field :average-rating
+			                  :type :quantitative)))))))
 ```
 
 ### Frequency distribution
@@ -1055,14 +1056,14 @@ Cumulative frequency distribution of films in the IMDB database.
  (vega:defplot cumulative-frequency-distribution
    `(:data ,imdb
      :transform #((:sort #((:field :imdb-rating))
-		   :window #((:op :count
-			      :field :count as :cumulative-count))
-		   :frame #(nil 0)))
+		           :window #((:op :count
+			                  :field :count as :cumulative-count))
+		           :frame #(nil 0)))
      :mark :area
      :encoding (:x (:field :imdb-rating
-		    :type :quantitative)
-		:y (:field :cumulative-count
-		    :type :quantitative)))))
+		            :type :quantitative)
+		        :y (:field :cumulative-count
+		            :type :quantitative)))))
 ```
 
 
@@ -1075,29 +1076,29 @@ Cumulative frequency distribution of films in the IMDB database.
  (vega:defplot layered-histogram
    `(:data ,(filter-rows imdb '(not (eql imdb-rating :na)))
      :transform #((:bin t
-		   :field :imdb-rating
-		   :as #(:bin-imdb-rating :bin-imdb-rating-end))
-		  (:aggregate #((:op :count :as :count))
-		   :groupby #(:bin-imdb-rating :bin-imdb-rating-end))
-		  (:sort #((:field :bin-imdb-rating))
-		   :window #((:op :sum
-			      :field :count :as :cumulative-count))
-		   :frame #(nil 0)))
+		           :field :imdb-rating
+		           :as #(:bin-imdb-rating :bin-imdb-rating-end))
+		          (:aggregate #((:op :count :as :count))
+		           :groupby #(:bin-imdb-rating :bin-imdb-rating-end))
+		          (:sort #((:field :bin-imdb-rating))
+		           :window #((:op :sum
+			                  :field :count :as :cumulative-count))
+		                      :frame #(nil 0)))
      :encoding (:x (:field :bin-imdb-rating
-		    :type :quantitative
-		    :scale (:zero :false)
-		    :title "IMDB Rating")
-		:x2 (:field :bin-imdb-rating-end))
+		            :type :quantitative
+		            :scale (:zero :false)
+		            :title "IMDB Rating")
+		        :x2 (:field :bin-imdb-rating-end))
      :layer #((:mark :bar
-	       :encoding (:y (:field :cumulative-count
-			      :type :quantitative
-			      :title "Cumulative Count")))
-	      (:mark (:type :bar
-		      :color "yellow"
-		      :opacity 0.5)
-	       :encoding (:y (:field :count
-			      :type :quantitative
-			      :title "Count")))))))
+	           :encoding (:y (:field :cumulative-count
+			                  :type :quantitative
+			                  :title "Cumulative Count")))
+	          (:mark (:type :bar
+		              :color "yellow"
+		              :opacity 0.5)
+	           :encoding (:y (:field :count
+			                  :type :quantitative
+			                  :title "Count")))))))
 ```
 
 ### Layering averages
@@ -1111,17 +1112,17 @@ Layering averages over raw values.
  (vega:defplot layered-averages
    `(:data ,(filter-rows stocks '(string= symbol "GOOG"))
      :layer #((:mark (:type :point
-		      :opacity 0.3)
-	       :encoding (:x (:field :date
-			      :time-unit :year)
-			  :y (:field :price
-			      :type quantitative)))
+		              :opacity 0.3)
+	          :encoding (:x (:field :date
+			                 :time-unit :year)
+			             :y (:field :price
+			                 :type quantitative)))
 
-	      (:mark :line
-	       :encoding (:x (:field :date
-			      :time-unit :year)
-			  :y (:field :price
-			      :aggregate :mean)))))))
+	          (:mark :line
+	           :encoding (:x (:field :date
+			                  :time-unit :year)
+			              :y (:field :price
+			                  :aggregate :mean)))))))
 ```
 
 
@@ -1143,18 +1144,18 @@ Error bars showing confidence intervals.
 		    :type :ordinal
 		    :title "Variety"))
      :layer #((:mark (:type :point
-		      :filled t)
-	       :encoding (:x (:field :yield
-			      :aggregate :mean
-			      :type :quantitative
-			      :scale (:zero :false)
-			      :title "Barley Yield")
+		              :filled t)
+	           :encoding (:x (:field :yield
+			                  :aggregate :mean
+			                  :type :quantitative
+			                  :scale (:zero :false)
+			                  :title "Barley Yield")
 			  :color (:value "black")))
 
 	      (:mark (:type :errorbar :extent :ci)
 	       :encoding (:x (:field :yield
-			      :type :quantitative
-			      :title "Barley Yield")))))))
+			              :type :quantitative
+			              :title "Barley Yield")))))))
 ```
 
 ### Standard deviation
@@ -1168,21 +1169,21 @@ Error bars showing standard deviation.
  (vega:defplot error-bar-sd
    `(:data ,barley
      :encoding (:y (:field :variety
-		    :type :ordinal
-		    :title "Variety"))
+		            :type :ordinal
+		            :title "Variety"))
      :layer #((:mark (:type :point
-		      :filled t)
-	       :encoding (:x (:field :yield
-			      :aggregate :mean
-			      :type :quantitative
-			      :scale (:zero :false)
-			      :title "Barley Yield")
-			  :color (:value "black")))
+		              :filled t)
+	           :encoding (:x (:field :yield
+			                  :aggregate :mean
+			                  :type :quantitative
+			                  :scale (:zero :false)
+			                  :title "Barley Yield")
+			              :color (:value "black")))
 
-	      (:mark (:type :errorbar :extent :stdev)
-	       :encoding (:x (:field :yield
-			      :type :quantitative
-			      :title "Barley Yield")))))))
+	          (:mark (:type :errorbar :extent :stdev)
+	           :encoding (:x (:field :yield
+			                  :type :quantitative
+			                  :title "Barley Yield")))))))
 ```
 
 ## Box plots
@@ -1198,17 +1199,17 @@ A vertical box plot showing median, min, and max body mass of penguins.
  (vega:defplot box-plot-min-max
    `(:data ,penguins
      :mark (:type :boxplot
-	    :extent "min-max")
+	        :extent "min-max")
      :encoding (:x (:field :species
-		    :type :nominal
-		    :title "Species")
-	        :y (:field |BODY-MASS-(G)|
-		    :type :quantitative
-		    :scale (:zero :false)
-		    :title "Body Mass (g)")
-		:color (:field :species
-			:type :nominal
-			:legend nil)))))
+		            :type :nominal
+		            :title "Species")
+	            :y (:field |BODY-MASS-(G)|
+		            :type :quantitative
+		            :scale (:zero :false)
+		            :title "Body Mass (g)")
+		        :color (:field :species
+			            :type :nominal
+			            :legend nil)))))
 ```
 
 ### Tukey
@@ -1224,15 +1225,15 @@ the distribution of body mass of penguins.
    `(:data ,penguins
      :mark :boxplot
      :encoding (:x (:field :species
-		    :type :nominal
-		    :title "Species")
-	        :y (:field |BODY-MASS-(G)|
-		    :type :quantitative
-		    :scale (:zero :false)
-		    :title "Body Mass (g)")
-		:color (:field :species
-			:type :nominal
-			:legend nil)))))
+		            :type :nominal
+		            :title "Species")
+	            :y (:field |BODY-MASS-(G)|
+		            :type :quantitative
+		            :scale (:zero :false)
+		            :title "Body Mass (g)")
+		        :color (:field :species
+			            :type :nominal
+			            :legend nil)))))
 ```
 
 
@@ -1248,41 +1249,42 @@ summaries done in a `data-frame`.
  (vega:defplot box-plot-summaries
    `(:title "Body Mass of Penguin Species (g)"
      :data (:species #("Adelie" "Chinstrap" "Gentoo")
-	    :lower #(2850 2700 3950)
-	    :q1 #(3350 3487.5 4700)
-	    :median #(3700 3700 5000)
-	    :q3 #(4000 3950 5500)
-	    :upper #(4775 4800 6300)
-	    :outliers #(#() #(2700 4800) #()))
+	        :lower #(2850 2700 3950)
+	        :q1 #(3350 3487.5 4700)
+	        :median #(3700 3700 5000)
+	        :q3 #(4000 3950 5500)
+	        :upper #(4775 4800 6300)
+	        :outliers #(#() #(2700 4800) #()))
      :encoding (:y (:field :species
-		    :type :nominal
-		    :title null))
+		            :type :nominal
+		            :title null))
      :layer #((:mark (:type :rule)
-	       :encoding (:x (:field :lower
-			      :type :quantitative
-			      :scale (:zero :false)
-			      :title null)
-			  :x2 (:field :upper)))
+	           :encoding (:x (:field :lower
+			                  :type :quantitative
+			                  :scale (:zero :false)
+			                  :title null)
+			              :x2 (:field :upper)))
 
-	      (:mark (:type :bar :size 14)
-	       :encoding (:x (:field :q1
-			      :type :quantitative)
-			  :x2 (:field :q3)
-			  :color (:field :species
-				  :type :nominal
-				  :legend null)))
+	          (:mark (:type :bar :size 14)
+	           :encoding (:x (:field :q1
+			                  :type :quantitative)
+			              :x2 (:field :q3)
+			              :color (:field :species
+				                  :type :nominal
+				                  :legend null)))
 
-	      (:mark (:type :tick
-		      :color :white
-		      :size 14)
-	       :encoding (:x (:field :median
-			      :type :quantitative)))
+	          (:mark (:type :tick
+		              :color :white
+		              :size 14)
+	           :encoding (:x (:field :median
+			                  :type :quantitative)))
 
 	      (:transform #((:flatten #(:outliers)))
 	       :mark (:type :point :style "boxplot-outliers")
 	       :encoding (:x (:field :outliers
-			      :type :quantitative)))))))
+			              :type :quantitative)))))))
 ```
+
 ## Layered
 
 ### Rolling average
@@ -1300,19 +1302,19 @@ Plot showing a 30 day rolling average with raw values in the background.
      :transform #((:window #((:field :temp-max
 			      :op :mean
 			      :as :rolling-mean))
-		   :frame #(-15 15)))
+		          :frame #(-15 15)))
      :encoding (:x (:field :date
-		    :type :temporal
-		    :title "Date")
-		:y (:type :quantitative
-		    :axis (:title "Max Temperature and Rolling Mean")))
+		            :type :temporal
+		            :title "Date")
+		        :y (:type :quantitative
+		            :axis (:title "Max Temperature and Rolling Mean")))
      :layer #((:mark (:type :point :opacity 0.3)
-	       :encoding (:y (:field :temp-max
-			      :title "Max Temperature")))
+	            :encoding (:y (:field :temp-max
+			                   :title "Max Temperature")))
 
-	      (:mark (:type :line :color "red" :size 3)
-	       :encoding (:y (:field :rolling-mean
-			      :title "Rolling Mean of Max Temperature")))))))
+	          (:mark (:type :line :color "red" :size 3)
+	           :encoding (:y (:field :rolling-mean
+			                  :title "Rolling Mean of Max Temperature")))))))
 ```
 
 ### Histogram w/mean
@@ -1324,17 +1326,17 @@ Plot showing a 30 day rolling average with raw values in the background.
  (vega:defplot histogram-with-mean
    `(:data ,imdb
      :layer #((:mark :bar
-	       :encoding (:x (:field :imdb-rating
-			      :bin t
-			      :title "IMDB Rating")
-			  :y (:aggregate :count)))
+	            :encoding (:x (:field :imdb-rating
+			                   :bin t
+			                   :title "IMDB Rating")
+			               :y (:aggregate :count)))
 
-	      (:mark :rule
-	       :encoding (:x (:field :imdb-rating
-			      :aggregate :mean
-			      :title "Mean of IMDB Rating")
-			  :color (:value "red")
-			  :size (:value 5)))))))
+	          (:mark :rule
+	           :encoding (:x (:field :imdb-rating
+			                  :aggregate :mean
+			                  :title "Mean of IMDB Rating")
+			              :color (:value "red")
+			              :size (:value 5)))))))
 ```
 
 
@@ -1401,46 +1403,46 @@ of days in that range that have sun, rain, fog, snow, etc.
      :data ,seattle-weather
      :vconcat #(;; upper graph
 		(:encoding (:color (:condition (:param :brush
-						:title "Weather"
-						:field :weather
-						:type :nominal
-						:scale (:domain #("sun" "fog" "drizzle" "rain" "snow")
-							:range #("#e7ba52", "#a7a7a7", "#aec7e8", "#1f77b4", "#9467bd")))
-			            :value "lightgray")
+						               :title "Weather"
+						               :field :weather
+						               :type :nominal
+						               :scale (:domain #("sun" "fog" "drizzle" "rain" "snow")
+							           :range #("#e7ba52", "#a7a7a7", "#aec7e8", "#1f77b4", "#9467bd")))
+			                :value "lightgray")
 			    :size (:field :precipitation
-				   :type  :quantitative
-				   :title "Precipitation"
-				   :scale (:domain #(-1 50)))
+				       :type  :quantitative
+				       :title "Precipitation"
+				       :scale (:domain #(-1 50)))
 			    :x (:field :date
-				:time-unit :monthdate
-				:title "Date"
-				:axis (:format "%b"))
+				    :time-unit :monthdate
+				    :title "Date"
+				    :axis (:format "%b"))
 			    :y (:field :temp-max
-				:type :quantitative
-				:scale (:domain #(-5 40))
-				:title "Maximum Daily Temperature (C)"))
+				    :type :quantitative
+				    :scale (:domain #(-5 40))
+				    :title "Maximum Daily Temperature (C)"))
 		 :width 600
 		 :height 300
 		 :mark :point
 		 :params #((:name :brush
-			    :select (:type :interval
-				     :encodings #(:x))))
+			        :select (:type :interval
+				             :encodings #(:x))))
 		 :transform #((:filter (:param :click))))
 
 		;; lower graph
 		(:encoding (:color (:condition (:param :click
-						:field :weather
-						:scale (:domain #("sun", "fog", "drizzle", "rain", "snow")
-							:range #("#e7ba52", "#a7a7a7", "#aec7e8", "#1f77b4", "#9467bd")))
-				    :value "lightgray")
+						                :field :weather
+						                :scale (:domain #("sun", "fog", "drizzle", "rain", "snow")
+							            :range #("#e7ba52", "#a7a7a7", "#aec7e8", "#1f77b4", "#9467bd")))
+				            :value "lightgray")
 			    :x (:aggregate :count)
 			    :y (:field :weather
 				:title "Weather"))
 		 :width 600
 		 :mark :bar
 		 :params #((:name :click
-			   :select (:type :point
-				    :encodings #(:color))))
+			        :select (:type :point
+				             :encodings #(:color))))
 		 :transform #((:filter (:param :brush))))))))
 ```
 
@@ -1456,89 +1458,89 @@ of days in that range that have sun, rain, fog, snow, etc.
      :width 800
      :height 500
      :layer #((:transform #((:filter (:field :country
-				      :equal "afghanistan"))
-			    (:filter (:param :year)))
-	       :mark (:type :text
-		      :font-size 100
-		      :x 420
-		      :y 250
-		      :opacity 0.06)
-	       :encoding (:text (:field :year)))
+				             :equal "afghanistan"))
+			                (:filter (:param :year)))
+	           :mark (:type :text
+		              :font-size 100
+		              :x 420
+		              :y 250
+		              :opacity 0.06)
+	           :encoding (:text (:field :year)))
 
-	      (:transform #((:lookup :cluster
-			     :from (:key :id
-				    :fields #(:name)
-				    :data (:values #(("id" 0 "name" "South Asia")
-						     ("id" 1 "name" "Europe & Central Asia")
-						     ("id" 2 "name" "Sub-Saharan Africa")
-						     ("id" 3 "name" "America")
-						     ("id" 4 "name" "East Asia & Pacific")
-						     ("id" 5 "name" "Middle East & North Africa"))))))
-	       :encoding (:x (:field :fertility
-			      :type :quantitative
-			      :scale (:domain #(0 9))
-			      :axis (:tick-count 5
-				     :title "Fertility"))
-			  :y (:field :life-expect
-			      :type :quantitative
-			      :scale (:domain #(20 85))
-			      :axis (:tick-count 5
-				     :title "Life Expectancy")))
+	          (:transform #((:lookup :cluster
+			                 :from (:key :id
+				                    :fields #(:name)
+				                    :data (:values #(("id" 0 "name" "South Asia")
+						                  ("id" 1 "name" "Europe & Central Asia")
+						                  ("id" 2 "name" "Sub-Saharan Africa")
+						                  ("id" 3 "name" "America")
+						                  ("id" 4 "name" "East Asia & Pacific")
+						                  ("id" 5 "name" "Middle East & North Africa"))))))
+	           :encoding (:x (:field :fertility
+			                  :type :quantitative
+			                  :scale (:domain #(0 9))
+			                  :axis (:tick-count 5
+				              :title "Fertility"))
+			              :y (:field :life-expect
+			                  :type :quantitative
+			                  :scale (:domain #(20 85))
+			              :axis (:tick-count 5
+				                 :title "Life Expectancy")))
 	       :layer #((:mark (:type :line
-				:size 4
-				:color "lightgray"
-				:stroke-cap "round")
-			 :encoding (:detail (:field :country)
-				    :order (:field :year)
-				    :opacity (:condition (:test (:or #((:param :hovered :empty :false)
-								       (:param :clicked :empty :false)))
-							  :value 0.8)
-					      :value 0)))
+				            :size 4
+				            :color "lightgray"
+				            :stroke-cap "round")
+			         :encoding (:detail (:field :country)
+				                :order (:field :year)
+				                :opacity (:condition (:test (:or #((:param :hovered :empty :false)
+								                                   (:param :clicked :empty :false)))
+							              :value 0.8)
+					                      :value 0)))
 
-			(:params #((:name :year
-				    :value #((:year 1955))
-				    :select (:type :point
-					     :fields #(:year))
-				    :bind (:name :year
-					   :input :range
-					   :min 1955
-					   :max 2005
-					   :step 5))
-				   (:name :hovered
-				    :select (:type :point
-					     :fields #(:country)
-					     :toggle :false
-					     :on :mouseover))
-				   (:name :clicked
-				    :select (:type :point
-					     :fields #(:country))))
-			 :transform #((:filter (:param :year)))
-			 :mark (:type :circle
-				:size 100
-				:opacity 0.9)
-			 :encoding (:color (:field :name
-					    :title "Region")))
+			        (:params #((:name :year
+				                :value #((:year 1955))
+				                :select (:type :point
+					                     :fields #(:year))
+				                :bind (:name :year
+					                   :input :range
+					                   :min 1955
+					                   :max 2005
+					                   :step 5))
+				               (:name :hovered
+				                :select (:type :point
+					                     :fields #(:country)
+					                     :toggle :false
+					                     :on :mouseover))
+				               (:name :clicked
+				                :select (:type :point
+					                     :fields #(:country))))
+                     :transform #((:filter (:param :year)))
+			         :mark (:type :circle
+				            :size 100
+				            :opacity 0.9)
+			         :encoding (:color (:field :name
+					                    :title "Region")))
 
-			(:transform #((:filter (:and #((:param :year)
-						       (:or #((:param :clicked :empty :false)
-							      (:param :hovered :empty :false)))))))
+			        (:transform #((:filter (:and #((:param :year)
+						                           (:or #((:param :clicked :empty :false)
+							                              (:param :hovered :empty :false)))))))
 			 :mark (:type :text
-				:y-offset -12
-				:font-size 12
-				:font-weight :bold)
+				    :y-offset -12
+				    :font-size 12
+				    :font-weight :bold)
 			 :encoding (:text (:field :country)
-				    :color (:field :name
+				        :color (:field :name
 					    :title "Region")))
 
 			(:transform #((:filter (:param :hovered :empty :false))
-				      (:filter (:not (:param :year))))
+				          (:filter (:not (:param :year))))
 			 :layer #((:mark (:type :text
-					  :y-offset -12
-					  :font-size 12
-					  :color "gray")
-				   :encoding (:text (:field :year)))
-				  (:mark (:type :circle
-					  :color "gray"))))))))))
+					          :y-offset -12
+					          :font-size 12
+					          :color "gray")
+				       :encoding (:text (:field :year)))
+				      (:mark (:type :circle
+					          :color "gray"))))))))))
 ```
 <!--
 ### Airport connections
@@ -1637,19 +1639,19 @@ filtered.
      :transform #((:calculate "hours(datum.date)", :as "time")) ;what does 'hours' do?
      :repeat (:column #(:distance :delay :time))
      :spec (:layer #((:params #((:name :brush
-				 :select (:type :interval
-					  :encodings #(:x))))
+				                 :select (:type :interval
+					                      :encodings #(:x))))
 		      :mark :bar
 		      :encoding (:x (:field (:repeat :column)
-				     :bin (:maxbins 20))
-				 :y (:aggregate :count)
-				 :color (:value "#ddd")))
+				             :bin (:maxbins 20))
+				         :y (:aggregate :count)
+				         :color (:value "#ddd")))
 
 		     (:transform #((:filter (:param :brush)))
 		      :mark :bar
 		      :encoding (:x (:field (:repeat :column)
-				     :bin (:maxbins 20))
-				 :y (:aggregate :count))))))))
+				             :bin (:maxbins 20))
+				         :y (:aggregate :count))))))))
 ```
 
 
