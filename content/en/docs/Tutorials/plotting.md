@@ -117,7 +117,7 @@ chart](/docs/examples/plotting/#grouped-bar-chart) example:
      :encoding (:x (:field :category)
                 :y (:field :value :type :quantitative)
 		        :x-offset (:field :group)
-		        :color    (:field group))))
+		        :color    (:field :group))))
 ```
 
 finally, since a `data-frame` transformation returns a `data-frame`,

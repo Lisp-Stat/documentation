@@ -3,7 +3,9 @@ title: "Data Protection Notice"
 linkTitle: "Privacy"
 type: single
 ---
-
+<br/>
+<br/>
+<br/>
 This Data Protection Notice (“Notice”) sets out the basis which
 Symbolics Pte Ltd (“we”, “us”, or “our”) may collect, use, disclose or
 otherwise process personal data of our customers in accordance with

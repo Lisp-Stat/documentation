@@ -15,7 +15,7 @@ Quicklisp you can be up and running in 5 minutes.
 - Steel Bank Common Lisp (SBCL)
 - MacOS, Linux or Windows 10+
 - Quicklisp
-- Chrome
+- Chrome, Firefox or Edge
 
 ## Loading
 
