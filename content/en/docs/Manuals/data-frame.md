@@ -570,7 +570,7 @@ software.
 
 You may also want to save the default R data sets in order to augment
 the data with labels, units, types, etc. To save all of the default R
-data sets to the `LS:DATASETS;R` directory, use the
+data sets to the `LS:DATA;R` directory, use the
 `(rdata:save-r-default-datasets)` command if the default data sets
 have already been loaded, or `save-r-data` if they have not. This
 saves the data in lisp format.
@@ -959,11 +959,12 @@ preserves any variable attributes that may have been given.
 To save a data frame, use the `save` command:
 
 ```lisp
-(save 'mtcars #P"LS:DATASETS;mtcars.lisp")
+(save 'mtcars #P"LS:DATA;mtcars-example")
 ```
 
 Note that in this case you are passing the *symbol* to the function,
 not the value (thus the quote (') before the name of the data frame).
+Also note that the system will add the 'lisp' suffix for you.
 
 
 ### To a database

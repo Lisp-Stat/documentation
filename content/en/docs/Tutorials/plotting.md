@@ -531,9 +531,6 @@ If Vega-Desktop doesn't help, open the file in Visual Studio code,
 which has a schema validator.  Generally these kinds of syntax errors
 are easy to spot once they're pointed out by Visual Studio.
 
-Use "open in vega editor" to see if the schema was output correctly
-Open in Visual Studio code
-
 #### Something is displayed
 
 If you see the three ellipses, then you can open the plot in the
@@ -615,8 +612,8 @@ concatenated plot.  `repeat` and `facet` may also have this.
 For these plot types we need to handle the data property encoding ourselves.  For example instead of: `:data ,vgcars`, we need to specify the source type: `(:values ,vgcars)` or `(:url ,vgcars)`.  You can still use `plot` to plot from the REPL, however the 'device' requires the `:data-url` value to be `:ignore`.  For example when I created the plots for the examples section, I had a second 'device' for these types of plots:
 ```
 (defparameter hugo-url-2 '(:spec-loc #P"s:/src/documentation/static/plots/"
-			 :data-loc #P"s:/src/documentation/static/data/"
-			 :data-url :ignore)
+			   :data-loc #P"s:/src/documentation/static/data/"
+			   :data-url :ignore)
 ```
 
 Summarising:
