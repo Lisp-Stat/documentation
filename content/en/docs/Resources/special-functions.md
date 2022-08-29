@@ -22,6 +22,7 @@ calculations using the latest algorithms.
 | inverse-erfc |  Boost
 | log-gamma    |  libm
 | gamma        |  Cephes
+| incomplete-gamma | Boost
 
 
 ## Error rates
@@ -100,6 +101,30 @@ though, and likely good enough for most uses.
 | near 2     | Max = 2ε (Mean = 0.995ε)    | Max = 2ε (Mean = 0.559ε)      |
 | near -10   | Max = 1.73ε (Mean = 0.729ε) | Max = 0.125ε (Mean = 0.0043ε) |
 | near -55   | Max = 1.8ε (Mean = 0.817ε)  | Max = 0ε (Mean = 0ε)          |
+
+### incomplete-gamma
+See [boost incomplete gamma
+documentation](https://www.boost.org/doc/libs/1_80_0/libs/math/doc/html/math_toolkit/sf_gamma/igamma.html)
+for notes and error rates.
+
+#### lower
+| Data Set                 | Boost (MS C++)              | Special-Functions            |
+|--------------------------|-----------------------------|------------------------------|
+| small values             | Max = 1.54ε (Mean = 0.439ε) | Max = 3.00ε (Mean = 0.516ε)  |
+| medium values            | Max = 35.1ε (Mean = 6.98ε)  | Max = 10.00ε (Mean = 0.294ε) |
+| large values             | Max = 243ε (Mean = 20.2ε)   | Max = 20ε (Mean = 0.613ε)    |
+| integer and half-integer | Max = 13ε (Mean = 2.97ε)    | Max = 3ε (Mean = 0.189ε)     |
+
+#### upper
+| Data Set                 | Boost (MS C++)             | Special-Functions           |
+|--------------------------|----------------------------|-----------------------------|
+| small values             | Max = 2.26ε (Mean = 0.74ε) | Max = 2.23ε (Mean = 0.511ε) |
+| medium values            | Max = 23.7ε (Mean = 4ε)    | Max = 9.00ε (Mean = 0.266ε) |
+| large values             | Max = 469ε (Mean = 31.5ε)  | Max = 20.5ε (Mean = 0.621ε) |
+| integer and half-integer | Max = 8.72ε (Mean = 1.48ε) | Max = 4.00ε (Mean = 0.174ε) |
+
+
+
 
 
 ## NaN and Infinity
