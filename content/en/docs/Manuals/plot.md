@@ -1,7 +1,7 @@
 ---
 title: "Plotting"
 date: 2021-2-21
-weight: 3
+weight: 4
 draft: true
 description: >
   Visualising data in Lisp-Stat
