@@ -1141,8 +1141,8 @@ Error bars showing confidence intervals.
  (vega:defplot error-bar-ci
    `(:data ,barley
      :encoding (:y (:field :variety
-		    :type :ordinal
-		    :title "Variety"))
+		            :type  :ordinal
+		            :title "Variety"))
      :layer #((:mark (:type :point
 		              :filled t)
 	           :encoding (:x (:field :yield
@@ -1300,9 +1300,9 @@ Plot showing a 30 day rolling average with raw values in the background.
      :height 300
      :data ,seattle-weather
      :transform #((:window #((:field :temp-max
-			      :op :mean
-			      :as :rolling-mean))
-		          :frame #(-15 15)))
+			                  :op :mean
+			                  :as :rolling-mean))
+	               :frame #(-15 15)))
      :encoding (:x (:field :date
 		            :type :temporal
 		            :title "Date")
@@ -1384,7 +1384,7 @@ includes interactive elements and demonstrates creating a SPLOM
 ```
 
 This example is one of those mentioned in the [plotting
-manual](/docs/manuals/plotting/) that uses a non-standard location for
+tutorial](/docs/tutorials/plotting/) that uses a non-standard location for
 the `data` property.
 
 ### Weather exploration

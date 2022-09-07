@@ -10,7 +10,7 @@ description: >
 
 ## Overview
 
-The Distributions package provides a collection of probabilistic distributions and related functions such as:
+The Distributions package provides a collection of probability distributions and related functions such as:
 
 - Sampling from distributions
 - Moments (e.g mean, variance, skewness, and kurtosis), entropy, and other properties
@@ -21,7 +21,7 @@ The Distributions package provides a collection of probabilistic distributions a
 
 ## Getting Started
 
-Load the distributions system with `(ql:quickload :distributions)` and generate a sequence of 1000 samples drawn from the standard normal distribution:
+Load the distributions system with `(asdf:load-system :distributions)` and generate a sequence of 1000 samples drawn from the standard normal distribution:
 
 ```lisp
 (defparameter *rn-samples*
@@ -45,7 +45,7 @@ and plot a histogram of the counts:
 
 It looks like there's an outlier at 5, but basically you can see it's centered around 0.
 
-To create a parameterised distribution, pass the parameters when you create the object.  In the following example we create a distribution with a mean of 2 and variance of 1 and plot it:
+To create a parameterised distribution, pass the parameters when you create the distribution object.  In the following example we create a distribution with a mean of 2 and variance of 1 and plot it:
 
 ```lisp
 (defparameter rn2 (distributions:r-normal 2 1))
@@ -53,10 +53,10 @@ To create a parameterised distribution, pass the parameters when you create the 
   (plot:plot
    (vega:defplot normal-2-1
        `(:mark :bar
-	 :data (:x ,seq)
-	 :encoding (:x (:bin (:step 0.5)
-			:field x)
-		    :y (:aggregate :count))))))
+	     :data (:x ,seq)
+	     :encoding (:x (:bin (:step 0.5)
+			            :field x)
+		            :y (:aggregate :count))))))
 ```
 {{< vega id="normal-2-1" spec="/plots/normal-2-1.vl.json" >}}
 
@@ -73,7 +73,7 @@ LS-USER> (cdf rn2 1.75)
 
 ## Gamma
 
-In probability theory and statistics, the gamma distribution is a two-parameter family of continuous probability distributions. The exponential distribution, Erlang distribution, and chi-square distribution are special cases of the gamma distribution. There are two different parametrization in common use:
+In probability theory and statistics, the gamma distribution is a two-parameter family of continuous probability distributions. The exponential distribution, Erlang distribution, and chi-square distribution are special cases of the gamma distribution. There are two different parametrizations in common use:
 
 - With a shape parameter k and a scale parameter θ.
 - With a shape parameter α = k and an inverse scale parameter β = 1/θ, called a rate parameter.
@@ -112,13 +112,11 @@ where $\gamma (\alpha ,\beta x)$ is the lower incomplete gamma function.
 
 ### Usage
 
-Python, and Boost use shape & scale for parameterization.  Both forms of parametrization are common.
-
-Lisp-Stat and R use shape and rate for the default parametrization.  However, since Lisp-Stat's *implementation* is based on Boost (because of the restrictive license of R), we perform the conversion $\theta=\frac{1}{\beta}$ internally.
+Python and Boost use shape & scale for parameterization.  Lisp-Stat and R use shape and rate for the default parametrization.  Both forms of parametrization are common.  However, since Lisp-Stat's *implementation* is based on Boost (because of the restrictive license of R), we perform the conversion $\theta=\frac{1}{\beta}$ internally.
 
 ### Implementation notes
 
-In the following table k is the shape parameter of the distribution, θ is its scale parameter, x is the random variate, p is the probability and q is (- 1 p).  The implementation functions are in the [special-functions](https://github.com/Lisp-Stat/special-functions) system.
+In the following table *k* is the shape parameter of the distribution, θ is its scale parameter, x is the random variate, p is the probability and q is (- 1 p).  The implementation functions are in the [special-functions](https://github.com/Lisp-Stat/special-functions) system.
 
 | Function            | Implementation                             |
 |---------------------|--------------------------------------------|
@@ -136,7 +134,9 @@ In the following table k is the shape parameter of the distribution, θ is its s
 
 
 ### Example
-On average, a train arrives at a station once per 15 minutes (θ=.25). What is the probability one arrives α=10 in less than x=3 hours?
+<!-- From: https://rpubs.com/mpfoley73/459051
+ other examples of plotting gamma at https://www.statology.org/gamma-distribution-in-r/ -->
+On average, a train arrives at a station once every 15 minutes (θ=15/60). What is the probability there are 10 trains (occurances of the event) within three hours?
 
 In this example we have:
 ```
@@ -145,16 +145,43 @@ theta = 15/60
 x = 3
 ```
 To compute the exact answer:
-```
+```lisp
 (distributions:cdf-gamma 3d0 10d0 :scale 15/60)
 ;=> 0.7576078383294877d0
 ```
+As an alternative, we can run a simulation, where we draw from the parameterised distribution and then calculate the percentage of values that fall below our threshold, x = 3:
+```lisp
+(let* ((rv  (distributions:r-gamma 10 60/15))
+       (seq (aops:generate (distributions:generator rv) 10000)))
+  (statistics-1:mean (e2<= seq 3))) ;e2<= is the vectorised <= operator
+;=> 0.753199999999998d0
+```
+Finally, if we want to plot the probability:
+```lisp
+(let* ((x    (aops:linspace 0.01d0 10 1000))
+       (prob (map 'simple-double-float-vector
+		          #'(lambda (x)
+		              (distributions:cdf-gamma x 10d0 :scale 15/60))
+		          x))
+       (interval (map 'vector
+		              #'(lambda (x) (if (<= x 3) "0 to 3" "other"))
+		              x)))
+  (plot:plot
+   (vega:defplot gamma-example
+       `(:mark :area
+	     :data (:x ,x
+		        :prob ,prob
+		        :interval ,interval)
+	      :encoding (:x (:field :x    :type :quantitative :title "Interval (x)")
+		             :y (:field :prob :type :quantitative :title "Cum Probability")
+		             :color (:field :interval))))))
+```
+{{< vega id="gamma-example" spec="/plots/gamma-example.vl.json" >}}
 
-<!-- TODO: Figure out how to the example here in Lisp-Stat: https://rpubs.com/mpfoley73/459051
 
 ### References
 
-[Boost implementation of Gamma](https://www.boost.org/doc/libs/1_80_0/libs/math/doc/html/math_toolkit/dist_ref/dists/gamma_dist.html)
+[Boost implementation of Gamma](https://www.boost.org/doc/libs/1_80_0/libs/math/doc/html/math_toolkit/dist_ref/dists/gamma_dist.html)</br>
 [Gamma distribution](https://en.wikipedia.org/wiki/Gamma_distribution) (Wikipedia)
 
 

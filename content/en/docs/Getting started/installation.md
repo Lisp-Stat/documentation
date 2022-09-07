@@ -122,11 +122,14 @@ git clone https://github.com/Lisp-Stat/data-frame.git && \
 git clone https://github.com/Lisp-Stat/dfio.git && \
 git clone https://github.com/Lisp-Stat/special-functions.git && \
 git clone https://github.com/Lisp-Stat/numerical-utilities.git && \
+git clone https://github.com/Lisp-Stat/array-operations.git && \
 git clone https://github.com/Lisp-Stat/documentation.git && \
+git clone https://github.com/Lisp-Stat/distributions.git && \
 git clone https://github.com/Lisp-Stat/plot.git && \
 git clone https://github.com/Lisp-Stat/select.git && \
 git clone https://github.com/Lisp-Stat/cephes.cl.git && \
 git clone https://github.com/Symbolics/alexandria-plus && \
+git clone https://github.com/Lisp-Stat/statistics.git && \
 git clone https://github.com/Lisp-Stat/lisp-stat.git
 ```
 

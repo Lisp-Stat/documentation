@@ -563,7 +563,7 @@ for example the maximum absolute difference between arrays:
 
 ### best
 
-`best` compares two array according to a function and returns the 'best' value found.  The function, `FN` must accept two inputs and return true/false. This function is applied to elements of ARRAY. The row-major-aref index is returned.
+`best` compares two arrays according to a function and returns the 'best' value found.  The function, `FN` must accept two inputs and return true/false. This function is applied to elements of ARRAY. The row-major-aref index is returned.
 
 Example: The index of the maximum is
 ```

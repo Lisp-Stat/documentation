@@ -1,0 +1,1 @@
+{"data":{"url":"/data/gamma-example-data.json"},"$schema":"https://vega.github.io/schema/vega-lite/v5.json","mark":"area","encoding":{"x":{"field":"x","type":"quantitative","title":"Interval (x)"},"y":{"field":"prob","type":"quantitative","title":"Cum Probability"},"color":{"field":"interval"}}}

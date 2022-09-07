@@ -140,18 +140,14 @@ Create a scatter plot specification comparing horsepower and miles per
 gallon:
 
 ```lisp
-(vega:defplot hp-mpg
-  `(:mark :point
-    :title "Vega Cars"
-    :data ,vgcars
-    :encoding (:x vgcars:horsepower
-	           :y vgcars:miles-per-gallon)))
-```
-
-Render the plot:
-
-```lisp
-(plot:plot-from-file (vega:write-html hp-mpg))
+(plot:plot
+  (vega:defplot hp-mpg
+    `(:title "Horsepower vs. MPG"
+      :description "Horsepower vs miles per gallon for various cars"
+      :data ,vgcars
+      :mark :point
+      :encoding (:x (:field :horsepower :type :quantitative)
+	             :y (:field :miles-per-gallon :type :quantitative)))))
 ```
 
 {{< vega id="foo" spec="/plots/hp-mpg.vl.json" >}}
