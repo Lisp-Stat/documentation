@@ -402,7 +402,7 @@ are *observations* (or cases).
 For these examples we are going to install a modified version of the
 Lisp-Stat data-frame print-object function. This will cause the REPL
 to display the data-frame at creation, and save us from having to type
-(print data-frame) in each example.  If you'd like to install it as we
+(print-data data-frame) in each example.  If you'd like to install it as we
 have, execute the code below at the REPL.
 {{< /alert >}}
 
@@ -1193,11 +1193,11 @@ list. The lisp reader then reads the contents of the list as symbols.
 
 ### print
 
-The `print-df` command will print a data frame in a nicely formatted
+The `print-data` command will print a data frame in a nicely formatted
 way, respecting the pretty printing row/column length variables:
 
 ```lisp
-(print-df mtcars)
+(print-data mtcars)
 ;; MODEL                MPG CYL  DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
 ;; Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
 ;; Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
