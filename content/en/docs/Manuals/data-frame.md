@@ -1344,6 +1344,41 @@ Let's change the `print-object` back to our convenience method.
     (df:print-data df stream nil)))
 ```
 
+### stacking
+
+Stacking is done with the [array-operations stacking functions](/docs/manuals/array-operations/#stacking).  Since these functions operate on both arrays and data frames, we can use them to stack data frames, arrays, or a mixture of both, providing they have a rank of 2.  Here's an example using the `mtcars` data frame:
+
+```
+(defparameter boss-mustang
+  #("Boss Mustang" 12.7d0 8 302 405 4.11d0 2.77d0 12.5d0 0 1 4 4))
+```
+and now stack it onto the `mtcars` data set (load it with `(data :mtcars)` if you haven't already done so):
+```
+(matrix-df
+ (keys mtcars)
+ (stack-rows mtcars boss-mustang))
+```
+This is the functional equivalent of R's `rbind` function.  You can also add columns with the `stack-cols` function.
+
+An often asked question is: why don't you have a dedicated `stack-rows` function?  Well, if you want one it might look like this:
+```
+(defun stack-rows (df &rest objects)
+  "Stack rows that works on matrices and/or data frames."
+  (matrix-df
+   (keys df)
+   (apply #'aops:stack-rows (cons df objects))))
+```
+But now the data frame must be the first parameter passed to the function.  Or perhaps you want to rename the columns?  Or you have matrices as your starting point?  For all those reasons, it makes more sense to pass in the column keys than a data frame:
+```
+(defun stack-rows (col-names &rest objects)
+  "Stack rows that works on matrices and/or data frames."
+  (matrix-df
+   (keys col-names)
+   (stack-rows objects)))
+```
+However this means we have two `stack-rows` functions, and you don't really gain anything except an extra function call.  So use the above definition if you like; we use the first example and call `matrix-df` and `stack-rows` to stack data frames.
+
+
 
 ## Column operations
 
