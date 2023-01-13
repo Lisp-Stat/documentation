@@ -443,7 +443,7 @@ this data set:
     3.227273
     LS-USER> (median purchases)
     2
-    LS-USER> (standard-deviation purchases)
+    LS-USER> (sd purchases)
     3.2041426
     LS-USER> (interquartile-range purchases)
     4

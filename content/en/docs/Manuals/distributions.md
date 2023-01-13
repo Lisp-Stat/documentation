@@ -73,16 +73,16 @@ LS-USER> (cdf rn2 1.75)
 
 ## Gamma
 
-In probability theory and statistics, the gamma distribution is a two-parameter family of continuous probability distributions. The exponential distribution, Erlang distribution, and chi-square distribution are special cases of the gamma distribution. There are two different parametrizations in common use:
+In probability theory and statistics, the gamma distribution is a two-parameter family of continuous probability distributions. The exponential distribution, Erlang distribution, and chi-square distribution are special cases of the gamma distribution. There are two different parameterisations in common use:
 
 - With a shape parameter k and a scale parameter θ.
 - With a shape parameter α = k and an inverse scale parameter β = 1/θ, called a rate parameter.
 
 In each of these forms, both parameters are positive real numbers.
 
-The parametrization with k and θ appears to be more common in econometrics and certain other applied fields, where for example the gamma distribution is frequently used to model waiting times.
+The parameterisation with k and θ appears to be more common in econometrics and certain other applied fields, where for example the gamma distribution is frequently used to model waiting times.
 
-The parametrization with α and β is more common in Bayesian statistics, where the gamma distribution is used as a conjugate prior distribution for various types of inverse scale (rate) parameters, such as the λ of an exponential distribution or a Poisson distribution.
+The parameterisation with α and β is more common in Bayesian statistics, where the gamma distribution is used as a conjugate prior distribution for various types of inverse scale (rate) parameters, such as the λ of an exponential distribution or a Poisson distribution.
 
 When the shape parameter has an integer value, the distribution is the Erlang distribution.  Since this can be produced by ensuring that the shape parameter has an integer value > 0, the Erlang distribution is not separately implemented.
 
@@ -112,7 +112,7 @@ where $\gamma (\alpha ,\beta x)$ is the lower incomplete gamma function.
 
 ### Usage
 
-Python and Boost use shape & scale for parameterization.  Lisp-Stat and R use shape and rate for the default parametrization.  Both forms of parametrization are common.  However, since Lisp-Stat's *implementation* is based on Boost (because of the restrictive license of R), we perform the conversion $\theta=\frac{1}{\beta}$ internally.
+Python and Boost use shape & scale for parameterization.  Lisp-Stat and R use shape and rate for the default parameterisation.  Both forms of parameterization are common.  However, since Lisp-Stat's *implementation* is based on Boost (because of the restrictive license of R), we perform the conversion $\theta=\frac{1}{\beta}$ internally.
 
 ### Implementation notes
 

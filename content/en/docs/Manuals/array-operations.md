@@ -125,7 +125,7 @@ some set of values, say perhaps a time-series of stock prices:
 **`flatten`** displaces to a row-major array:
 
 ```lisp
-aops:flatten *a*) ; => #(1 2 3 4 5 6)
+(aops:flatten *a*) ; => #(1 2 3 4 5 6)
 ```
 
 ### split
