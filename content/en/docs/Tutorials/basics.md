@@ -444,7 +444,7 @@ this data set:
     LS-USER> (median purchases)
     2
     LS-USER> (sd purchases)
-    3.2041426
+    3.2795
     LS-USER> (interquartile-range purchases)
     4
 
