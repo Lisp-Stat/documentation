@@ -2,7 +2,7 @@
 title: "Select"
 author: ["Steven Nunez"]
 date: 2021-03-07
-weight: 5
+weight: 6
 description: >
   Selecting Cartesian subsets of data
 ---

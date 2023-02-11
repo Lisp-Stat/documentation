@@ -2,7 +2,7 @@
 title: "SQLDF"
 author: ["Steven Nunez"]
 date: 2021-03-07
-weight: 6
+weight: 7
 description: >
   Selecting subsets of data using SQL
 ---
