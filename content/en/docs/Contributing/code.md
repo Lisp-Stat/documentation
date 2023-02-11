@@ -89,7 +89,29 @@ Please consider the following before submitting a pull request:
 - All code should include unit tests. Older projects use [fiveam](https://github.com/lispci/fiveam) as the test framework for new projects. New project should use [Parachute](https://github.com/Shinmera/parachute).
 - Contributions should pass existing unit tests
 - New unit tests should be provided to demonstrate bugs and fixes
-- [Indentation in Common Lisp](https://dept-info.labri.fr/~idurand/enseignement/lst-info/PFS/Common/Strandh-Tutorial/indentation.html) is important for readability. Contributions should adhere to these guidelines. For the most part, a properly configured Emacs will do this automatically.
+- [Indentation in Common Lisp](https://dept-info.labri.fr/~idurand/enseignement/lst-info/PFS/Common/Strandh-Tutorial/indentation.html) is important for readability. Contributions should adhere to these guidelines.  For the most part, a properly configured Emacs will do this automatically.
+
+#### Suggested editor settings for code contributions
+
+No line breaks in (doc)strings, otherwise try to keep it within 80 columns. Remove trailing whitespace. 'modern' coding style. Suggested Emacs snippet:
+
+```emacs-lisp
+(set-fill-column 9999)
+(font-lock-add-keywords nil
+                        '(("\\<\\(FIXME\\|TODO\\|QUESTION\\|NOTE\\)"
+                        1 font-lock-warning-face t)))
+(setq show-trailing-whitespace t)
+(add-hook 'write-file-hooks
+          '(lambda()
+             (save-excursion
+               (delete-trailing-whitespace))
+             nil))
+(visual-line-mode 1)
+(setq slime-net-coding-system 'utf-8-unix)
+(setq lisp-lambda-list-keyword-parameter-alignment t)
+(setq lisp-lambda-list-keyword-alignment t)
+(setq common-lisp-style-default 'modern)
+```
 
 ### Code review
 
