@@ -49,7 +49,7 @@ To make working with matrices easier, we're going to use the matrix-shorthand li
 ```
 
 ### Matrix Multiplication
-`mm` is the matrix multiplication function.  It is generic and can operate on both regular arrays and 'wrapped' array types, e.g. hermitian or triangular.  In this example we'll multiple an array by a vector.  `mx` is the short-hand way of defining a matrix, and `vec` for vector.
+`mm` is the matrix multiplication function.  It is generic and can operate on both regular arrays and 'wrapped' array types, e.g. hermitian or triangular.  In this example we'll multiple an array by a vector.  `mx` is the short-hand way of defining a matrix, and `vec` a vector.
 
 
 ```lisp
