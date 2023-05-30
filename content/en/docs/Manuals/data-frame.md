@@ -844,7 +844,7 @@ encountered in CSV files:
 ; => #(0.7d0 19.0d0 70.0)
 ```
 
-### From files
+### From delimited files
 
 We saw above that `dfio` can read from strings, so one easy way to
 read from a file is to use the `uiop` system function
@@ -876,6 +876,25 @@ reading into a string first:
 ;;  3  124       23         18
 ;;  4  130       64         26
 ;;  5  173       38         26 ..
+```
+
+### From parquet files
+
+You can use the [duckdb](https://github.com/ak-coram/cl-duckdb) system to load data from parquet files:
+
+```
+(ql:quickload :duckdb) ; see duckdb repo for installation instructions
+(ddb:query "INSTALL httpfs;" nil) ; loading via http
+(ddb:initialize-default-connection)
+(defdf yellow-taxis
+    (let ((q (ddb:query "SELECT * FROM read_parquet('https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-01.parquet') LIMIT 10" nil)))
+      (make-df (mapcar #'dfio:string-to-symbol (alist-keys q))
+	       (alist-values q))))
+```
+Now we can find the average fare:
+```
+(mean yellow-taxis:fare-amount)
+11.120000000000001d0
 ```
 
 

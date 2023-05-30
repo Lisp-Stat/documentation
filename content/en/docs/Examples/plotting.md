@@ -377,38 +377,35 @@ Lisp-Stat equivalent
 (plot:plot
  (vega:defplot linear-regression
    `(:data ,imdb
-     :layer #((:mark (:type :point
-	                  :filled t)
-	       :encoding (:x (:field :rotten-tomatoes-rating
-			              :type :quantitative
-			              :title "Rotten Tomatoes Rating")
-			          :y (:field :imdb-rating
-			              :type :quantitative
-			              :title "IMDB Rating")))
+     :layer #((:mark (:type :point :filled t)
+	           :encoding (:x (:field :rotten-tomatoes-rating
+			                  :type :quantitative
+			                  :title "Rotten Tomatoes Rating")
+			              :y (:field :imdb-rating
+			                  :type :quantitative
+			                  :title "IMDB Rating")))
 
-	       (:mark (:type :line
-		           :color "firebrick")
-		:transform #((:regression :imdb-rating
-			          :on :rotten-tomatoes-rating))
-		:encoding (:x (:field :rotten-tomatoes-rating
-			           :type :quantitative
-			           :title "Rotten Tomatoes Rating")
-			       :y (:field :imdb-rating
-			           :type :quantitative
-			           :title "IMDB Rating")))
+	          (:mark (:type :line :color "firebrick")
+	           :transform #((:regression :imdb-rating
+			                 :on :rotten-tomatoes-rating))
+		       :encoding (:x (:field :rotten-tomatoes-rating
+			                  :type :quantitative
+			                  :title "Rotten Tomatoes Rating")
+			              :y (:field :imdb-rating
+			                  :type :quantitative
+			                  :title "IMDB Rating")))
 
-	      (:transform #((:regression :imdb-rating
-			             :on :rotten-tomatoes-rating
-			             :params t)
-		                (:calculate "'R²: '+format(datum.rSquared, '.2f')"
-			             :as :r2))
-	    :mark (:type :text
-		       :color "firebrick"
-		       :x :width
-		       :align :right
-		       :y -5)
-	    :encoding (:text (:type :nominal
-			       :field :r2)))))))
+	          (:transform #((:regression :imdb-rating
+			                 :on :rotten-tomatoes-rating
+			                 :params t)
+		                    (:calculate "'R²: '+format(datum.rSquared, '.2f')"
+			                 :as :r2))
+	           :mark (:type :text
+		              :color "firebrick"
+		              :x :width
+		              :align :right
+		              :y -5)
+	           :encoding (:text (:type :nominal :field :r2)))))))
 ```
 
 ### Loess regression
