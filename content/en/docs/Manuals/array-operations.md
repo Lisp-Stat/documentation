@@ -430,6 +430,37 @@ Three dimensional arrays can be tough to get your head around.  In the example a
 	  ((2 2 2) (3 3 3)))
 ```
 
+The most common use case for `recycle` is to 'stretch' a vector so that it can be an operand for an array of compatible dimensions.  In Python, this would be known as 'broadcasting'. See the [Numpy broadcasting basics](https://numpy.org/doc/stable/user/basics.broadcasting.html) for other use cases.
+
+For example, suppose we wish to multiply array `a`, a size 4x3 with vector `b` of size 3, as in the figure below:
+
+{{< figure src="/images/broadcasting_2.png" >}}
+
+We can do that by `recycling` array `b` like this:
+
+```lisp
+(recycle #(1 2 3) :outer 4)
+;#2A((1 2 3)
+;	 (1 2 3)
+;	 (1 2 3)
+;	 (1 2 3))
+```
+
+In a similar manner, the figure below (also from the Numpy page) shows how we might stretch a vector horizontally to create an array compatible with the one created above.
+
+{{< figure src="/images/broadcasting_4.png" >}}
+
+To create that array from a vector, use the `:inner` keyword:
+
+```lisp
+(recycle #(0 10 20 30) :inner 3)
+;#2A((0 0 0)
+;	 (10 10 10)
+;	 (20 20 20)
+;	 (30 30 30))
+```
+
+
 ### map-array
 
 **`map-array`** maps a function over the elements of an array.
@@ -438,7 +469,7 @@ Three dimensional arrays can be tough to get your head around.  In the example a
 (aops:map-array #2A((1.7 2.1 4.3 5.4)
                     (0.3 0.4 0.5 0.6))
 				#'log)
-; #2A((0.53062826 0.7419373 1.4586151 1.686399)
+; #2A(( 0.53062826 0.7419373  1.4586151  1.686399)
 ;     (-1.2039728 -0.9162907 -0.6931472 -0.5108256))
 ```
 
