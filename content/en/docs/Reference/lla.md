@@ -1,5 +1,5 @@
 ---
-linkTitle: "Linear Algebra"
+linkTitle: "LLA"
 type: docs
 draft: false
 weight: 115
