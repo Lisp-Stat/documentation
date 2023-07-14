@@ -505,7 +505,6 @@ finally, rotate it three times (270°):
 ;     (-1.2039728 -0.9162907 -0.6931472 -0.5108256))
 ```
 
-Note: This was moved to numerical-utilites in anticipation of consolidating nu:matrix and array-operations.  That effort has stalled. We should probably move it back here.
 
 ## Indexing operations
 
