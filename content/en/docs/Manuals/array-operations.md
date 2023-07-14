@@ -460,6 +460,38 @@ To create that array from a vector, use the `:inner` keyword:
 ;	 (30 30 30))
 ```
 
+### turn
+
+**`turn`** rotates an array by a specified number of clockwise 90° rotations. The axis of rotation is specified by RANK-1 (defaulting to 0) and RANK-2 (defaulting to 1).  In the first example, we'll rotate by 90°:
+
+```lisp
+(defparameter array-1 #2A((1 0 0)
+                          (2 0 0)
+                          (3 0 0)))
+(aops:turn array-1 1)
+;; #2A((3 2 1)
+;;     (0 0 0)
+;;	   (0 0 0))
+```
+
+and if we rotate it twice (180°):
+
+```lisp
+(aops:turn array-1 2)
+;; #2A((0 0 3)
+;;     (0 0 2)
+;;     (0 0 1))
+```
+
+finally, rotate it three times (270°):
+
+```lisp
+(aops:turn array-1 3)
+;; #2A((0 0 0)
+;;     (0 0 0)
+;;     (1 2 3))
+```
+
 
 ### map-array
 
