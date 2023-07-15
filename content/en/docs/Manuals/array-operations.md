@@ -251,13 +251,10 @@ instead of the longer form
 
 ## Creation & transformation
 
-When the resulting element type cannot be inferred, functions that
-create and transform arrays are provided in pairs; one of these will
-allow you to specify the array-element-type of the result, while the
-other assumes it is `t`.  The former ends with a `*`, and the
-`element-type` is always its first argument.  Examples are given for
-the versions without `*`; use the other when you are optimizing your
-code and you are sure you can constrain to a given element-type.
+Use the functions in this section to create commonly used arrays
+types. When the resulting element type cannot be inferred from an
+existing array or vector, you can pass the element type as an optional
+argument.  The default is elements of type `T`.
 
 *Element traversal order of these functions is unspecified*.  The
 reason for this is that the library may use parallel code in the
@@ -265,8 +262,7 @@ future, so it is unsafe to rely on a particular element traversal
 order.
 
 The following functions all make a new array, taking the dimensions as
-input.  The version ending in `*` also takes the array type as first
-argument.  There are also versions ending in `!` which do not make a
+input.  There are also versions ending in `!` which do not make a
 new array, but take an array as first argument, which is modified and
 returned.
 
@@ -280,16 +276,23 @@ returned.
 
 For example:
 ```lisp
+(aops:zeros 3)
+; => #(0 0 0)
+
+(aops:zeros 3 'double-float)
+; => #(0.0d0 0.0d0 0.0d0)
+
 (aops:rand '(2 2))
 ; => #2A((0.6686077 0.59425664)
 ;        (0.7987722 0.6930506))
 
-(aops:rand* 'single-float '(2 2))
+(aops:rand '(2 2) 'single-float)
 ; => #2A((0.39332366 0.5557821)
 ;        (0.48831415 0.10924244))
 
 (let ((a (make-array '(2 2) :element-type 'double-float)))
   ;; Modify array A, filling with random numbers
+  ;; element type is taken from existing array
   (aops:rand! a))
   ; => #2A((0.6324615478515625d0 0.4636608362197876d0)
   ;        (0.4145939350128174d0 0.5124958753585815d0))
@@ -298,6 +301,7 @@ For example:
 ```lisp
 (linspace 0 4 5)   ;=> #(0 1 2 3 4)
 (linspace 1 3 5)   ;=> #(0 1/2 1 3/2 2)
+(linspace 1 3 5 'double-float) ;=> #(1.0d0 1.5d0 2.0d0 2.5d0 3.0d0)
 (linspace 0 4d0 3) ;=> #(0.0d0 2.0d0 4.0d0)
 ```
 
