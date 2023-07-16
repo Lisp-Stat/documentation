@@ -12,7 +12,7 @@ description: >
 LLA works with matrices, that is arrays of rank 2, with all numerical values.  Categorical variables could be integer coded if you need to.
 
 
-## Basic Usage
+## Setup
 
 `lla` requires a BLAS and LAPACK shared library. These may be available via
 your operating systems package manager, or you can download [OpenBLAS](https://github.com/xianyi/OpenBLAS), which includes precompiled binaries for MS Windows.
@@ -39,7 +39,7 @@ To load `lla`:
 (use-package 'lla) ;access to the symbols
 ```
 
-## Examples
+### Getting Started
 
 To make working with matrices easier, we're going to use the matrix-shorthand library.  Load it like so:
 
@@ -62,3 +62,71 @@ To make working with matrices easier, we're going to use the matrix-shorthand li
 
 ; #(5.0d0 11.0d0 17.0d0)
 ```
+
+## Basics
+
+### norm
+
+**`norm`** returns a matrix or vector norm.  This function is able to return one of eight different matrix norms, or one of an infinite number of vector norms (described below), depending on the value of the `ord` parameter.  `ord` may be one of: `integer`, `:frob`, `:inf` `:-inf`. `ord` must be >= 0.
+
+Note that norm is not, by default, part of the LS-USER package.
+
+The following norms can be calculated:
+
+| ord     | norm for matrices        | norm for vector |
+|---------|--------------------------|-----------------|
+| None    | Frobenious norm          | 2-norm          |
+| `:frob` | Frobenius norm           | -               |
+| `:nuc`  | nuclear norm             | -               |
+| `:inf`  | max(sum(abs(a), axis=1)) | (max (abs a))   |
+| `:-inf` | min(sum(abs(a), axis=1)) | (min (abs a))   |
+| `0`     | -                        | (sum a)         |
+| `1`     | max(sum(abs(a), axis=0)) | as below        |
+| `-1`    | N/A                      | as below        |
+| `2`     | 2-nrom                   | as below        |
+| `-2`    | N/A                      | as below        |
+
+The Frobenius norm is given by
+
+The nuclear norm is the sum of the singular values.
+
+Both the Frobenius and nuclear norm orders are only defined for matrices.
+
+#### Examples
+
+```lisp
+(defparameter a #(-4 -3 -2 -1  0  1  2  3  4))
+(defparameter b (reshape a '(3 3)))
+```
+
+```lisp
+LS-USER> (nu:norm a)
+7.745967
+LS-USER> (nu:norm b)
+7.745967
+LS-USER> (nu:norm b :frob)
+7.745967
+LS-USER> (nu:norm a :inf)
+4
+LS-USER> (nu:norm b :inf)
+9
+LS-USER> (nu:norm a :-inf)
+0
+LS-USER> (nu:norm b :-inf)
+2
+```
+
+```lisp
+LS-USER> (nu:norm a 1)
+20
+LS-USER> (nu:norm b 1)
+7
+LS-USER> (nu:norm a 2)
+7.745967
+LS-USER> (nu:norm b 2)
+7.745967
+LS-USER> (nu:norm b 3)
+5.8480353
+```
+
+
