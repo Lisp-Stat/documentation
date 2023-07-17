@@ -510,6 +510,33 @@ finally, rotate it three times (270°):
 ```
 
 
+### outer
+
+**`outer`** is generalized outer product of arrays using a provided function.
+
+Lambda list: `(function &rest arrays)`
+
+The resulting array has the concatenated dimensions of arrays
+
+The examples below return the [outer
+product](https://en.wikipedia.org/wiki/Outer_product) of vectors or arrays.  This is the outer product you get in most linear algebra packages.
+
+```lisp
+(defparameter a #(2 3 5))
+(defparameter b #(7 11))
+(defparameter c #2A((7 11)
+                    (13 17)))
+
+(outer #'* a b)
+;#2A((14 22)
+;    (21 33)
+;    (35 55))
+
+(outer #'* c a)
+;#3A(((14 21 35) (22 33 55))
+;    ((26 39 65) (34 51 85)))
+```
+
 ## Indexing operations
 
 ### nested-loop
