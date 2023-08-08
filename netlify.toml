@@ -1,11 +1,13 @@
 [build]
   publish = "public"
-  command = "cd themes/docsy && git submodule update -f --init && cd ../.. && hugo"
+  command = "hugo"
 
 [context.production.environment]
-  HUGO_VERSION = "0.82.0"
+  HUGO_VERSION = "0.117.0"
   HUGO_ENV = "production"
   HUGO_ENABLEGITINFO = "true"
+  GO_VERSION = "1.21.0"
+  NODE_VERSION = "18"
 
 # Not using preview nor branch deployment yet
 # See:
@@ -14,7 +16,11 @@
 #  https://gohugo.io/hosting-and-deployment/hosting-on-netlify/
 
 [context.branch-deploy.environment]
-  HUGO_VERSION = "0.82.0"
+  HUGO_VERSION = "0.117.0"
+  GO_VERSION = "1.21.0"
+  NODE_VERSION = "18"
 
 [context.deploy-preview.environment]
-  HUGO_VERSION = "0.82.0"
+  HUGO_VERSION = "0.117.0"
+  GO_VERSION = "1.21.0"
+  NODE_VERSION = "18"
