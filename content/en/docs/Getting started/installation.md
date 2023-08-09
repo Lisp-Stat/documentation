@@ -14,8 +14,8 @@ for Common Lisp that includes Emacs, SBCL, Git, Quicklisp, all
 configured and ready to use.
 
 <div class="mx-auto">
-	<a class="btn btn-lg btn-primary mr-3 mb-4" href="https://portacle.github.io/">
-		Download Portacle<i class="fas fa-arrow-alt-circle-right ml-2"></i>
+	<a class="btn btn-lg btn-primary me-3 mb-4" href="https://portacle.github.io/">
+		Download Portacle<i class="fas fa-arrow-alt-circle-right ms-2"></i>
 	</a>
 </div>
 
