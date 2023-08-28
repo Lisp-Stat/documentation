@@ -49,31 +49,14 @@ id = "G-4JNEYSENWT"
 # Language configuration
 
 [languages]
-[languages.en]
-title = "Lisp-Stat"
-languageName ="English"
-[languages.en.params]
-description = "Lisp-Stat Documentation"
-time_format_blog = "Monday, 02 January 2006"
-time_format_default = "02 January 2006"
+  [languages.en]
+    title = "Lisp-Stat"
+    languageName ="English"
+  [languages.en.params]
+    description = "Lisp-Stat Documentation"
+    time_format_blog = "Monday, 02 January 2006"
+    time_format_default = "02 January 2006"
 
-# Weight used for sorting.
-# weight = 1
-# [languages.no]
-# title = "LispStat"
-# description = "Docsy er operativsystem for skyen"
-# languageName ="Norsk"
-# contentDir = "content/no"
-# time_format_default = "02.01.2006"
-# time_format_blog = "02.01.2006"
-
-# [languages.fa]
-# title = "اسناد گلدی"
-# description = "یک نمونه برای پوسته داکسی"
-# languageName ="فارسی"
-# contentDir = "content/fa"
-# time_format_default = "2006.01.02"
-# time_format_blog = "2006.01.02"
 
 [markup]
   [markup.goldmark]

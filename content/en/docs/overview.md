@@ -185,18 +185,18 @@ real-world problems was a great start to the development of Lisp-Stat.
 ## What next?
 
 {{< cardpane >}}
-  {{< card header="**Get Started**" >}}
+  {{% card header="**Get Started**" %}}
   [Install](/docs/getting-started/installation/)<br/>
   [Get Help](/docs/getting-started/getting-help/)<br/>
   [Plot in 5 minutes](/docs/getting-started/)<br/>
-  {{< /card >}}
-  {{< card header="**Examples**" >}}
+  {{% /card %}}
+  {{% card header="**Examples**" %}}
   [Analytics](/docs/examples/statistics/)<br/>
   [Plotting](/docs/examples/plotting/)
-  {{< /card >}}
-  {{< card header="**R Users**" >}}
+  {{% /card %}}
+  {{% card header="**R Users**" %}}
   [Basic tutorial](/docs/tutorials/basics/)<br/>
   [Data Frame](/docs/tutorials/data-frame/)
-  {{< /card >}}
+  {{% /card %}}
 {{< /cardpane >}}
 

@@ -288,18 +288,18 @@ Find the sample mean and median:
 ## Next steps
 
 {{< cardpane >}}
-  {{< card header="**Get Started**" >}}
+  {{% card header="**Get Started**" %}}
   [Get Help](/docs/getting-started/getting-help)<br/>
   [Plot in 5 minutes](/docs/getting-started/)
-  {{< /card >}}
-  {{< card header="**Examples**" >}}
+  {{% /card %}}
+  {{% card header="**Examples**" %}}
   [Analytics](/docs/examples/statistics)<br/>
   [Plotting](/docs/examples/plotting)
-  {{< /card >}}
-  {{< card header="**R Users**" >}}
+  {{% /card %}}
+  {{% card header="**R Users**" %}}
   [Basic tutorial](/docs/tutorials/basics)<br/>
   [Data Frame](/docs/tutorials/data-frame/)
-  {{< /card >}}
+  {{% /card %}}
 {{< /cardpane >}}
 
 
