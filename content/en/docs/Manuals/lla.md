@@ -19,7 +19,7 @@ your operating systems package manager, or you can download [OpenBLAS](https://g
 
 {{< alert title="Note" >}}LLA relies on
 [CFFI](https://common-lisp.net/project/cffi/manual/cffi-manual.html)
-to locate the BLAS & LAPPACK shared library. In most cases, this means CFFI
+to locate the BLAS & LAPPACK shared libraries. In most cases, this means CFFI
 will use the system default search paths. If you encounter errors in
 loading the library, consult the CFFI documentation. For MS Windows,
 the certain way to successfully load the DLL is to ensure that the
@@ -44,7 +44,6 @@ To load `lla`:
 To make working with matrices easier, we're going to use the matrix-shorthand library.  Load it like so:
 
 ```lisp
-(asdf:load-system :num-utils)
 (use-package :num-utils.matrix-shorthand)
 ```
 
@@ -73,18 +72,18 @@ Note that norm is not, by default, part of the LS-USER package.
 
 The following norms can be calculated:
 
-| ord     | norm for matrices        | norm for vector |
-|---------|--------------------------|-----------------|
-| None    | Frobenious norm          | 2-norm          |
-| `:frob` | Frobenius norm           | -               |
-| `:nuc`  | nuclear norm             | -               |
-| `:inf`  | max(sum(abs(a), axis=1)) | (max (abs a))   |
-| `:-inf` | min(sum(abs(a), axis=1)) | (min (abs a))   |
-| `0`     | -                        | (sum a)         |
-| `1`     | max(sum(abs(a), axis=0)) | as below        |
-| `-1`    | N/A                      | as below        |
-| `2`     | 2-nrom                   | as below        |
-| `-2`    | N/A                      | as below        |
+| ord     | norm for matrices          | norm for vector |
+|---------|----------------------------|-----------------|
+| None    | Frobenious norm            | 2-norm          |
+| `:frob` | Frobenius norm             | -               |
+| `:nuc`  | nuclear norm               | -               |
+| `:inf`  | (max(sum(abs(a), axis=1))) | (max (abs a))   |
+| `:-inf` | (min(sum(abs(a), axis=1))) | (min (abs a))   |
+| `0`     | -                          | (sum a)         |
+| `1`     | (max(sum(abs(a), axis=0))) | as below        |
+| `-1`    | N/A                        | as below        |
+| `2`     | 2-norm                     | as below        |
+| `-2`    | N/A                        | as below        |
 
 The Frobenius norm is given by
 
@@ -95,8 +94,9 @@ Both the Frobenius and nuclear norm orders are only defined for matrices.
 #### Examples
 
 ```lisp
+(asdf:load-system :array-operations) ; if not using lisp-stat
 (defparameter a #(-4 -3 -2 -1  0  1  2  3  4))
-(defparameter b (reshape a '(3 3)))
+(defparameter b (aops:reshape a '(3 3)))
 ```
 
 ```lisp
