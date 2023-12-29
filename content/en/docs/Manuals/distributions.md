@@ -10,7 +10,7 @@ description: >
 
 ## Overview
 
-The Distributions package provides a collection of probability distributions and related functions such as:
+The `Distributions` system provides a collection of probability distributions and related functions such as:
 
 - Sampling from distributions
 - Moments (e.g mean, variance, skewness, and kurtosis), entropy, and other properties
@@ -21,7 +21,7 @@ The Distributions package provides a collection of probability distributions and
 
 ## Getting Started
 
-Load the distributions system with `(asdf:load-system :distributions)` and generate a sequence of 1000 samples drawn from the standard normal distribution:
+Load the distributions system with `(asdf:load-system :distributions)` and the plot system with `(asdf:load-system :plot/vega)`. Now generate a sequence of 1000 samples drawn from the standard normal distribution:
 
 ```lisp
 (defparameter *rn-samples*
@@ -35,7 +35,7 @@ and plot a histogram of the counts:
 (plot:plot
    (vega:defplot normal
        `(:mark :bar
-	     :data (:x ,*rn-samples*)
+	     :data (:values ,(plist-df `(:x ,*rn-samples*)))
 	     :encoding (:x (:bin (:step 0.5)
 	                    :field x)
 		            :y (:aggregate :count)))))
@@ -53,7 +53,7 @@ To create a parameterised distribution, pass the parameters when you create the 
   (plot:plot
    (vega:defplot normal-2-1
        `(:mark :bar
-	     :data (:x ,seq)
+	     :data (:values ,(plist-df `(:x ,seq)))
 	     :encoding (:x (:bin (:step 0.5)
 			            :field x)
 		            :y (:aggregate :count))))))
@@ -169,9 +169,9 @@ Finally, if we want to plot the probability:
   (plot:plot
    (vega:defplot gamma-example
        `(:mark :area
-	     :data (:x ,x
-		        :prob ,prob
-		        :interval ,interval)
+	     :data (:values ,(plist-df `(:x ,x
+                                     :prob ,prob
+		                             :interval ,interval)))
 	      :encoding (:x (:field :x    :type :quantitative :title "Interval (x)")
 		             :y (:field :prob :type :quantitative :title "Cum Probability")
 		             :color (:field :interval))))))

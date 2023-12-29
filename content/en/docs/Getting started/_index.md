@@ -144,7 +144,7 @@ gallon:
   (vega:defplot hp-mpg
     `(:title "Horsepower vs. MPG"
       :description "Horsepower vs miles per gallon for various cars"
-      :data ,vgcars
+      :data (:values ,vgcars)
       :mark :point
       :encoding (:x (:field :horsepower :type :quantitative)
 	             :y (:field :miles-per-gallon :type :quantitative)))))

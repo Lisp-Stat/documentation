@@ -62,6 +62,7 @@ To make working with matrices easier, we're going to use the matrix-shorthand li
 ; #(5.0d0 11.0d0 17.0d0)
 ```
 
+<!--
 ## Basics
 
 ### norm
@@ -128,5 +129,5 @@ LS-USER> (nu:norm b 2)
 LS-USER> (nu:norm b 3)
 5.8480353
 ```
-
+-->
 

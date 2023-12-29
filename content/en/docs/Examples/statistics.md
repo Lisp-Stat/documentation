@@ -20,6 +20,8 @@ After installing `cl-jupyter`, clone the IPS repository into your `~/common-lisp
 
 ## Looking at data
 
-[Chapter 1 &ndash; Distributions](https://github.com/Lisp-Stat/IPS9/blob/master/notebooks/Part%20I/Chapter%201%20Looking%20at%20Data.ipynb)
+* [Chapter 1 &ndash; Distributions](https://github.com/Lisp-Stat/IPS9/blob/master/notebooks/Part%20I/Chapter%201%20Looking%20at%20Data.ipynb)
 	: Exploratory data analysis using plots and numbers
+* [Chapter 2 &ndash; Data Relationships](https://github.com/Lisp-Stat/IPS9/blob/master/notebooks/Part%20I/Chapter%202%20Data%20Relationships.ipynb)
+	: Examining relationships between variables
 

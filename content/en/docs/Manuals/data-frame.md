@@ -2246,6 +2246,38 @@ create a new data-frame and leave the original `aq` untouched.
 Normally we'd round `mean` to be consistent from a type perspective,
 but did not here so you can see the values that were replaced.
 
+## Sampling
+
+You can take a random sample of the rows of a data-frame with the `random-sample` function:
+
+```lisp
+LS-USER> mtcars
+#<DATA-FRAME (32 observations of 12 variables)
+Motor Trend Car Road Tests>
+LS-USER> (random-sample mtcars 3)
+#<DATA-FRAME (3 observations of 12 variables)>
+LS-USER> (print-data *)
+
+;;   MODEL              MPG CYL  DISP  HP DRAT   WT  QSEC VS AM GEAR CARB
+;; 0 Hornet Sportabout 18.7   8 360.0 175 3.15 3.44 17.02  0  0    3    2
+;; 1 Duster 360        14.3   8 360.0 245 3.21 3.57 15.84  0  0    3    4
+;; 2 Merc 230          22.8   4 140.8  95 3.92 3.15 22.90  1  0    4    2
+```
+
+You can also take random samples from CL sequences.
+
+Uses [Vitter's Algorithm
+D](http://www.ittc.ku.edu/~jsv/Papers/Vit87.RandomSampling.pdf) to
+efficiently select the rows.  Sometimes you may want to use the
+algorithm at a lower level. You don’t want the sample itself; you only
+want the indices. In this case, you can directly use `map-random-below`,
+which simply calls a provided function on each index.
+
+This is a port to standard common lisp of ruricolist's
+[random-sample](https://github.com/ruricolist/random-sample/tree/master).
+It also removes the dependency on Trivia, which has a restrictive
+license (LLGPL).
+
 ## Dates & Times
 
 Lisp-Stat uses [localtime](https://github.com/dlowe-net/local-time) to

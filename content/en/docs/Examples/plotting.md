@@ -8,8 +8,7 @@ description: >
 ---
 
 The plots here show equivalents to the [Vega-Lite example
-gallery](https://vega.github.io/vega-lite/examples/).  These examples
-show how to plot 'raw' data frame data.
+gallery](https://vega.github.io/vega-lite/examples/).  Before you begin working with these example, be certain to read the [plotting tutorial](/docs/tutorials/plotting) where you will learn the basics of working with plot specifications and data.
 
 ## Preliminaries
 
@@ -35,6 +34,8 @@ The examples in this section use the vega-lite data sets. Load them all now:
 (vega:load-vega-examples)
 ```
 
+
+
 ## Bar charts
 
 Bar charts are used to display information about categorical variables.
@@ -44,14 +45,14 @@ Bar charts are used to display information about categorical variables.
 {{< vega id="bar-chart-simple" spec="/plots/simple-bar-chart.vl.json" >}}
 
 In this simple bar chart example we'll demonstrate using literal
-embedded data in the form of a `plist`.  Later you'll see how to use a
-`data-frame` as a data source.
+embedded data in the form of a `plist`.  Later you'll see how to use a `data-frame` directly.
 
 ```lisp
 (plot:plot
  (vega:defplot simple-bar-chart
    `(:mark :bar
-     :data (:a #(A B C D E F G H I) :b #(28 55 43 91 81 53 19 87 52))
+     :data (:values ,(plist-df '(:a #(A B C D E F G H I)
+	                             :b #(28 55 43 91 81 53 19 87 52))))
      :encoding (:x (:field :a :type :nominal :axis ("labelAngle" 0))
                 :y (:field :b :type :quantitative)))))
 ```
@@ -63,10 +64,10 @@ embedded data in the form of a `plist`.  Later you'll see how to use a
 ```lisp
 (plot:plot
  (vega:defplot grouped-bar-chart
-   '(:mark :bar
-     :data (:category #(A A A B B B C C C)
-	        :group    #(x y z x y z x y z)
-	        :value    #(0.1 0.6 0.9 0.7 0.2 1.1 0.6 0.1 0.2))
+   `(:mark :bar
+     :data (:values ,(plist-df '(:category #(A A A B B B C C C)
+	                             :group    #(x y z x y z x y z)
+	                             :value    #(0.1 0.6 0.9 0.7 0.2 1.1 0.6 0.1 0.2))))
      :encoding (:x (:field :category)
                 :y (:field :value :type :quantitative)
 		        :x-offset (:field :group)
@@ -77,8 +78,8 @@ embedded data in the form of a `plist`.  Later you'll see how to use a
 
 {{< vega id="bar-chart-stacked" spec="/plots/stacked-bar-chart.vl.json" >}}
 
-For this example, we'll use the Seattle weather example from the Vega
-website.  Load it into a data frame like so:
+This example uses Seattle weather from the Vega website.  Load it into
+a data frame like so:
 
 ```lisp
 (defdf seattle-weather (read-csv vega:seattle-weather))
@@ -88,22 +89,23 @@ website.  Load it into a data frame like so:
 We'll use a `data-frame` as the data source via the Common Lisp
 [backquote
 mechanism](http://cl-cookbook.sourceforge.net/macros.html#LtohTOCentry-2).
-The spec list begins with a backquote (\`) and then the data frame is
-inserted with a comma (`,`).  We'll use this pattern frequently.
+The spec list begins with a backquote (`` ` ``) and then the data frame is
+inserted as a literal value with a comma (`,`).  We'll use this
+pattern frequently.
 
 ```lisp
 (plot:plot
  (vega:defplot stacked-bar-chart
    `(:mark :bar
-     :data ,seattle-weather
+     :data (:values ,seattle-weather)
      :encoding (:x (:time-unit :month
-		            :field :date
-		            :type :ordinal
-		            :title "Month of the year")
+		            :field     :date
+		            :type      :ordinal
+		            :title     "Month of the year")
                 :y (:aggregate :count
-		            :type :quantitative)
+		            :type      :quantitative)
 		        :color (:field :weather
-			            :type :nominal
+			            :type  :nominal
 			            :title "Weather type"
 	            :scale (:domain #("sun" "fog" "drizzle" "rain" "snow")
 				        :range  #("#e7ba52", "#c7c7c7", "#aec7e8", "#1f77b4", "#9467bd")))))))
@@ -135,7 +137,7 @@ course).
 (plot:plot
  (vega:defplot pyramid-bar-chart
    `(:mark :bar
-     :data ,population
+     :data (:values ,population)
      :width 300
      :height 200
      :transform #((:filter "datum.year == 2000")
@@ -167,7 +169,7 @@ we'll use the IMDB film rating data set.
 (plot:plot
   (vega:defplot imdb-plot
     `(:mark :bar
-      :data ,imdb
+      :data (:values ,imdb)
       :encoding (:x (:bin (:maxbins 8) :field :imdb-rating)
                  :y (:aggregate :count)))))
 ```
@@ -188,7 +190,7 @@ transformation step.
 (plot:plot
  (vega:defplot relative-frequency-histogram
    `(:title "Relative Frequency"
-     :data ,vgcars
+     :data (:values ,vgcars)
      :transform #((:bin t
 	               :field :horsepower
 		           :as #(:bin-horsepower :bin-horsepower-end))
@@ -226,8 +228,8 @@ If you haven't already loaded the `imdb` data set, do so now:
 (plot:plot
   (vega:defplot histogram-scatterplot
     `(:mark :circle
-      :data ,imdb
-      :encoding (:x (:bin (:maxbins 10) :field imdb-rating)
+      :data (:values ,imdb)
+      :encoding (:x (:bin (:maxbins 10) :field :imdb-rating)
                  :y (:bin (:maxbins 10) :field :rotten-tomatoes-rating)
 	             :size (:aggregate :count)))))
 ```
@@ -242,7 +244,7 @@ If you haven't already loaded the `imdb` data set, do so now:
    `(:title "Distribution of Body Mass of Penguins"
      :width 400
      :height 80
-     :data ,penguins
+     :data (:values ,penguins)
      :mark :bar
      :transform #((:density |BODY-MASS-(G)|
 		           :groupby #(:species)
@@ -278,7 +280,7 @@ showing horsepower and miles per gallon for various cars.
 (plot:plot
   (vega:defplot hp-mpg
   `(:title "Horsepower vs. MPG"
-    :data ,vgcars
+    :data (:values ,vgcars)
     :mark :point
 	:encoding (:x (:field :horsepower :type "quantitative")
 	           :y (:field :miles-per-gallon :type "quantitative")))))
@@ -288,7 +290,7 @@ showing horsepower and miles per gallon for various cars.
 
 {{< vega id="colored-hp-mpg" spec="/plots/colored-hp-mpg.vl.json" >}}
 
-In this example we'll show how to add some additional information to
+In this example we'll show how to add additional information to
 the cars scatter plot to show the cars origin. The [Vega-Lite
 example](https://vega.github.io/vega-lite/examples/point_color_with_shape.html)
 shows that we have to add two new directives to the _encoding_ of the
@@ -298,7 +300,7 @@ plot:
 (plot:plot
   (vega:defplot hp-mpg-plot
   `(:title "Vega Cars"
-    :data ,vgcars
+    :data (:values ,vgcars)
     :mark :point
 	:encoding (:x     (:field :horsepower :type "quantitative")
 	           :y     (:field :miles-per-gallon :type "quantitative")
@@ -323,7 +325,7 @@ uses a data transformation.
 (plot:plot
   (vega:defplot colored-text-hp-mpg-plot
   `(:title "Vega Cars"
-    :data ,vgcars
+    :data (:values ,vgcars)
 	:transform #((:calculate "datum.origin[0]" :as "OriginInitial"))
     :mark :text
 	:encoding (:x     (:field :horsepower :type "quantitative")
@@ -339,9 +341,7 @@ requirement for certain Vega specifications.
 
 
 ### Mean & SD overlay
-
-These graph types are broken in Vega-Lite when using embedded data. See [issue 8280](https://github.com/vega/vega-lite/issues/8280).  The JSON output by Plot is exactly the same, so only use this with URL data.
-
+<!-- TODO Rework this example using Lisp-Stat mean and standard deviation calculations -->
 This Vega-Lite [scatterplot with mean and standard deviation
 overlay](https://vega.github.io/vega-lite/examples/layer_scatter_errorband_1D_stdev_global_mean.html)
 demonstrates the use of layers in a plot.
@@ -354,7 +354,7 @@ Lisp-Stat equivalent
 (plot:plot
   (vega:defplot mean-hp-mpg-plot
   `(:title "Vega Cars"
-    :data ,vgcars
+    :data (:values ,vgcars)
     :layer #((:mark :point
 	          :encoding (:x (:field :horsepower :type "quantitative")
 			             :y (:field :miles-per-gallon
@@ -370,13 +370,13 @@ Lisp-Stat equivalent
 ```
 
 ### Linear regression
-
+<!-- TODO Rework this example using Lisp-Stat linear regression.  See the IPS Jupyter notebook for an example -->
 {{< vega id="scatter-linear-regression" spec="/plots/linear-regression.vl.json" >}}
 
 ```lisp
 (plot:plot
  (vega:defplot linear-regression
-   `(:data ,imdb
+   `(:data (:values ,imdb)
      :layer #((:mark (:type :point :filled t)
 	           :encoding (:x (:field :rotten-tomatoes-rating
 			                  :type :quantitative
@@ -409,15 +409,14 @@ Lisp-Stat equivalent
 ```
 
 ### Loess regression
-
+<!-- TODO Rework this example using Lisp-Stat lowess regression.  See the IPS Jupyter notebook for an example -->
 {{< vega id="scatter-loess-regression" spec="/plots/loess-regression.vl.json" >}}
 
 ```lisp
 (plot:plot
  (vega:defplot loess-regression
-   `(:data ,imdb
-     :layer #((:mark (:type :point
-	              :filled t)
+   `(:data (:values ,imdb)
+     :layer #((:mark (:type :point :filled t)
 	           :encoding (:x (:field :rotten-tomatoes-rating
 			                  :type :quantitative
 			                  :title "Rotten Tomatoes Rating")
@@ -441,19 +440,22 @@ Lisp-Stat equivalent
 
 {{< vega id="scatter-residuals" spec="/plots/residuals.vl.json" >}}
 
-A dot plot showing each movie in the database, and the difference from
+A dot plot showing each film in the database, and the difference from
 the average movie rating. The display is sorted by year to visualize
 everything in sequential order. The graph is for all films before
-2019.
+2019.  Note the use of the `filter-rows` function.
 
 ```lisp
 (plot:plot
  (vega:defplot residuals
-   `(:data ,(filter-rows imdb '(and (not (eql imdb-rating :na))
-				(local-time:timestamp< release-date (local-time:parse-timestring "2019-01-01"))))
-     :transform #((:joinaggregate #((:op :mean ;we could do this above using alexandria:thread-first
-				     :field :imdb-rating
-				     :as :average-rating)))
+   `(:data (:values
+              ,(filter-rows imdb
+                            '(and (not (eql imdb-rating :na))
+				                  (local-time:timestamp< release-date
+							      (local-time:parse-timestring "2019-01-01")))))
+     :transform #((:joinaggregate #((:op    :mean
+				                     :field :imdb-rating
+				                     :as    :average-rating)))
 		           (:calculate "datum['imdbRating'] - datum.averageRating"
 		            :as :rating-delta))
      :mark :point
@@ -481,7 +483,7 @@ dimensions of data.  Drag the sliders to highlight different points.
 ```lisp
 (plot:plot
  (vega:defplot scatter-queries
-   `(:data ,vgcars
+   `(:data (:values ,vgcars)
      :transform #((:calculate "year(datum.year)" :as :year))
      :layer #((:params #((:name :cyl-year
 			   :value #((:cylinders 4
@@ -526,7 +528,7 @@ You can add external links to plots.
 ```lisp
 (plot:plot
  (vega:defplot scatter-external-links
-   `(:data ,vgcars
+   `(:data (:values ,vgcars)
      :mark :point
      :transform #((:calculate "'https://www.google.com/search?q=' + datum.name", :as :url))
      :encoding (:x (:field :horsepower
@@ -554,7 +556,7 @@ using tick marks.
 (plot:plot
   (vega:defplot strip-plot
   `(:title "Vega Cars"
-    :data ,vgcars
+    :data (:values ,vgcars)
 	:mark :tick
 	:encoding (:x (:field :horsepower :type :quantitative)
 	           :y (:field :cylinders  :type :ordinal)))))
@@ -568,7 +570,7 @@ using tick marks.
 (plot:plot
   (vega:defplot 1d-strip-plot
   `(:title "Seattle Precipitation"
-    :data ,seattle-weather
+    :data (:values ,seattle-weather)
 	:mark :tick
 	:encoding (:x (:field :precipitation :type :quantitative)))))
 ```
@@ -589,7 +591,7 @@ Data](https://ourworldindata.org/natural-disasters).
    `(:title "Deaths from global natural disasters"
      :width 600
      :height 400
-     :data ,(filter-rows disasters '(not (string= entity "All natural disasters")))
+     :data (:values ,(filter-rows disasters '(not (string= entity "All natural disasters"))))
      :mark (:type :circle
 	    :opacity 0.8
 	    :stroke :black
@@ -626,7 +628,7 @@ will parse the field as an integer instead of a date.
 (plot:plot
  (vega:defplot simple-line-plot
    `(:title "Google's stock price from 2004 to early 2010"
-     :data ,(filter-rows stocks '(string= symbol "GOOG"))
+     :data (:values ,(filter-rows stocks '(string= symbol "GOOG")))
      :mark :line
      :encoding (:x (:field :date
 		            :type  :temporal)
@@ -646,7 +648,7 @@ point markers on top of line.
 (plot:plot
  (vega:defplot point-mark-line-plot
    `(:title "Stock prices of 5 Tech Companies over Time"
-     :data ,stocks
+     :data (:values ,stocks)
      :mark (:type :line :point t)
      :encoding (:x (:field :date
 		            :time-unit :year)
@@ -669,7 +671,7 @@ generate the proper types and labels for x, y and color channels.
 (plot:plot
  (vega:defplot multi-series-line-chart
    `(:title "Stock prices of 5 Tech Companies over Time"
-     :data ,stocks
+     :data (:values ,stocks)
      :mark :line
      :encoding (:x (:field stocks:date)
                 :y (:field stocks:price)
@@ -684,7 +686,7 @@ generate the proper types and labels for x, y and color channels.
 (plot:plot
  (vega:defplot step-chart
    `(:title "Google's stock price from 2004 to early 2010"
-     :data ,(filter-rows stocks '(string= symbol "GOOG"))
+     :data (:values ,(filter-rows stocks '(string= symbol "GOOG")))
      :mark (:type :line
 	        :interpolate "step-after")
      :encoding (:x (:field stocks:date)
@@ -700,7 +702,7 @@ generate the proper types and labels for x, y and color channels.
 (plot:plot
  (vega:defplot stroke-dash
    `(:title "Stock prices of 5 Tech Companies over Time"
-     :data ,stocks
+     :data (:values ,stocks)
      :mark :line
      :encoding (:x (:field stocks:date)
 		        :y (:field stocks:price)
@@ -716,7 +718,7 @@ Line chart with a confidence interval band.
 ```lisp
 (plot:plot
  (vega:defplot line-chart-ci
-   `(:data ,vgcars
+   `(:data (:values ,vgcars)
      :encoding (:x (:field :year
 		            :time-unit :year))
      :layer #((:mark (:type :errorband
@@ -742,7 +744,7 @@ Line chart with a confidence interval band.
    `(:title "Unemployment across industries"
      :width 300
      :height 200
-     :data ,unemployment-ind
+     :data (:values ,unemployment-ind)
      :mark :area
      :encoding (:x (:field :date
 		            :time-unit :yearmonth
@@ -764,7 +766,7 @@ Stacked area plots
    `(:title "Unemployment across industries"
      :width 300
      :height 200
-     :data ,unemployment-ind
+     :data (:values ,unemployment-ind)
      :mark :area
      :encoding (:x (:field :date
 		            :time-unit :yearmonth
@@ -782,7 +784,7 @@ Stacked area plots
 {{< vega id="lasdkfjalsnm" spec="/plots/horizon-graph.vl.json" >}}
 
 A horizon graph is a technique for visualising time series data in a
-manner that makes comparisons easier based on work done at the UW
+manner that makes comparisons easier. It is based on work done at the UW
 Interactive Data Lab.  See [Sizing the Horizon: The Effects of Chart
 Size and Layering on the Graphical Perception of Time Series
 Visualizations](https://idl.cs.washington.edu/papers/horizon/) for
@@ -794,8 +796,8 @@ more details on Horizon Graphs.
    `(:title "Horizon graph with 2 layers"
      :width 300
      :height 50
-     :data (:x ,(aops:linspace 1 20 20)
-	        :y #(28 55 43 91 81 53 19 87 52 48 24 49 87 66 17 27 68 16 49 15))
+     :data (:values ,(plist-df `(:x ,(aops:linspace 1 20 20)
+	                             :y #(28 55 43 91 81 53 19 87 52 48 24 49 87 66 17 27 68 16 49 15))))
      :encoding (:x (:field :x
 		            :scale (:zero :false
 			        :nice :false))
@@ -829,7 +831,7 @@ Area chart with overlaying lines and point markers.
 (plot:plot
  (vega:defplot area-with-overlay
    `(:title "Google's stock price"
-     :data ,(filter-rows stocks '(string= symbol "GOOG"))
+     :data (:values ,(filter-rows stocks '(string= symbol "GOOG")))
      :mark (:type :area
 	        :line t
 	        :point t)
@@ -851,7 +853,7 @@ the variable's information instead of `:type :quantitative :title ...`
    `(:title "Unemployment Stream Graph"
      :width 300
      :height 200
-     :data ,unemployment-ind
+     :data (:values ,unemployment-ind)
      :mark :area
      :encoding (:x (:field :date
 		            :time-unit "yearmonth"
@@ -876,7 +878,7 @@ the variable's information instead of `:type :quantitative :title ...`
 ```lisp
 (plot:plot
  (vega:defplot table-heatmap
-   `(:data ,vgcars
+   `(:data (:values ,vgcars)
      :mark :rect
      :encoding (:x (:field vgcars:cylinders)
 		        :y (:field vgcars:origin)
@@ -894,7 +896,7 @@ Layering text over a table heatmap
 ```lisp
 (plot:plot
  (vega:defplot heatmap-labels
-   `(:data ,vgcars
+   `(:data (:values ,vgcars)
      :transform #((:aggregate #((:op :count :as :num-cars))
 		           :groupby #(:origin :cylinders)))
      :encoding (:x (:field :cylinders
@@ -924,7 +926,7 @@ Layering text over a table heatmap
 ```lisp
 (plot:plot
  (vega:defplot heatmap-histogram
-   `(:data ,imdb
+   `(:data (:values ,imdb)
      :transform #((:and #((:field :imdb-rating :valid t)
 			  (:field :rotten-tomatoes-rating :valid t))))
      :mark :rect
@@ -952,8 +954,8 @@ Layering text over a table heatmap
 ```lisp
 (plot:plot
  (vega:defplot pie-chart
-   `(:data (:category ,(aops:linspace 1 6 6)
-	    :value #(4 6 10 3 7 8))
+   `(:data (:values ,(plist-df `(:category ,(aops:linspace 1 6 6)
+	                             :value #(4 6 10 3 7 8))))
      :mark :arc
      :encoding (:theta (:field :value
 			            :type :quantitative)
@@ -968,8 +970,8 @@ Layering text over a table heatmap
 ```lisp
 (plot:plot
  (vega:defplot donut-chart
-   `(:data (:category ,(aops:linspace 1 6 6)
-	        :value #(4 6 10 3 7 8))
+   `(:data (:values ,(plist-df `(:category ,(aops:linspace 1 6 6)
+	                             :value #(4 6 10 3 7 8))))
      :mark (:type :arc :inner-radius 50)
      :encoding (:theta (:field :value
 			            :type :quantitative)
@@ -990,7 +992,7 @@ also demonstrates a way to add labels to circular plots.
 ```lisp
 (plot:plot
  (vega:defplot radial-plot
-   `(:data (:value #(12 23 47 6 52 19))
+   `(:data (:values ,(plist-df '(:value #(12 23 47 6 52 19))))
      :layer #((:mark (:type :arc
 		              :inner-radius 20
 		              :stroke "#fff"))
@@ -1014,7 +1016,9 @@ also demonstrates a way to add labels to circular plots.
 
 Normally data transformations should be done in Lisp-Stat with a data
 frame.  These examples illustrate how to accomplish transformations
-using Vega-Lite.
+using Vega-Lite.  This might be useful if, for example, you're serving
+up a lot of plots and want to move the processing to the users
+browser.
 
 ### Difference from avg
 
@@ -1024,7 +1028,7 @@ using Vega-Lite.
 ```lisp
 (plot:plot
  (vega:defplot difference-from-average
-   `(:data ,(filter-rows imdb '(not (eql imdb-rating :na)))
+   `(:data (:values ,(filter-rows imdb '(not (eql imdb-rating :na))))
      :transform #((:joinaggregate #((:op :mean ;we could do this above using alexandria:thread-first
 				     :field :imdb-rating
 				     :as :average-rating)))
@@ -1051,7 +1055,7 @@ Cumulative frequency distribution of films in the IMDB database.
 ```lisp
 (plot:plot
  (vega:defplot cumulative-frequency-distribution
-   `(:data ,imdb
+   `(:data (:values ,imdb)
      :transform #((:sort #((:field :imdb-rating))
 		           :window #((:op :count
 			                  :field :count as :cumulative-count))
@@ -1071,7 +1075,7 @@ Cumulative frequency distribution of films in the IMDB database.
 ```lisp
 (plot:plot
  (vega:defplot layered-histogram
-   `(:data ,(filter-rows imdb '(not (eql imdb-rating :na)))
+   `(:data (:values ,(filter-rows imdb '(not (eql imdb-rating :na))))
      :transform #((:bin t
 		           :field :imdb-rating
 		           :as #(:bin-imdb-rating :bin-imdb-rating-end))
@@ -1107,7 +1111,7 @@ Layering averages over raw values.
 ```lisp
 (plot:plot
  (vega:defplot layered-averages
-   `(:data ,(filter-rows stocks '(string= symbol "GOOG"))
+   `(:data (:values ,(filter-rows stocks '(string= symbol "GOOG")))
      :layer #((:mark (:type :point
 		              :opacity 0.3)
 	          :encoding (:x (:field :date
@@ -1136,7 +1140,7 @@ Error bars showing confidence intervals.
 ```lisp
 (plot:plot
  (vega:defplot error-bar-ci
-   `(:data ,barley
+   `(:data (:values ,barley)
      :encoding (:y (:field :variety
 		            :type  :ordinal
 		            :title "Variety"))
@@ -1164,7 +1168,7 @@ Error bars showing standard deviation.
 ```lisp
 (plot:plot
  (vega:defplot error-bar-sd
-   `(:data ,barley
+   `(:data (:values ,barley)
      :encoding (:y (:field :variety
 		            :type :ordinal
 		            :title "Variety"))
@@ -1194,7 +1198,7 @@ A vertical box plot showing median, min, and max body mass of penguins.
 ```lisp
 (plot:plot
  (vega:defplot box-plot-min-max
-   `(:data ,penguins
+   `(:data (:values ,penguins)
      :mark (:type :boxplot
 	        :extent "min-max")
      :encoding (:x (:field :species
@@ -1219,7 +1223,7 @@ the distribution of body mass of penguins.
 ```lisp
 (plot:plot
  (vega:defplot box-plot-tukey
-   `(:data ,penguins
+   `(:data (:values ,penguins)
      :mark :boxplot
      :encoding (:x (:field :species
 		            :type :nominal
@@ -1240,18 +1244,18 @@ the distribution of body mass of penguins.
 
 Box plot with pre-computed summaries.  Use this pattern to plot
 summaries done in a `data-frame`.
-
+<!-- TODO Rework this example using summaries generated using data-frame -->
 ```lisp
 (plot:plot
  (vega:defplot box-plot-summaries
    `(:title "Body Mass of Penguin Species (g)"
-     :data (:species #("Adelie" "Chinstrap" "Gentoo")
-	        :lower #(2850 2700 3950)
-	        :q1 #(3350 3487.5 4700)
-	        :median #(3700 3700 5000)
-	        :q3 #(4000 3950 5500)
-	        :upper #(4775 4800 6300)
-	        :outliers #(#() #(2700 4800) #()))
+     :data (:values ,(plist-df '(:species #("Adelie" "Chinstrap" "Gentoo")
+	                             :lower #(2850 2700 3950)
+	                             :q1 #(3350 3487.5 4700)
+	                             :median #(3700 3700 5000)
+	                             :q3 #(4000 3950 5500)
+	                             :upper #(4775 4800 6300)
+	                             :outliers #(#() #(2700 4800) #()))))
      :encoding (:y (:field :species
 		            :type :nominal
 		            :title null))
@@ -1289,13 +1293,13 @@ summaries done in a `data-frame`.
 {{< vega id="moving-average" spec="/plots/moving-average.vl.json" >}}
 
 Plot showing a 30 day rolling average with raw values in the background.
-
+<!-- TODO Rework this example using a rolling-mean computed in Lisp-Stat -->
 ```lisp
 (plot:plot
  (vega:defplot moving-average
    `(:width 400
      :height 300
-     :data ,seattle-weather
+     :data (:values ,seattle-weather)
      :transform #((:window #((:field :temp-max
 			                  :op :mean
 			                  :as :rolling-mean))
@@ -1317,11 +1321,11 @@ Plot showing a 30 day rolling average with raw values in the background.
 ### Histogram w/mean
 
 {{< vega id="histogram-with-mean" spec="/plots/histogram-with-mean.vl.json" >}}
-
+<!-- TODO Rework this example using a mean computed in Lisp-Stat -->
 ```lisp
 (plot:plot
  (vega:defplot histogram-with-mean
-   `(:data ,imdb
+   `(:data (:values ,imdb)
      :layer #((:mark :bar
 	            :encoding (:x (:field :imdb-rating
 			                   :bin t
@@ -1397,7 +1401,7 @@ of days in that range that have sun, rain, fog, snow, etc.
 (plot:plot
  (vega:defplot weather-exploration
    `(:title "Seattle Weather, 2012-2015"
-     :data ,seattle-weather
+     :data (:values ,seattle-weather)
      :vconcat #(;; upper graph
 		(:encoding (:color (:condition (:param :brush
 						               :title "Weather"
@@ -1451,7 +1455,7 @@ of days in that range that have sun, rain, fog, snow, etc.
 (plot:plot
  (vega:defplot global-health
    `(:title "Global Health Statistics by Country and Year"
-     :data ,gapminder
+     :data (:values ,gapminder)
      :width 800
      :height 500
      :layer #((:transform #((:filter (:field :country
@@ -1555,64 +1559,62 @@ confirmed that hugo is serving up the data, in both CSV and JSON
 formats.
 
 ```lisp
-(defparameter airport-connections
-  (vega::make-plot "airport-connections"
-		   nil
-  '("$schema" "https://vega.github.io/schema/vega-lite/v5.json"
-    :title "US Airport Connections"
-    :layer #((:mark (:type :geoshape
-		     :fill "#ddd"
-		     :stroke "#fff"
-		     :stroke-width 1)
-	      :data (:url "/data/us-10m.json"
-		     :format (:type :topojson
-			      :feature :states)))
+(plot:plot
+ (vega:defplot airport-connections
+   `(:title "US Airport Connections"
+     :layer #((:mark (:type :geoshape
+		      :fill "#ddd"
+		      :stroke "#fff"
+		      :stroke-width 1)
+	       :data (:url "/data/us-10m.json"
+		      :format (:type :topojson
+			       :feature :states)))
 
-	     (:mark (:type :rule
-		     :color "#000"
-		     :opacity 0.35)
-	      :data (:url "/data/flights-airports.csv")
-	      :transform #((:filter (:param :org :empty :false))
-			   (:lookup :origin
-			    :from (:data (:url "/data/airports.csv")
-				   :key "iata"
-				   :fields #(:latitude :longitude)))
-			   (:lookup :destination
-			    :from (:data (:url "/data/airports.csv")
-				   :key "iata"
-				   :fields #(:latitude :longitude))
-			    :as #(:lat2 :lon2)))
-	      :encoding (:latitude (:field :latitude)
-			 :longitude (:field :longitude)
-			 :latitude2 (:field :lat2)
-			 :longitude2 (:field :lon2)))
+	      (:mark (:type :rule
+		      :color "#000"
+		      :opacity 0.35)
+	       :data (:url "/data/flights-airports.csv")
+	       :transform #((:filter (:param :org :empty :false))
+			    (:lookup :origin
+			     :from (:data (:url "/data/airports.csv")
+				    :key "iata"
+				    :fields #(:latitude :longitude)))
+			    (:lookup :destination
+			     :from (:data (:url "/data/airports.csv")
+				    :key "iata"
+				    :fields #(:latitude :longitude))
+			     :as #(:lat2 :lon2)))
+	       :encoding (:latitude (:field :latitude)
+			  :longitude (:field :longitude)
+			  :latitude2 (:field :lat2)
+			  :longitude2 (:field :lon2)))
 
-	     (:mark (:type :circle)
-	      :data (:url "/data/flights-airport.csv")
-	      :transform #((:aggregate #((:op :count
-					  :as :routes))
-			    :groupby #(:origin))
-			   (:lookup :origin
-			    :from (:data (:url "/data/airports.csv")
-				   :key "iata"
-				   :fields #(:state :latitude :longitude)))
-			   (:filter "datum.state !== 'PR' && datum.state !== 'VI'"))
-	      :params #((:name :org
-			 :select (:type :point
-				  :on :mouseover
-				  :nearest t
-				  :fields #(:origin))))
-	      :encoding (:latitude (:field :latitude)
-			 :longitude (:field :longitude)
-			 :size (:field :routes
-				:type :quantitative
-				:scale (:range-max 1000)
-				:legend nil)
-			 :order (:field :routes
-				 :sort :descending))))
-    :projection (:type :albers-usa)
-    :width 900
-    :height 500)))
+	      (:mark (:type :circle)
+	       :data (:url "/data/flights-airport.csv")
+	       :transform #((:aggregate #((:op :count
+					   :as :routes))
+			     :groupby #(:origin))
+			    (:lookup :origin
+			     :from (:data (:url "/data/airports.csv")
+				    :key "iata"
+				    :fields #(:state :latitude :longitude)))
+			    (:filter "datum.state !== 'PR' && datum.state !== 'VI'"))
+	       :params #((:name :org
+			  :select (:type :point
+				   :on :mouseover
+				   :nearest t
+				   :fields #(:origin))))
+	       :encoding (:latitude (:field :latitude)
+			  :longitude (:field :longitude)
+			  :size (:field :routes
+				 :type :quantitative
+				 :scale (:range-max 1000)
+				 :legend nil)
+			  :order (:field :routes
+				  :sort :descending))))
+     :projection (:type :albers-usa)
+     :width 900
+     :height 500)))
 ```
 -->
 ### Crossfilter
@@ -1632,7 +1634,7 @@ filtered.
 (plot:plot
  (vega:defplot cross-filter
    `(:title "Cross filtering of flights"
-     :data ,flights-2k
+     :data (:values ,flights-2k)
      :transform #((:calculate "hours(datum.date)", :as "time")) ;what does 'hours' do?
      :repeat (:column #(:distance :delay :time))
      :spec (:layer #((:params #((:name :brush

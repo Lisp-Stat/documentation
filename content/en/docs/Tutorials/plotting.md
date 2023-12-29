@@ -77,57 +77,41 @@ and compare it with the equivalent Lisp-Stat version:
   (vega:defplot hp-mpg
   `(:title "Vega Cars Horsepower vs. MPG"
     :description "Horsepower vs miles per gallon for various cars"
-    :data ,vgcars
+    :data (:values ,vgcars)
     :mark :point
 	:encoding (:x (:field :horsepower :type :quantitative)
 	           :y (:field :miles-per-gallon :type :quantitative)))))
 ```
 
-You can try plotting this now: click on the `copy` button in the upper
-right corner of the code box and paste it into the REPL.  You should
-see a window open with the plot displayed:
+Note that in the Lisp-Stat version we are embedding the specification,
+using the `:values` keyword, as opposed to obtaining it from a server
+with `:url`.  You can try plotting this now: click on the `copy` button
+in the upper right corner of the code box and paste it into the REPL.
+You should see a window open with the plot displayed:
 
 {{< figure src="/images/tutorial-scatterplot-window.png" title="Your first plot" >}}
 
 
-## The data property
+## Data sources
 
 The [data property](https://vega.github.io/vega-lite/docs/data.html)
-is similar to a `data-frame`, but for plotting.  Most, but not all,
+tells Vega where the data for the plot is.  Most, but not all,
 specifications have a single, top level `data` property, e.g.
 
 ```json
 "data": {"url": "data/cars.json"}
 ```
 
-for plots with a single top level `data` property, Lisp-Stat allows
-you to use a `data-frame`, `plist` or data-frame transformation
-directly as the value for the `data` property. For instance in the
-[anatomy of a spec](/docs/tutorials/plotting/#anatomy-of-a-spec)
-example we saw a `data-frame` inserted verbatim as a value.  We can
-also use a `plist`, as in this [grouped bar
-chart](/docs/examples/plotting/#grouped-bar-chart) example:
+Lisp-Stat allows you to use a `data-frame`, or data-frame
+transformation (filter, selection, etc) as the value for the
+`data` property.  For example, since a `data-frame` transformation
+returns a `data-frame`, we can insert the results as the `data` value,
+as in this [plot of residuals](/docs/examples/plotting/#residuals):
 
 ```lisp
- (vega:defplot grouped-bar-chart
-   '(:mark :bar
-     :data (:category #(A A A B B B C C C)
-	        :group    #(x y z x y z x y z)
-	        :value    #(0.1 0.6 0.9 0.7 0.2 1.1 0.6 0.1 0.2))
-     :encoding (:x (:field :category)
-                :y (:field :value :type :quantitative)
-		        :x-offset (:field :group)
-		        :color    (:field :group))))
-```
-
-finally, since a `data-frame` transformation returns a `data-frame`,
-we can insert the results as the `data` value, as in this [plot of
-residuals](/docs/examples/plotting/#residuals):
-
-```lisp
-(:data ,(filter-rows imdb '(and (not (eql imdb-rating :na))
-				                (lt:timestamp<
-								      release-date
+(:data (:values ,(filter-rows imdb
+                              '(and (not (eql imdb-rating :na))
+	                                (lt:timestamp< release-date
 				                      (lt:parse-timestring "2019-01-01"))))
  :transform #((:joinaggregate #((:op :mean
 	                             :field :imdb-rating
@@ -136,19 +120,75 @@ residuals](/docs/examples/plotting/#residuals):
 
 where we remove `:NA` and any `release-date` after 2018.
 
-### Data transformations
-
 Vega has
 [transformations](https://vega.github.io/vega-lite/docs/transform.html)
 as well, but are a bit clumsy compared to those in Lisp-Stat.
 Sometimes though, you'll need them because a particular transformation
 is not something you want to do to your `data-frame`.  You can mix
 transformations in a single plot, as we saw above in the residuals
-plot.
+plot, where the filtering was done in your `data-frame` and the
+transformation was done in vega-lite.
+
+Below are several examples of the `hp-mpg` plot, using various data sources:
+
+### Embedded
+Most of the examples in this documentation use embedded data, where the data is a part of the plot specification.  For completeness sake, we repeat an example here:
+```lisp
+(plot:plot
+  (vega:defplot hp-mpg
+  `(:title "Vega Cars Horsepower vs. MPG"
+    :description "Horsepower vs miles per gallon for various cars"
+    :data (:values ,vgcars)
+    :mark :point
+	:encoding (:x (:field :horsepower :type :quantitative)
+	           :y (:field :miles-per-gallon :type :quantitative)))))
+```
+
+### URL
+Note in this example we do not use a data frame as a source, therefore we have to specify field encodings as strings, since variable names will not have been converted to idiomatic lisp. E.g. `Miles_per_Gallon` vs `miles-per-gallon`.
+```lisp
+(plot:plot
+  (vega:defplot hp-mpg
+    `(:title "Horsepower vs. MPG"
+      :description "Horsepower vs miles per gallon for various cars"
+      :data (:url "https://raw.githubusercontent.com/vega/vega-datasets/next/data/cars.json")
+      :mark :point
+      :encoding (:x (:field "Horsepower" :type :quantitative)
+	             :y (:field "Miles_per_Gallon" :type :quantitative)))))
+```
+
+In a production environment, you may have several [quri](https://github.com/fukamachi/quri) data sources in your image.  To load from one of these:
+```lisp
+(plot:plot
+  (vega:defplot hp-mpg
+    `(:title "Horsepower vs. MPG"
+      :description "Horsepower vs miles per gallon for various cars"
+      :data (:url ,(quri:uri "https://raw.githubusercontent.com/vega/vega-datasets/next/data/cars.json"))
+      :mark :point
+      :encoding (:x (:field "Horsepower" :type :quantitative)
+	             :y (:field "Miles_per_Gallon" :type :quantitative)))))
+```
+Here we create the `quri` object at the same time, since it's a stand-alone example.  It would probably already be created in an actual use case.
+
+### Named data
+Vega has [named data sources](https://vega.github.io/vega-lite/docs/data.html#named) that are useful if you have to refer to the same data in several places.  We can create one like this:
+
+```lisp
+(plot:plot
+  (vega:defplot hp-mpg
+    `(:title "Horsepower vs. MPG"
+      :description "Horsepower vs miles per gallon for various cars"
+      :datasets (:my-data ,vgcars)
+      :data (:name :my-data)
+      :mark :point
+      :encoding (:x (:field :horsepower :type :quantitative)
+	             :y (:field :miles-per-gallon :type :quantitative)))))
+```
+
 
 ## Plot specifications
 
-### Transformations
+### Lisp in a spec
 
 A `plot` specification is a `plist`.  A nested `plist` to be exact
 (or, perhaps more correctly, a tree).  This means that we can use
@@ -165,7 +205,7 @@ rewrite our Vega-Lite specifications before encoding them.
 The simplest, and most common, feature is insertion, like we did
 above.  By placing a comma (`,`) before the name of the data frame, we
 told the backquote system to insert the *value* of the data frame
-instead of the word (`vgcars`) in the example.
+instead of the symbol (`vgcars`) in the example.
 
 There's a lot more you can do with the backquote mechanism.  We won't
 say any more here, as it's mostly a topic for advanced users. It's
@@ -175,8 +215,8 @@ important for you to know it's there though.
 
 `properties` are the keys in key/value pairs.  This is true whether
 discussing a `plist` or `JSON` specification.  Vega-Lite is case
-sensitive and Common Lisp is not, so there are a few rules you need to be
-	aware of constructing plot specifications.
+sensitive and Common Lisp is not, so there are a few rules you need to
+be aware of when constructing plot specifications.
 
 ### Keys vs. values
 
@@ -188,14 +228,14 @@ there are two functions of importance:
 - `*symbol-key-encoder*`
 
 The former encodes *values*, and the latter encodes *keys*.  In
-`Plot`, both of these are bound to a custom function
+`PLOT`, both of these are bound to a custom function
 `encode-symbol-as-metadata`.  This function does more than just encode
 meta data though, it also handles naming conventions.
 
-This won't mean much in your day-to-day usage, but you do need to be
-aware of the difference between encoding a key and a value.  There are
-some values that the encoder can't work with, and in those cases
-you'll need to use text.
+This won't mean much in your day-to-day use of the system, but you do
+need to be aware of the difference between encoding a key and a value.
+There are some values that the encoder can't work with, and in those
+cases you'll need to use text.
 
 Finally, remember that the symbol encoders are just a convenience to
 make things more lisp-like.  You can build a plot specification, both
@@ -249,7 +289,7 @@ Notice that we used `:imdb-rating` as the field name for the
 used the converted name `imdbRating`; that's because by the time the
 transform is run, the conversion will have already happened.  When we
 use `:as` we are *assigning* a name, when we use `datum`, we are
-telling Vega to look for a name, and since this is done in a text
+telling Vega to *find* a name, and since this is done in a text
 field, `plot` won't convert the names it finds inside text strings.
 
 Finally, remember that the Parenscript transformation is also run on
@@ -268,8 +308,8 @@ Vega.
 When you define a data frame using the `defdf` macro, Lisp-Stat sets
 up an environment for that data set.  Part of that environment
 includes configuring a package with a symbol for each variable in the
-data set.  These symbols have properties that describe the data
-variable, such as unit, label, type, etc.  `plot` can make use of this
+data set.  These symbols have properties that describe the variable,
+such as unit, label, type, etc.  `plot` can make use of this
 information when creating plots.  Here's a previous example, where we
 do *not* use variable symbols:
 
@@ -277,7 +317,7 @@ do *not* use variable symbols:
 (plot:plot
   (vega:defplot hp-mpg-plot
   `(:title "Vega Cars"
-    :data ,vgcars
+    :data (:values ,vgcars)
     :mark :point
 	:encoding (:x (:field :horsepower :type :quantitative)
 	           :y (:field :miles-per-gallon :type :quantitative)))))
@@ -330,7 +370,7 @@ within Vega-Lite.  Some parts accept `"false"`, others do not.  The
 `:false`, and you should use that anywhere you encounter a Boolean
 negative.
 
-`true` is encoded for the lisp `t`.
+`true` is encoded for the lisp symbol `T`.
 
 `nil` and `null` may be entered directly as they are and will be
 correctly transcribed.
@@ -345,16 +385,18 @@ mostly equivalent, however there can be differences in parsing,
 especially with dates.  When data is embedded, values are parsed by
 the JavaScript parse in your browser.  When it's loaded via a `url`,
 it's run through the Vega-Lite parser.  Sometimes Vega-Lite needs a
-bit of help by was
-of[format](https://vega.github.io/vega-lite/docs/format.html) for
+bit of help by way
+of [format](https://vega.github.io/vega-lite/docs/format.html) for
 embedded data.  For this reason `plot` always outputs dates & times in
 ISO-8601 format, which works everywhere.
 
 Large data sets can be problematic if you have a number of plots open
-and limited memory.  From experience we've found that around 50,000 is
-a reasonable upper bound, and `plot` will warn you if you try to embed
-more, offering a few restarts.  You can set this upper bound by
-binding `df:*large-data*` to your desired upper limit.
+and limited memory.
+<!-- Not since version 2.0 where we use an embedded server by default. -->
+<!-- From experience we've found that around 50,000 is -->
+<!-- a reasonable upper bound, and `plot` will warn you if you try to embed -->
+<!-- more, offering a few restarts.  You can set this upper bound by -->
+<!-- binding `df:*large-data*` to your desired upper limit. -->
 
 
 ## Saving plots
@@ -396,7 +438,7 @@ not covered, please open an
 
 ## Vega quirks
 
-Vega and Vega-Lite have more than their share of quirks and
+Vega and Vega-Lite have more than their fair share of quirks and
 inconsistencies.  For the most part you'll only notice this in the
 'grammar' of the graphics specification, however occasionally they may
 look like bugs.
@@ -447,7 +489,7 @@ There are many possible workflows when plotting. This section
 describes a few that I've found useful when developing plots.
 
 By default, `plot` will embed data in an HTML file and then call the
-systems browser to open it.  This is a perfectly good way to develop,
+systems browser to open it.  This is a perfectly fine way to develop plots,
 especially if you're on a machine with a good amount of RAM.
 
 ### Vega-Desktop
@@ -473,7 +515,7 @@ Now send a scatterplot to this device:
 ```lisp
 (vega:plot-to-device vdsk1
   (vega:defplot hp-mpg
-  `(:data ,vgcars
+  `(:data (:values ,vgcars)
     :mark :point
 	:encoding (:x (:field :horsepower :type :quantitative)
 	           :y (:field :miles-per-gallon :type :quantitative)))))
@@ -494,7 +536,7 @@ now go back to the buffer with the spec and add a title:
 (vega:plot-to-device vdsk1
   (vega:defplot hp-mpg
   `(:title "Horsepower vs. Miles per Gallon"
-    :data ,vgcars
+    :data (:values ,vgcars)
     :mark :point
 	:encoding (:x (:field :horsepower :type "quantitative")
 	           :y (:field :miles-per-gallon :type "quantitative")))))
@@ -508,6 +550,22 @@ command.  Observe how the plot is instantly updated:
 I tend to use this method when I'm tweaking a plot for final
 publication.
 
+### Vega edit
+
+You can publish a plot specification to a Github gist and then invoke the Vega editor.  This isn't quite as real-time as Vega Desktop in that changes in the Lisp image aren't automatically reflected and you'll have to re-publish.  It is a good way to debug plots and download them in various formats, or for sharing.
+
+To use this mechanism, you'll need to configure two environment variables so the [gist wrapper](https://github.com/Symbolics/cl-gists) will be able to use your credentials to authenticate to the Github API.  Set the following environment variables to hold your github credentials:
+
+* GITHUB_USERNAME
+* GITHUB_OAUTH_TOKEN
+
+Github no longer works with a password, so don't bother setting that.  If you want a custom scheme for authentication, you can create one by following the examples in `examples/1.credentials.lisp`
+
+Now, you can edit the `hp-mpg` plot online with:
+
+```lisp
+(vega:edit hp-mpg)
+```
 
 ### Debugging
 
@@ -596,29 +654,5 @@ The `vega` package includes all the data sets in the [vega data
 sets](https://github.com/vega/vega-datasets/tree/master/data).  They
 have the same name, in the `vega` package, e.g. `vega:penguins`.
 
-
-## Plotting non-standard specification
-
-Most, but not all, plot specification have a single `data` property at
-the top level.  The functions we've been using manipulate this
-property to make working with plots easier.
-
-An example of a plot that has a data property at other than the top
-level, see the scatter plot matrix in the examples section.  Other
-examples include vertical or horizontal concatenation (`vconcat` or
-`hconcat`), that could have a separate data property for each
-concatenated plot.  `repeat` and `facet` may also have this.
-
-For these plot types we need to handle the data property encoding ourselves.  For example instead of: `:data ,vgcars`, we need to specify the source type: `(:values ,vgcars)` or `(:url ,vgcars)`.  You can still use `plot` to plot from the REPL, however the 'device' requires the `:data-url` value to be `:ignore`.  For example when I created the plots for the examples section, I had a second 'device' for these types of plots:
-```
-(defparameter hugo-url-2 '(:spec-loc #P"s:/src/documentation/static/plots/"
-			   :data-loc #P"s:/src/documentation/static/data/"
-			   :data-url :ignore)
-```
-
-Summarising:
-- You need to ensure the `data` property and source are correctly indicated in the plot specification
-- Ensure that, if plotting to a 'device', `:data-url` is `:ignored`
-- Ensure that the `schema` property is part of your specification
 
 
