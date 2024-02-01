@@ -23,7 +23,7 @@ Select provides:
 3.  A set of utility functions for traversing selections in
     array-like objects.
 
-It combines the functionality of dplyr's _slice_ and _select_ methods.
+It combines the functionality of dplyr's _slice_, _select_ and _sample_ methods.
 
 ## Basic Usage {#Using}
 
@@ -163,6 +163,59 @@ as well:
 ; #(0 2 3 6 7 8 9 10 13 15 17 25 26 30 31 34 40 44 46 48 55 56 57 59 60 66 71 74
 ;  75 78 79 80 81 82 84 86 88 91 93 98 100 103 107 108 109 112 113 116 117 120)
 ```
+
+## Sampling
+You may sample sequences, arrays and data frames with the `sample` generic function, and extend it for your own objects.  The function signature is:
+
+```lisp
+(defgeneric sample (data n &key
+			                 with-replacement
+			                 skip-unselected)
+```
+By default in common lisp, `key` values that are not provide are `nil`, so you need to turn them _on_ if you want them.
+
+`:skip-unselected t` means to _not_ return the values of the object that were not part of the sample.  This is turned off by default because a common use case is splitting a data set into training and test groups, and the second value is ignored by default in Common Lisp.  The `let-plus` package, imported by default in `select`, makes it easy to destructure into test and training.  This example is from the tests included with select:
+
+```lisp
+(let+ ((*random-state* state)
+	  ((&values train test) (sample arr35 2))
+  ...
+```
+
+Note the setting of `*random-state*`.  You should use this pattern of setting `*random-state*` to a saved seed anytime you need reproducible results (like in a testing scenerio).
+
+The size of the sample is determined by the value of `n`, which must be between 0 and the number of rows (for an `array`) or length if a `sequence`.  If `(< n 1)`, then `n` indicates a _proportion_ of the sample, e.g. 2/3 (values of `n` less than one may be `rational` or `float`. For example, let's take a training sample of 2/3 of the rows in the `mtcars` dataset:
+
+```lisp
+LS-USER> (sample mtcars 2/3)
+
+#<DATA-FRAME (21 observations of 12 variables)>
+#<DATA-FRAME (11 observations of 12 variables)>
+
+LS-USER> (dims mtcars)
+(32 12)
+```
+You can see that `mtcars` has 32 rows, and has been divides into 2/3 and 1/3 for training / test.
+
+You can also take samples of sequences (lists and vectors), for example using the `DATA` variable defined above:
+
+```lisp
+LS-USER> (length data)
+121
+LS-USER> (sample data 10 :skip-unselected t)
+#(43 117 42 29 41 105 116 27 133 58)
+LS-USER> (sample data 1/10 :skip-unselected t)
+#(119 116 7 53 27 114 31 23 121 109 42 125)
+```
+
+`list` objects can also be sampled:
+```lisp
+(sample '(a b c d e f g) 0.5)
+(A E G B)
+(F D C)
+```
+Note that `n` is rounded up when the number of elements is odd and a proportional number is requested.
+
 
 ## Extensions {#extensions}
 

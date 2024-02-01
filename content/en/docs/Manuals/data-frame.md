@@ -2248,13 +2248,13 @@ but did not here so you can see the values that were replaced.
 
 ## Sampling
 
-You can take a random sample of the rows of a data-frame with the `random-sample` function:
+You can take a random sample of the rows of a data-frame with the `select:sample` function:
 
 ```lisp
 LS-USER> mtcars
 #<DATA-FRAME (32 observations of 12 variables)
 Motor Trend Car Road Tests>
-LS-USER> (random-sample mtcars 3)
+LS-USER> (sample mtcars 3 :skip-unselected t)
 #<DATA-FRAME (3 observations of 12 variables)>
 LS-USER> (print-data *)
 
@@ -2264,16 +2264,17 @@ LS-USER> (print-data *)
 ;; 2 Merc 230          22.8   4 140.8  95 3.92 3.15 22.90  1  0    4    2
 ```
 
-You can also take random samples from CL sequences.
+You can also take random samples from CL sequences and arrays, with or without replacement and in various proportions.  For further information see [sampling](/docs/manuals/select/#sampling) in the [select system manual](/docs/manuals/select/).
 
 Uses [Vitter's Algorithm
 D](http://www.ittc.ku.edu/~jsv/Papers/Vit87.RandomSampling.pdf) to
 efficiently select the rows.  Sometimes you may want to use the
-algorithm at a lower level. You don’t want the sample itself; you only
-want the indices. In this case, you can directly use `map-random-below`,
-which simply calls a provided function on each index.
+algorithm at a lower level. If you don’t want the sample itself, say you
+only want the indices, you can directly use `map-random-below`, which
+simply calls a provided function on each index.
 
-This is a port to standard common lisp of ruricolist's
+This is an enhancement and port to standard common lisp of
+ruricolist's
 [random-sample](https://github.com/ruricolist/random-sample/tree/master).
 It also removes the dependency on Trivia, which has a restrictive
 license (LLGPL).
