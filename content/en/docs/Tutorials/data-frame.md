@@ -200,10 +200,10 @@ You could, for example, use something like this to find the minimum:
 (reduce #'min mtcars:mpg) ;; => 10.4d0
 ```
 
-or the Lisp-Stat function `sequence-maximum` to find the maximum
+or the Lisp-Stat function `seq-max` to find the maximum
 
 ```lisp
-(sequence-maximum mtcars:mpg) ;; => 33.9d0
+(seq-max mtcars:mpg) ;; => 33.9d0
 ```
 
 or perhaps you'd prefer
@@ -224,7 +224,7 @@ Lisp vector and you can manipulate it like one.
 ```
 
 ```lisp
-(standard-deviation mtcars:mpg) ;; => 5.932029552301219d0
+(sd mtcars:mpg) ;; => 5.932029552301219d0
 ```
 
 ### Summarise
