@@ -119,7 +119,7 @@ algolia_docsearch = true
 offlineSearch = false
 
 # Enable syntax highlighting and copy buttons on code blocks with Prism
-prism_syntax_highlighting = true # No support for Common Lisp, despite claiming so
+prism_syntax_highlighting = true # No support for Common Lisp, despite claiming so.  See: https://github.com/PrismJS/prism/issues/3755
 
 # Sections to publish in the main RSS feed.
 rss_sections = ["blog"]

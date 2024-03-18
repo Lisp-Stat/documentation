@@ -195,7 +195,7 @@ LS-USER> (sample mtcars 2/3)
 LS-USER> (dims mtcars)
 (32 12)
 ```
-You can see that `mtcars` has 32 rows, and has been divides into 2/3 and 1/3 for training / test.
+You can see that `mtcars` has 32 rows, and has been divided into 2/3 and 1/3 proportional samples for training / test.
 
 You can also take samples of sequences (lists and vectors), for example using the `DATA` variable defined above:
 

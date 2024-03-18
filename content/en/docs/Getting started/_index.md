@@ -12,7 +12,7 @@ Quicklisp you can be up and running in 5 minutes.
 
 ## Prerequisites
 
-- Steel Bank Common Lisp (SBCL)
+- Steel Bank Common Lisp (SBCL) or CCL
 - MacOS, Linux or Windows 10+
 - Quicklisp
 - Chrome, Firefox or Edge

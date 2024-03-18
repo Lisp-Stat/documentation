@@ -40,7 +40,7 @@ LH and GWK statistics compute quantiles, CDF, PDF, etc. using routines from CLAS
 ### Versions
 Because this system is likely to change rapidly, we have adopted a system of versioning proposed in [defpackage+](https://github.com/rpav/defpackage-plus#versioning).  This is also the system `alexandria` uses where a version number is appended to the API.  So, `statistics-1` is our current package name.  `statistics-2` will be the next and so on.  If you don't like these names, you can always change it locally using a [package local nickname](https://lispcookbook.github.io/cl-cookbook/packages.html#package-local-nicknames-pln).
 
-## Statistics Dictionary
+## Dictionary
 
 ### scale
 **`scale`** scale is generic function whose default method centers and/or scales the columns of a numeric matrix.  This is neccessary when the units of measurement for your data differ.  The `scale` function is provided for this purpose.

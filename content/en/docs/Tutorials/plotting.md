@@ -45,6 +45,8 @@ The examples in this section use the vega-lite data sets. Load them all now:
 (vega:load-vega-examples)
 ```
 
+{{< alert title="Note" >}}If you get an error related to `cl-date-time-parser` or `chroncity` (only seen on Allegro Common Lisp), then load them manually with `(ql:quickload :cl-date-time-parser)` and `(ql:quickload :chronicity)` and re-run `(vega:load-vega-examples)`{{<
+/alert >}}
 
 
 

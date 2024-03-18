@@ -41,7 +41,7 @@ This works even better using emacs/slime.  If you use the slime command sequence
 
 ## Restart from errors
 
-Common lisp has what is called a _condition system_, which is somewhat unique.  One of the features of the condition system is something call _restarts_.  Basically, one part of the system can _signal_ a condition, and another part of it can _handle_ the condition.  One of the ways a signal can handled with is by providing various _restarts_.  Restarts are handled by the debugger, and many users new to Common Lisp tend to shy away from the debugger (this is common to other languages too).  In Common Lisp the debugger is both for developers **and** users.
+Common lisp has what is called a _condition system_, which is somewhat unique.  One of the features of the condition system is something call _restarts_.  Basically, one part of the system can _signal_ a condition, and another part of it can _handle_ the condition.  One of the ways a signal can be handled is by providing various _restarts_.  Restarts happen  by the debugger, and many users new to Common Lisp tend to shy away from the debugger (this is common to other languages too).  In Common Lisp the debugger is both for developers **and** users.
 
 Well written Lisp programs will provide a good set of restarts for commonly encountered situations.  As an example, suppose we are plotting a data set that has a large number of data points.  Experience has shown that greater than 50,000 data points can cause browser performance issues, so we've added a restart to warn you, seen below:
 
