@@ -1363,41 +1363,6 @@ Let's change the `print-object` back to our convenience method.
     (df:print-data df stream nil)))
 ```
 
-### stacking
-
-Stacking is done with the [array-operations stacking functions](/docs/manuals/array-operations/#stacking).  Since these functions operate on both arrays and data frames, we can use them to stack data frames, arrays, or a mixture of both, providing they have a rank of 2.  Here's an example using the `mtcars` data frame:
-
-```
-(defparameter boss-mustang
-  #("Boss Mustang" 12.7d0 8 302 405 4.11d0 2.77d0 12.5d0 0 1 4 4))
-```
-and now stack it onto the `mtcars` data set (load it with `(data :mtcars)` if you haven't already done so):
-```
-(matrix-df
- (keys mtcars)
- (stack-rows mtcars boss-mustang))
-```
-This is the functional equivalent of R's `rbind` function.  You can also add columns with the `stack-cols` function.
-
-An often asked question is: why don't you have a dedicated `stack-rows` function?  Well, if you want one it might look like this:
-```
-(defun stack-rows (df &rest objects)
-  "Stack rows that works on matrices and/or data frames."
-  (matrix-df
-   (keys df)
-   (apply #'aops:stack-rows (cons df objects))))
-```
-But now the data frame must be the first parameter passed to the function.  Or perhaps you want to rename the columns?  Or you have matrices as your starting point?  For all those reasons, it makes more sense to pass in the column keys than a data frame:
-```
-(defun stack-rows (col-names &rest objects)
-  "Stack rows that works on matrices and/or data frames."
-  (matrix-df
-   (keys col-names)
-   (stack-rows objects)))
-```
-However this means we have two `stack-rows` functions, and you don't really gain anything except an extra function call.  So use the above definition if you like; we use the first example and call `matrix-df` and `stack-rows` to stack data frames.
-
-
 
 ## Column operations
 
@@ -1438,7 +1403,7 @@ You can also return a subset of the columns by passing in a selection:
 ;; #(#(21 21 22.8d0 21.4d0 18.7d0) #(2.62d0 2.875d0 2.32d0 3.215d0 3.44d0))
 ```
 
-### Add columns
+### add columns
 
 There are two 'flavors' of add functions, destructive and
 non-destructive.  The latter return a **new** data frame as the
@@ -1523,7 +1488,7 @@ Now let's add multiple columns destructively using `add-columns!`
 ```
 
 
-### Remove columns
+### remove columns
 
 Let's remove the columns `a` and `b` that we just added above with
 the `remove-columns` function.  Since it returns a new data frame,
@@ -1544,7 +1509,7 @@ To remove columns destructively, meaning modifying the original data,
 use the `remove-column!` or `remove-columns!` functions.
 
 
-### Rename columns
+### rename columns
 
 Sometimes data sources can have variable names that we want to change.
 To do this, use the `rename-column!` function.  This example will
@@ -1607,7 +1572,7 @@ mtcars:model
   "Ford Pantera L" "Ferrari Dino" "Maserati Bora" "Volvo 142E")
 ```
 
-### Replace columns
+### replace columns
 
 Columns are "setf-able" places and the simplest way to replace a
 column is set the field to a new value.  We'll complement the `sex`
@@ -1659,7 +1624,7 @@ instead of `setf`-ing `*d*`:
 ;; 4 Male    30    170   79.4
 ```
 
-### Transform columns
+### transform columns
 
 There are two functions for column transformations, `replace-column`
 and `map-columns`.
@@ -1720,6 +1685,41 @@ categorical values like gender/sex.
 
 As the name suggests, row operations operate on each row, or
 observation, of a data set.
+
+### add rows
+
+Adding rows is done with the [array-operations stacking functions](/docs/manuals/array-operations/#stacking).  Since these functions operate on both arrays and data frames, we can use them to stack data frames, arrays, or a mixture of both, providing they have a rank of 2.  Here's an example of adding a row to the `mtcars` data frame:
+
+```lisp
+(defparameter boss-mustang
+  #("Boss Mustang" 12.7d0 8 302 405 4.11d0 2.77d0 12.5d0 0 1 4 4))
+```
+and now stack it onto the `mtcars` data set (load it with `(data :mtcars)` if you haven't already done so):
+```lisp
+(matrix-df
+ (keys mtcars)
+ (stack-rows mtcars boss-mustang))
+```
+This is the functional equivalent of R's `rbind` function.  You can also add columns with the `stack-cols` function.
+
+An often asked question is: why don't you have a dedicated `stack-rows` function?  Well, if you want one it might look like this:
+```lisp
+(defun stack-rows (df &rest objects)
+  "Stack rows that works on matrices and/or data frames."
+  (matrix-df
+   (keys df)
+   (apply #'aops:stack-rows (cons df objects))))
+```
+But now the data frame must be the first parameter passed to the function.  Or perhaps you want to rename the columns?  Or you have matrices as your starting point?  For all those reasons, it makes more sense to pass in the column keys than a data frame:
+```lisp
+(defun stack-rows (col-names &rest objects)
+  "Stack rows that works on matrices and/or data frames."
+  (matrix-df
+   (keys col-names)
+   (stack-rows objects)))
+```
+However this means we have two `stack-rows` functions, and you don't really gain anything except an extra function call.  So use the above definition if you like; we use the first example and call `matrix-df` and `stack-rows` to stack data frames.
+
 
 ### count-rows
 

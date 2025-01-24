@@ -14,7 +14,7 @@ To run the notebooks you will have to install a third-party library,
 
 After installing `cl-jupyter`, clone the IPS repository into your `~/common-lisp/` directory.
 
-{{< alert title="Note" >}}Be careful when upgrading `common-lisp-jupyter`.  Breaking changes are often introduced without warning.  If you experience problems, use cl-jupyter revision `b1021ab` by using the [get checkout command](https://www.git-tower.com/learn/git/faq/git-checkout-commits/).
+{{< alert title="Note" >}}Be careful when upgrading `common-lisp-jupyter`.  Breaking changes are often introduced without warning.  If you experience problems, use cl-jupyter revision `b1021ab` by using the [git checkout command](https://www.git-tower.com/learn/git/faq/git-checkout-commits/).
 {{< /alert >}}
 
 

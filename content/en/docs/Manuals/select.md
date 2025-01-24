@@ -39,7 +39,9 @@ corresponding axis.  The selection specifications are found below.
 
 To select a column, pass in `t` for the rows `selection1`, and the
 columns names (for a data frame) or column number (for an array) for
-`selection2`.  For example, to select the first column of this array:
+`selection2`.  For example, to select the second column of this array
+(remember Common Lisp has zero based arrays, so the second column is
+at index 1.
 
 ```lisp
 (select #2A((C0  C1  C2)

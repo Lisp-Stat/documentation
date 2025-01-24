@@ -85,7 +85,7 @@ and compare it with the equivalent Lisp-Stat version:
 	           :y (:field :miles-per-gallon :type :quantitative)))))
 ```
 
-Note that in the Lisp-Stat version we are embedding the specification,
+Note that in the Lisp-Stat version we are embedding the data
 using the `:values` keyword, as opposed to obtaining it from a server
 with `:url`.  You can try plotting this now: click on the `copy` button
 in the upper right corner of the code box and paste it into the REPL.
