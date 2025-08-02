@@ -27,7 +27,7 @@ library is on the `PATH`.{{</alert >}}
 
 You can also configure the path by setting the `cl-user::*lla-configuration*` variable like so:
 ```lisp
-(defvar *lla-configuration*
+(defvar cl-user::*lla-configuration*
   '(:libraries ("s:/src/lla/lib/libopenblas.dll")))
 ```
 Use the location specific to your system.
@@ -39,7 +39,7 @@ To load `lla`:
 (use-package 'lla) ;access to the symbols
 ```
 
-### Getting Started
+### Getting started
 
 To make working with matrices easier, we're going to use the matrix-shorthand library.  Load it like so:
 
@@ -61,6 +61,51 @@ To make working with matrices easier, we're going to use the matrix-shorthand li
 
 ; #(5.0d0 11.0d0 17.0d0)
 ```
+
+## Numeric types
+These are synonyms for types generally recognized by LLA.  Note that
+LLA works fine with any kind of number, but may be faster for array
+element types it recognizes as it does not have to spend time
+detecting a common type.  Think of these types as optimization hints
+similar to those used in `MAKE-ARRAY` et. al.
+
+* lla-integer
+* lla-single
+* lla-double
+* lla-complex-single
+* lla-complex-double
+
+These types are defined in the `lla` package.
+
+## Matrix types
+
+`num-utils.matrix` defines generic functions and types for commonly encountered matrices.  `LLA` imports this package.
+
+### diagonal
+
+### triangular
+
+### hermitian
+
+
+
+
+
+## Matrix shorthand
+The matrix shorthand package, `num-utils.matrix-shorthand`, with nickname `nu.mx` defines short function names for creating commonly used matrix types.
+
+
+### mx - create matrix
+
+### vec - create vector
+
+### diagonal-mx
+
+### lower-triangular-mx
+
+### upper-triangular-mx
+
+### hermitian-mx
 
 <!--
 ## Basics

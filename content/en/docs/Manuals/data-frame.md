@@ -128,7 +128,7 @@ see a punctuation mark or the letter 'p' as the last letter of a
 function name, it indicates something about the function:
 
 - '!' indicates that the function is _destructive_.  It will modify the data that you pass to it.  Otherwise, it will return a copy that you will need to save in a variable.
-- 'p', '-p' or '?' means the function is a _predicate_, that is returns a Boolean truth value.
+- 'p', '-p' or '?' means the function is a _predicate_, that returns a Boolean truth value.
 
 
 ### Data frame environment

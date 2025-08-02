@@ -385,7 +385,7 @@ within an HTML page.  The alternative is to use [data from a
 url](https://vega.github.io/vega-lite/docs/data.html#url). Both are
 mostly equivalent, however there can be differences in parsing,
 especially with dates.  When data is embedded, values are parsed by
-the JavaScript parse in your browser.  When it's loaded via a `url`,
+the JavaScript parser in your browser.  When it's loaded via a `url`,
 it's run through the Vega-Lite parser.  Sometimes Vega-Lite needs a
 bit of help by way
 of [format](https://vega.github.io/vega-lite/docs/format.html) for
