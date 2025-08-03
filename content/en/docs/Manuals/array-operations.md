@@ -1,6 +1,6 @@
 ---
 title: "Array Operations"
-date: 2021-2-21
+date: 2025-08-01
 weight: 1
 description: >
   Manipulating sample data as arrays

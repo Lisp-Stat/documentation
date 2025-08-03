@@ -1,6 +1,6 @@
 ---
 title: "Distributions"
-date: 2022-8-28
+date: 2022-08-28
 weight: 3
 latex: true
 vega: true
