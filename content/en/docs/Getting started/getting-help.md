@@ -22,7 +22,7 @@ and can't find it in the navigation panes, use the search box:
 ## Apropos
 
 If you're not quite sure what you're looking for, you can use the
-`apropos` command.  You can do this either from the REPL or emacs.
+`apropos` command.  You can do this either from the REPL or hemlock/emacs.
 Here are two examples:
 
 ```lisp
@@ -33,10 +33,14 @@ REMOVE-IF (fbound)
 REMOVE-IF-NOT (fbound)
 ```
 
-This works even better using emacs/slime.  If you use the slime command sequence `C-c C-d a`, (all the slime documentation commands start with `C-c C-d`) emacs will ask you for a string. Let's say you typed in `remove-if`.  Emacs will open a buffer like the one below with all the docs strings for similar functions or variables:
+If you use the emacs/slime command sequence `C-c C-d a`, (all the slime documentation commands start with `C-c C-d`) emacs will ask you for a string. Let's say you typed in `remove-if`.  Emacs will open a buffer like the one below with all the docs strings for similar functions or variables:
 
-{{< figure src="/images/slime-apropos.png" >}}
+{{< figure src="/images/slime-apropos.png" title="Emacs apropos">}}
+<!--
+In hemlock the apropos command is bound to either _Home a_ or _C-\_ a_.  You can also use the 'Describe Symbol' extended command (bound to C-M-S):
 
+{{< figure src="/images/hemlock-describe.png" title="Hemlock describe symbol">}}
+ -->
 
 
 ## Restart from errors

@@ -33,7 +33,7 @@ short-form tutorials on a particular system.
 
 ### System manuals
 The manuals are written at a level somewhere between an API reference
-and a core task.  They document, with text and examples, the core APIs
+and a core task. ('annotated reference') They document, with text and examples, the core APIs
 of each system.  These are useful references for power users,
 developers and if you need to go a bit beyond the core tasks.
 

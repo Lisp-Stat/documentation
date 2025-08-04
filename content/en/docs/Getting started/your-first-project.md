@@ -66,9 +66,7 @@ source code for the functionality goes here.
 
 ### tests
 
-Tests for your code. We recommend either
-[CL-UNIT2](https://github.com/lisp-mirror/clunit2) or
-[PARACHUTE](https://github.com/Shinmera/parachute) for test
+Tests for your code. We recommend [CL-UNIT2](https://github.com/lisp-mirror/clunit2) for test
 frameworks.
 
 ### docs
@@ -83,7 +81,7 @@ documentation that way.
 
 If you've cloned the project template into your local Common Lisp
 directory, `~/common-lisp/`, then you can load it with `(ql:quickload
-:project)`.  Lisp will download and compile the neccessary
+:project)`.  Lisp will download and compile the necessary
 dependencies and your project will be loaded.  The first thing you'll
 want to do is to configure your project.
 
@@ -111,7 +109,7 @@ the file `src/init.lisp`.  The template sets up a [logical path
 name](https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node211.html) for
 the project:
 
-```
+```lisp
 (defun setup-project-translations ()
   (setf (logical-pathname-translations "PROJECT")
 	`(("DATA;**;*.*.*"    ,(merge-pathnames "data/**/*.*" (asdf:system-source-directory 'project))))))
@@ -172,6 +170,6 @@ Finally, you'll want to save your data frame after you've got it where
 you want it to be.  You can save project in a 'native' format, a lisp
 file, that will preserve all your meta data and is editable, or a CSV
 file.  You should only use a CSV file if you need to use the data in
-another system.  `PROJECT:SRC;save` shows how to save your work.
+another system.  `PROJECT:SRC;save` containes an example that shows how to save your work.
 
 

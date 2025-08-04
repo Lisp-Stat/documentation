@@ -2,7 +2,8 @@
 title: "Plotting"
 date: 2021-04-26
 vega: true
-weight: 1
+hide_summary: true
+weight: 5
 description: >
   Example plots
 ---
