@@ -7,42 +7,48 @@ description: >
   Install to plotting in five minutes
 ---
 
+## The Easy Way
+
+You can use an OCI image or pre-built notebook in the cloud for an instant
+start. See [installation](/docs/getting-started/installation/) for how.
+
+## The Emacs Way
 If you have a working installation of SBCL, Google Chrome and
 Quicklisp you can be up and running in 5 minutes.
 
-## Prerequisites
+### Prerequisites
 
 - Steel Bank Common Lisp (SBCL) or CCL
 - MacOS, Linux or Windows 10+
 - Quicklisp
 - Chrome, Firefox or Edge
 
-## Loading
+### Loading
 
 First load Lisp-Stat, Plot and sample data.  We will use Quicklisp for
 this, which will both download the system if it isn't already
 available, and compile and load it.
 
-### Lisp-Stat
+#### Lisp-Stat
 
 ```lisp
 (ql:quickload :lisp-stat)
 (in-package :ls-user)     ;access to Lisp-Stat functions
 ```
 
-### Plotting
+#### Plotting
 
 ```lisp
 (ql:quickload :plot/vega)
 ```
 
-### Data
+#### Data
 
 ```lisp
 (data :vgcars)
 ```
 
-## View
+### View
 
 Print the `vgcars` data-frame (showing the first 25 rows by default)
 
