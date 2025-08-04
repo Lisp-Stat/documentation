@@ -12,7 +12,7 @@ description: >
 You can use an OCI image or pre-built notebook in the cloud for an instant
 start. See [installation](/docs/getting-started/installation/) for how.
 
-## The Emacs Way
+## The CLI Way
 If you have a working installation of SBCL, Google Chrome and
 Quicklisp you can be up and running in 5 minutes.
 
