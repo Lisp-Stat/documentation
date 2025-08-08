@@ -61,8 +61,8 @@ git clone https://github.com/Lisp-Stat/select.git && \
 git clone https://github.com/Lisp-Stat/cephes.cl.git && \
 git clone https://github.com/Symbolics/alexandria-plus && \
 git clone https://github.com/Lisp-Stat/statistics.git && \
-git clone https://github.com/Lisp-Stat/lisp-stat.git
-git clone https://github.com/Lisp-Stat/sqldf.git
+git clone https://github.com/Lisp-Stat/lisp-stat.git && \
+git clone https://github.com/Lisp-Stat/lla.git
 ```
 
 ### Modify the source
