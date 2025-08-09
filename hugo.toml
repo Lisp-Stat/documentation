@@ -94,7 +94,11 @@ github_repo = "https://github.com/Lisp-Stat/documentation"
 github_branch = "master"
 
 # Enable Algolia DocSearch
-algolia_docsearch = true
+#algolia_docsearch = true
+[params.search.algolia]
+appId = "U1X7KWY6XS"
+apiKey = "7ae6d97110bdd128cc4c21827165bdb4"
+indexName = "docsearch"
 
 # Enable Lunr.js offline search
 offlineSearch = false
