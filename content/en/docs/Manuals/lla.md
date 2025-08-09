@@ -31,7 +31,7 @@ loading the library, consult the CFFI documentation. For MS Windows,
 the certain way to successfully load the DLL is to ensure that the
 library is on the `PATH`.{{</alert >}}
 
-### Configuration
+### configuration
 
 LLA can be configured before loading by setting the `cl-user::*lla-configuration*` variable. This allows you to specify custom library paths and enable various optimizations:
 
@@ -50,7 +50,7 @@ The configuration accepts the following options:
 
 Use the location specific to your system.
 
-### Loading LLA
+### loading LLA
 
 To load `lla`:
 
@@ -59,7 +59,7 @@ To load `lla`:
 (use-package 'lla) ;access to the symbols
 ```
 
-### Getting started
+### getting started
 
 To make working with matrices easier, we're going to use the matrix-shorthand library.  Load it like so:
 
@@ -399,6 +399,193 @@ For Hermitian matrices, attempting to create non-square matrices will signal an 
 
 All shorthand constructors coerce elements to the specified type and return specialized matrix objects that are memory-efficient and compatible with the `aops` protocol for array operations.
 
+## Matrix Arithmetic
+
+The `num-utils.elementwise` package provides a comprehensive set of elementwise operations for arrays and numerical objects. These operations extend Common Lisp's standard arithmetic to work seamlessly with arrays, matrices, and vectors while preserving numerical type precision through automatic type contagion.
+
+### intuition
+
+**Elementwise arithmetic** operates on corresponding elements of arrays, applying the specified operation to each pair of elements independently. This differs fundamentally from **algebraic matrix operations** like matrix multiplication:
+
+- **Algebraic operations** follow mathematical rules (e.g., matrix multiplication requires compatible dimensions: m×n · n×p = m×p)
+- **Elementwise operations** require identical dimensions and operate position-by-position
+
+For example:
+```lisp
+;; Elementwise multiplication (e*)
+(e* (mx 'double-float (1 2) (3 4))
+    (mx 'double-float (5 6) (7 8)))
+; => #2A((5.0d0 12.0d0)     ; 1×5=5, 2×6=12
+;        (21.0d0 32.0d0))   ; 3×7=21, 4×8=32
+
+;; Algebraic matrix multiplication (mm)
+(mm (mx 'double-float (1 2) (3 4))
+    (mx 'double-float (5 6) (7 8)))
+; => #2A((19.0d0 22.0d0)    ; 1×5+2×7=19, 1×6+2×8=22
+;        (43.0d0 50.0d0))   ; 3×5+4×7=43, 3×6+4×8=50
+```
+
+### type contagion
+
+The `elementwise-float-contagion` function automatically determines the appropriate result type when combining different numeric types, following Common Lisp's numeric contagion rules but extended for arrays:
+
+```lisp
+(e+ (vec 'single-float 1.0 2.0)     ; single-float array
+    (vec 'double-float 3.0 4.0))    ; double-float array
+; => #(4.0d0 6.0d0)                  ; result is double-float
+
+(e* 2                                ; integer scalar
+    (vec 'double-float 1.5 2.5))    ; double-float array
+; => #(3.0d0 5.0d0)                  ; result is double-float
+```
+
+### unary operations
+
+Unary operations apply a function to each element of an array independently. They work with both scalars and arrays:
+
+```lisp
+;; Unary operations on vectors
+(e1- (vec 'double-float 1 2 3 4 5))
+; => #(-1.0d0 -2.0d0 -3.0d0 -4.0d0 -5.0d0)
+
+(esqrt (vec 'double-float 4 9 16 25))
+; => #(2.0d0 3.0d0 4.0d0 5.0d0)
+
+;; Unary operations on matrices
+(eabs (mx 'double-float
+        (-1 2.5)
+        (-3.7 4)))
+; => #2A((1.0d0 2.5d0)
+;        (3.7d0 4.0d0))
+
+(elog (mx 'double-float
+        ((exp 1) (exp 2))
+        ((exp 3) (exp 4))))
+; => #2A((1.0d0 2.0d0)
+;        (3.0d0 4.0d0))
+```
+
+### binary operations
+
+Binary operations combine two arrays element-by-element or broadcast a scalar across an array. Arrays must have matching dimensions:
+
+```lisp
+;; Binary operations with equal-length vectors
+(e2+ (vec 'double-float 1 2 3)
+     (vec 'double-float 4 5 6))
+; => #(5.0d0 7.0d0 9.0d0)
+
+;; Binary operations with scalar broadcasting
+(e2* (vec 'double-float 2 3 4)
+     2.5d0)
+; => #(5.0d0 7.5d0 10.0d0)
+
+;; Binary operations on matrices
+(e2- (mx 'double-float
+       (10 20)
+       (30 40))
+     (mx 'double-float
+       (1 2)
+       (3 4)))
+; => #2A((9.0d0 18.0d0)
+;        (27.0d0 36.0d0))
+
+;; Dimension mismatch signals an error
+(handler-case
+    (e2+ (vec 'double-float 1 2 3)      ; length 3
+         (vec 'double-float 4 5))        ; length 2
+  (error (e) (format nil "Error: ~A" e)))
+; => "Error: Assertion failed: (EQUAL (ARRAY-DIMENSIONS A) (ARRAY-DIMENSIONS B))"
+```
+
+### unary operators reference
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `e1-` | Univariate elementwise - | `(e1- x)` ≡ `-x` |
+| `e1/` | Univariate elementwise / | `(e1/ x)` ≡ `1/x` |
+| `e1log` | Univariate elementwise LOG | `(e1log x)` ≡ `log(x)` |
+| `e1exp` | Univariate elementwise EXP | `(e1exp x)` ≡ `exp(x)` |
+| `eabs` | Univariate elementwise ABS | `(eabs x)` ≡ `|x|` |
+| `efloor` | Univariate elementwise FLOOR | `(efloor x)` ≡ `⌊x⌋` |
+| `eceiling` | Univariate elementwise CEILING | `(eceiling x)` ≡ `⌈x⌉` |
+| `eexp` | Univariate elementwise EXP | `(eexp x)` ≡ `e^x` |
+| `esqrt` | Univariate elementwise SQRT | `(esqrt x)` ≡ `√x` |
+| `econjugate` | Univariate elementwise CONJUGATE | `(econjugate x)` ≡ `x*` |
+| `esquare` | Univariate elementwise SQUARE | `(esquare x)` ≡ `x²` |
+| `esin` | Univariate elementwise SIN | `(esin x)` ≡ `sin(x)` |
+| `ecos` | Univariate elementwise COS | `(ecos x)` ≡ `cos(x)` |
+
+### binary operators reference
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `e2+` | Bivariate elementwise + | `(e2+ a b)` ≡ `a + b` |
+| `e2-` | Bivariate elementwise - | `(e2- a b)` ≡ `a - b` |
+| `e2*` | Bivariate elementwise * | `(e2* a b)` ≡ `a × b` |
+| `e2/` | Bivariate elementwise / | `(e2/ a b)` ≡ `a ÷ b` |
+| `e2log` | Bivariate elementwise LOG | `(e2log a b)` ≡ `log_b(a)` |
+| `e2exp` | Bivariate elementwise EXPT | `(e2exp a b)` ≡ `a^b` |
+| `e2mod` | Bivariate elementwise MOD | `(e2mod a b)` ≡ `a mod b` |
+| `e2<` | Bivariate elementwise < | `(e2< a b)` ≡ `a < b` |
+| `e2<=` | Bivariate elementwise <= | `(e2<= a b)` ≡ `a ≤ b` |
+| `e2>` | Bivariate elementwise > | `(e2> a b)` ≡ `a > b` |
+| `e2>=` | Bivariate elementwise >= | `(e2>= a b)` ≡ `a ≥ b` |
+| `e2=` | Bivariate elementwise = | `(e2= a b)` ≡ `a = b` |
+
+### variadic operations
+
+Several operators have variadic versions that accept multiple arguments, applying the operation from left to right:
+
+```lisp
+;; Multiple arguments with e+
+(e+ (vec 'double-float 1 2 3)
+    (vec 'double-float 4 5 6)
+    (vec 'double-float 7 8 9))
+; => #(12.0d0 15.0d0 18.0d0)
+
+;; Single argument returns identity
+(e+ (vec 'double-float 1 2 3))
+; => #(1.0d0 2.0d0 3.0d0)
+
+;; Unary negation with e-
+(e- (vec 'double-float 1 2 3))
+; => #(-1.0d0 -2.0d0 -3.0d0)
+```
+
+### special operations
+
+- **`elog`**: Provides both natural logarithm and logarithm with arbitrary base
+  ```lisp
+  (elog (vec 'double-float 10 100))        ; Natural log
+  ; => #(2.302... 4.605...)
+  
+  (elog (vec 'double-float 10 100) 10)     ; Log base 10
+  ; => #(1.0d0 2.0d0)
+  ```
+
+- **`ereduce`**: Applies a reduction function across all elements in row-major order
+  ```lisp
+  (ereduce #'+ (mx 'double-float
+                 (1 2 3)
+                 (4 5 6)))
+  ; => 21.0d0
+  ```
+
+- **`emin`/`emax`**: Find the minimum or maximum element
+  ```lisp
+  (emin (mx 'double-float (5 2 8) (1 9 3)))
+  ; => 1.0d0
+  
+  (emax (mx 'double-float (5 2 8) (1 9 3)))
+  ; => 9.0d0
+  ```
+
+These elementwise operations provide a powerful and consistent interface for numerical computations, automatically handling type promotion and supporting both scalar and array arguments
+
+
+
+
 
 ## Factorizations
 
@@ -717,7 +904,7 @@ The identity $a \equiv (select\; (mm\; (lu\text{-}l\; lu\text{-}fact)\; (lu\text
 
 This section covers the core linear algebra operations provided by LLA. These functions leverage BLAS and LAPACK for efficient numerical computations while providing a convenient Lisp interface.
 
-### mm
+### multiplication
 
 **`mm`** performs matrix multiplication of two arrays. It handles matrices, vectors, and special matrix types, automatically selecting the appropriate operation based on the arguments' dimensions.
 
@@ -792,7 +979,7 @@ Special handling for transpose operations using the symbol `t`:
 ;      14.0d0  20.0d0>
 ```
 
-### mmm
+### multiple matrix multiply
 
 **`mmm`** multiplies multiple matrices from left to right. This is more efficient than repeated calls to `mm`:
 
@@ -829,7 +1016,7 @@ $$A\mathbf{x} = \mathbf{b}$$
 
 where $A$ is an $n \times n$ coefficient matrix, $\mathbf{b}$ is the right-hand side vector (or matrix for multiple systems), and $\mathbf{x}$ is the unknown solution vector. The function intelligently dispatches to the most appropriate algorithm based on the matrix type and structure, ensuring both numerical stability and computational efficiency.
 
-#### Algorithm Selection Strategy
+*# Algorithm Selection Strategy
 
 LLA automatically selects the optimal solving strategy:
 
@@ -839,7 +1026,7 @@ LLA automatically selects the optimal solving strategy:
 - **Diagonal matrices**: Element-wise division ($O(n)$ complexity)
 - **Pre-factored matrices**: Direct substitution using stored decomposition
 
-#### Basic Linear System Solving
+*# Basic Linear System Solving
 
 For general square matrices, `solve` uses LU decomposition with partial pivoting to handle the system $A\mathbf{x} = \mathbf{b}$:
 
@@ -858,7 +1045,7 @@ The mathematical process involves:
 2. Solve $L\mathbf{y} = P\mathbf{b}$ by forward substitution
 3. Solve $U\mathbf{x} = \mathbf{y}$ by backward substitution
 
-#### Efficient Solving with Pre-computed Factorizations
+*# Efficient Solving with Pre-computed Factorizations
 
 When solving multiple systems with the same coefficient matrix, pre-computing the factorization is much more efficient. The LU factorization $PA = LU$ needs to be computed only once:
 
@@ -874,7 +1061,7 @@ When solving multiple systems with the same coefficient matrix, pre-computing th
 
 This approach reduces the complexity from $O(n^3)$ for each solve to $O(n^2)$, making it ideal for applications requiring multiple solves with the same matrix.
 
-#### Triangular System Solvers
+*# Triangular System Solvers
 
 For triangular matrices, `solve` uses specialized algorithms that exploit the matrix structure. Upper triangular systems $U\mathbf{x} = \mathbf{b}$ are solved by backward substitution:
 
@@ -891,7 +1078,7 @@ $$x_i = \frac{b_i - \sum_{j=i+1}^{n} u_{ij}x_j}{u_{ii}}$$
 
 Similarly, lower triangular systems use forward substitution with complexity $O(n^2)$.
 
-#### Cholesky Solvers for Positive Definite Systems
+*# Cholesky Solvers for Positive Definite Systems
 
 For symmetric positive definite matrices, the Cholesky decomposition $A = LL^T$ provides the most efficient and numerically stable solution method:
 
@@ -913,7 +1100,7 @@ The solution process involves:
 
 This method is approximately twice as fast as LU decomposition and uses half the storage, making it the preferred approach for positive definite systems arising in optimization, statistics, and numerical PDEs.
 
-#### Multiple Right-Hand Sides
+*# Multiple Right-Hand Sides
 
 The `solve` function handles matrix right-hand sides $AX = B$ where $B$ contains multiple column vectors:
 
@@ -935,7 +1122,7 @@ Each column of the result matrix contains the solution to $A\mathbf{x}_i = \math
 
 **`invert`** computes the matrix inverse $A^{-1}$ such that $A A^{-1} = A^{-1} A = I$, where $I$ is the identity matrix. While mathematically fundamental, explicit matrix inversion should generally be avoided in favor of `solve` for numerical linear algebra applications.
 
-#### Why Avoid Explicit Inversion?
+*# Why Avoid Explicit Inversion?
 
 Computing $A^{-1}$ and then multiplying $A^{-1}\mathbf{b}$ to solve $A\mathbf{x} = \mathbf{b}$ is both computationally expensive and numerically unstable compared to direct solving methods:
 
@@ -948,7 +1135,7 @@ Computing $A^{-1}$ and then multiplying $A^{-1}\mathbf{b}$ to solve $A\mathbf{x}
 **Numerical Stability:**
 Direct solving typically achieves machine precision, while the inversion approach can amplify rounding errors, especially for ill-conditioned matrices.
 
-#### Comparison: Explicit Inversion vs Direct Solving
+*# Comparison: Explicit Inversion vs Direct Solving
 
 Let's compare both approaches using the same system $A\mathbf{x} = \mathbf{b}$:
 
@@ -991,7 +1178,7 @@ Both methods produce identical results, but `solve` is more efficient and numeri
 ; => T  ; Both methods give the same result
 ```
 
-#### Basic Matrix Inversion
+*# Basic Matrix Inversion
 
 For educational purposes or when the inverse itself is needed (rare in practice):
 
@@ -1011,7 +1198,7 @@ For educational purposes or when the inverse itself is needed (rare in practice)
 ;        (0.0d0 1.0d0))
 ```
 
-#### Structured Matrix Inversions
+*# Structured Matrix Inversions
 
 Inverting triangular matrices preserves their structure and is computationally efficient:
 
@@ -1026,7 +1213,7 @@ Inverting triangular matrices preserves their structure and is computationally e
 
 For upper triangular matrices $U$, the inverse $(U^{-1})_{ij}$ can be computed by back-substitution, maintaining the triangular structure.
 
-#### Pseudoinverse for Singular Matrices
+*# Pseudoinverse for Singular Matrices
 
 When a matrix is **singular** (determinant = 0) or **nearly singular**, the standard inverse doesn't exist. The **Moore-Penrose pseudoinverse** $A^+$ generalizes the concept of inversion to non-invertible matrices.
 
@@ -1042,7 +1229,7 @@ If $A = U\Sigma V^T$ is the singular value decomposition, then:
 $$A^+ = V\Sigma^+ U^T$$
 where $\Sigma^+$ is formed by taking the reciprocal of non-zero singular values and transposing.
 
-#### Diagonal Matrix Pseudoinverse
+*# Diagonal Matrix Pseudoinverse
 
 For diagonal matrices, the pseudoinverse is particularly intuitive. Elements below a specified tolerance are treated as zero:
 
@@ -1063,7 +1250,7 @@ For diagonal matrices, the pseudoinverse is particularly intuitive. Elements bel
 
 This tolerance-based approach prevents division by near-zero values, which would create numerically unstable results.
 
-#### Nearly Singular Systems Example
+*# Nearly Singular Systems Example
 
 The pseudoinverse is particularly useful for rank-deficient systems arising in least-squares problems:
 
@@ -1096,7 +1283,7 @@ For rank-deficient systems, the least-squares solution using the pseudoinverse p
 
 **`least-squares`** solves overdetermined systems in the least squares sense, finding the best-fit solution that minimizes the sum of squared residuals. This is fundamental for regression analysis, curve fitting, and many practical applications where you have more observations than unknown parameters.
 
-#### Mathematical Foundation
+*# Mathematical Foundation
 
 Given a system $X\mathbf{b} = \mathbf{y}$ where:
 - $X$ is an $m \times n$ design matrix with $m > n$ (more rows than columns)
@@ -1111,7 +1298,7 @@ $$\mathbf{b} = (X^T X)^{-1} X^T \mathbf{y}$$
 
 However, LLA uses the more numerically stable QR decomposition approach, factoring $X = QR$ where $Q$ is orthogonal and $R$ is upper triangular.
 
-#### Return Values
+*# Return Values
 
 The function returns four values:
 1. **Coefficient vector** $\mathbf{b}$ - the best-fit parameters
@@ -1119,7 +1306,7 @@ The function returns four values:
 3. **Degrees of freedom** - $m - n$ (observations minus parameters)
 4. **QR decomposition** - can be reused for further computations
 
-#### Simple Example
+*# Simple Example
 
 ```lisp
 (let ((x (mx 'lla-double
@@ -1138,7 +1325,7 @@ The function returns four values:
 
 This fits the linear model $y = -24.98 + 4.05x$.
 
-#### Real-Life Example: Predicting House Prices
+*# Real-Life Example: Predicting House Prices
 
 Let's model house prices based on size (square feet) and number of bedrooms:
 
@@ -1177,7 +1364,7 @@ Let's model house prices based on size (square feet) and number of bedrooms:
 
 The model shows that each additional 1000 square feet adds approximately €113,140 to the price, and each bedroom adds about €21,390.
 
-#### Handling Rank-Deficient Matrices
+*# Handling Rank-Deficient Matrices
 
 When predictors are linearly dependent, the design matrix becomes rank-deficient. The QR decomposition can detect and handle this:
 
@@ -1200,7 +1387,7 @@ When predictors are linearly dependent, the design matrix becomes rank-deficient
 
 Note that one coefficient is effectively zero due to the linear dependency, and the degrees of freedom reflect the rank deficiency.
 
-#### Computing Standard Errors
+*# Computing Standard Errors
 
 Standard errors measure the precision of estimated regression coefficients. They quantify the uncertainty in our parameter estimates due to sampling variability. Smaller standard errors indicate more precise estimates, while larger ones suggest greater uncertainty.
 
@@ -1309,7 +1496,7 @@ Let's fit a line to some data and compute standard errors to understand the prec
 
 This analysis demonstrates how standard errors transform point estimates into interval estimates, enabling us to quantify and communicate the uncertainty inherent
 
-#### Performance Considerations
+*# Performance Considerations
 
 The QR decomposition approach used by `least-squares`:
 - Is more numerically stable than the normal equations
@@ -1633,4 +1820,4 @@ Parameters:
 - `n` - number of elements to process
 - `incx` - stride between elements (default: 1)
 
-These BLAS functions provide the fundamental building blocks for linear algebra operations. They are highly optimized and form the computational core of higher-level operations like matrix multiplication (`mm`), solving linear systems (`solve`), and computing factorizations. The in-place operations (marked with `!`) modify their arguments directly, providing memory-efficient computation for large-scale
+These BLAS functions provide the fundamental building blocks for linear algebra operations. They are highly optimized and form the computational core of higher-level operations like matrix multiplication (`mm`), solving linear systems (`solve`), and computing factorizations. The in-place operations (marked with `!`) modify their arguments directly, providing memory-efficient computation for large-scale numerical applications.
