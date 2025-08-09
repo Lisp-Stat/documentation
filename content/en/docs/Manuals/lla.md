@@ -515,6 +515,7 @@ Binary operations combine two arrays element-by-element or broadcast a scalar ac
 | `esquare` | Univariate elementwise SQUARE | `(esquare x)` ≡ `x²` |
 | `esin` | Univariate elementwise SIN | `(esin x)` ≡ `sin(x)` |
 | `ecos` | Univariate elementwise COS | `(ecos x)` ≡ `cos(x)` |
+| `emod` | Univariate elementwise MOD | `(emod x)` ≡ `mod(x)` |
 
 ### binary operators reference
 
@@ -526,6 +527,7 @@ Binary operations combine two arrays element-by-element or broadcast a scalar ac
 | `e2/` | Bivariate elementwise / | `(e2/ a b)` ≡ `a ÷ b` |
 | `e2log` | Bivariate elementwise LOG | `(e2log a b)` ≡ `log_b(a)` |
 | `e2exp` | Bivariate elementwise EXPT | `(e2exp a b)` ≡ `a^b` |
+| `eexpt` | Bivariate elementwise EXPT | `(eexpt a b)` ≡ `a^b` |
 | `e2mod` | Bivariate elementwise MOD | `(e2mod a b)` ≡ `a mod b` |
 | `e2<` | Bivariate elementwise < | `(e2< a b)` ≡ `a < b` |
 | `e2<=` | Bivariate elementwise <= | `(e2<= a b)` ≡ `a ≤ b` |
@@ -535,7 +537,7 @@ Binary operations combine two arrays element-by-element or broadcast a scalar ac
 
 ### variadic operations
 
-Several operators have variadic versions that accept multiple arguments, applying the operation from left to right:
+The variadic operators (`e+`, `e-`, `e*`, `e/`) accept multiple arguments, applying the operation from left to right:
 
 ```lisp
 ;; Multiple arguments with e+
@@ -544,13 +546,26 @@ Several operators have variadic versions that accept multiple arguments, applyin
     (vec 'double-float 7 8 9))
 ; => #(12.0d0 15.0d0 18.0d0)
 
-;; Single argument returns identity
+;; Multiple arguments with e*
+(e* (vec 'double-float 2 3 4)
+    (vec 'double-float 5 6 7)
+    (vec 'double-float 8 9 10))
+; => #(80.0d0 162.0d0 280.0d0)
+
+;; Single argument returns identity for e+ and e*
 (e+ (vec 'double-float 1 2 3))
+; => #(1.0d0 2.0d0 3.0d0)
+
+(e* (vec 'double-float 1 2 3))
 ; => #(1.0d0 2.0d0 3.0d0)
 
 ;; Unary negation with e-
 (e- (vec 'double-float 1 2 3))
 ; => #(-1.0d0 -2.0d0 -3.0d0)
+
+;; Reciprocal with e/
+(e/ (vec 'double-float 2 4 8))
+; => #(0.5d0 0.25d0 0.125d0)
 ```
 
 ### special operations
