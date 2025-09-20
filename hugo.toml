@@ -98,7 +98,7 @@ github_branch = "master"
 [params.search.algolia]
 appId = "U1X7KWY6XS"
 apiKey = "7ae6d97110bdd128cc4c21827165bdb4"
-indexName = "docsearch"
+indexName = "lisp-stat"
 
 # Enable Lunr.js offline search
 offlineSearch = false
