@@ -1002,6 +1002,181 @@ Special handling for transpose operations using the symbol `t`:
 (mmm a b c ... z)  ; equivalent to (mm (mm (mm a b) c) ... z)
 ```
 
+### vector-matrix multiply
+
+**`vm!`** performs vector-matrix multiplication in-place, computing the product of a row vector and a matrix. The operation computes $\mathbf{c} = \mathbf{a}^T B$, where $\mathbf{a}$ is treated as a row vector, $B$ is an $m \times n$ matrix, and the result $\mathbf{c}$ is an $m$-dimensional vector.
+
+**Mathematical Operation:**
+
+For a vector $\mathbf{a}$ of length $n$ and a matrix $B$ of dimensions $m \times n$, the operation computes:
+
+$$c_i = \sum_{j=1}^{n} a_j \cdot B_{ij}$$
+
+for $i = 1, \ldots, m$.
+
+This is equivalent to computing the linear combination of the rows of $B$ weighted by the elements of $\mathbf{a}$.
+
+**Function Signature:**
+
+```lisp
+(vm! a b c)
+```
+
+Where:
+- `a` - Input vector of length $n$
+- `b` - Input matrix of dimensions $m \times n$
+- `c` - Output vector of length $m$ (modified in-place)
+
+Returns: The modified vector `c`
+
+**Basic Usage:**
+
+```lisp
+(let ((a (vec 'lla-double 2 3 5))
+      (b (mx 'lla-double
+           (1 2 3)      ; row 1
+           (4 5 6)      ; row 2
+           (7 8 9)))    ; row 3
+      (c (vec 'lla-double 0 0 0)))
+  (vm! a b c))
+; => #(23.0d0 53.0d0 83.0d0)
+
+;; The computation for each element:
+;; c[0] = 2*1 + 3*2 + 5*3 = 2 + 6 + 15 = 23
+;; c[1] = 2*4 + 3*5 + 5*6 = 8 + 15 + 30 = 53
+;; c[2] = 2*7 + 3*8 + 5*9 = 14 + 24 + 45 = 83
+```
+
+**In-Place Modification:**
+
+The function modifies the output vector `c` in-place and returns it:
+
+```lisp
+(let ((a (vec 'lla-double 1 2 3))
+      (b (mx 'lla-double
+           (1 0 0)
+           (0 1 0)
+           (0 0 1)))  ; identity matrix
+      (c (vec 'lla-double 99 99 99)))  ; initial values are overwritten
+  (let ((result (vm! a b c)))
+    (format t "c after vm!: ~A~%" c)
+    (format t "result is c: ~A~%" (eq result c))))
+; Output:
+; c after vm!: #(1.0d0 2.0d0 3.0d0)
+; result is c: T
+```
+
+**Dimension Requirements:**
+
+The function enforces strict dimension compatibility:
+
+1. Length of vector `a` must equal the number of columns in matrix `b`
+2. Length of result vector `c` must equal the number of rows in matrix `b`
+
+```lisp
+;; Dimension mismatch examples (these will signal errors):
+
+;; Wrong input vector length
+(let ((a (vec 'lla-double 1 2))        ; length 2
+      (b (mx 'lla-double                ; 3×3 matrix
+           (1 2 3)
+           (4 5 6)
+           (7 8 9)))
+      (c (vec 'lla-double 0 0 0)))
+  (vm! a b c))
+; => ERROR: Incompatible dimensions: vector length 2 doesn't match matrix columns 3
+
+;; Wrong result vector length
+(let ((a (vec 'lla-double 1 2 3))
+      (b (mx 'lla-double
+           (1 2 3)
+           (4 5 6)
+           (7 8 9)))
+      (c (vec 'lla-double 0 0)))        ; length 2
+  (vm! a b c))
+; => ERROR: Result dimension mismatch: result length 2 doesn't match matrix rows 3
+```
+
+**Edge Cases:**
+
+The function handles various edge cases correctly:
+
+```lisp
+;; 1×1 matrix (scalar multiplication)
+(let ((a (vec 'lla-double 3))
+      (b (mx 'lla-double (2)))
+      (c (vec 'lla-double 0)))
+  (vm! a b c))
+; => #(6.0d0)
+
+;; Zero vector (result is always zero)
+(let ((a (vec 'lla-double 0 0 0))
+      (b (mx 'lla-double
+           (1 2 3)
+           (4 5 6)
+           (7 8 9)))
+      (c (vec 'lla-double 1 1 1)))
+  (vm! a b c))
+; => #(0.0d0 0.0d0 0.0d0)
+
+;; Zero matrix (result is always zero)
+(let ((a (vec 'lla-double 1 2 3))
+      (b (mx 'lla-double
+           (0 0 0)
+           (0 0 0)
+           (0 0 0)))
+      (c (vec 'lla-double 1 1 1)))
+  (vm! a b c))
+; => #(0.0d0 0.0d0 0.0d0)
+
+;; Identity matrix (result equals input vector)
+(let ((a (vec 'lla-double 1 2 3))
+      (b (mx 'lla-double
+           (1 0 0)
+           (0 1 0)
+           (0 0 1)))
+      (c (vec 'lla-double 0 0 0)))
+  (vm! a b c))
+; => #(1.0d0 2.0d0 3.0d0)  ; c = a
+```
+
+**Relationship to mm:**
+
+While `vm!` performs vector-matrix multiplication in-place, it's related to but distinct from the general `mm` function. The key differences are:
+
+1. **In-place operation**: `vm!` modifies the result vector, while `mm` creates a new array
+2. **Specialized operation**: `vm!` is optimized for the specific case of row vector × matrix
+3. **Performance**: `vm!` may be more efficient for this specific operation due to its specialised nature
+
+```lisp
+;; Note: vm! computes a different operation than simple mm
+(let* ((a (vec 'lla-double 2 3 5))
+       (b (mx 'lla-double
+            (1 2 3)
+            (4 5 6)
+            (7 8 9)))
+       ;; vm! approach
+       (c1 (vec 'lla-double 0 0 0)))
+  (vm! a b c1)
+  c1)
+; => #(23.0d0 53.0d0 83.0d0)
+
+;; The vm! operation computes:
+;; c[0] = 2*1 + 3*2 + 5*3 = 23
+;; c[1] = 2*4 + 3*5 + 5*6 = 53  
+;; c[2] = 2*7 + 3*8 + 5*9 = 83
+```
+
+**Performance Considerations:**
+
+The `vm!` function:
+- Modifies the result vector in-place, avoiding memory allocation
+- Is optimized for the specific pattern of vector-matrix multiplication
+- Has complexity $O(mn)$ for an $m \times n$ matrix
+- May utilize BLAS Level 2 operations for optimal performance
+
+This function is particularly useful in iterative algorithms where repeated vector-matrix products are computed and memory allocation overhead should be minimized.
+
 ### outer
 
 **`outer`** computes the outer product of two vectors, returning $column(a) \times row(b)^H$:
