@@ -792,7 +792,7 @@ example you could convert a data frame to a transposed array by using
 
 ### json
 
-The [json-to-data-frame](https://github.com/gassechen/json-to-data-frame) by 'gassechen' can be used to convert a data-frame to JSON. The following example is taken from that repo.  Note that the system is not in Quicklisp, so you'll have to obtain it manually (see instructions in the repo).
+The [json-to-data-frame](https://github.com/gassechen/json-to-data-frame) by 'gassechen' can be used to convert JSON to a `data-frame`. The following example is taken from that repo.  Note that the system is not in Quicklisp, so you'll have to obtain it manually (see instructions in the repo).
 
 1. Define the URL for the JSON API
 
