@@ -127,14 +127,14 @@ Converts a number to an integer if it represents an integer value, otherwise sig
 ### Sequence Generation
 
 #### numseq
-**`(numseq from &optional to by)`**
+**`(numseq from to &key length by type)`**
 
-Generates a sequence of numbers. With one argument, generates from 0 to `from`-1. With two arguments, generates from first to second (exclusive). With three arguments, uses `by` as the step size.
+Return a sequence between `from` and `to`, progressing by `by`, of the given `length`.  Only 3 of these a parameters should be given, the missing one, that you must pass as `nil`, will be inferred automatically.  The sign of `by` is adjusted if necessary.  If `type` is `list`, the result is a list, otherwise it determines the element type of the resulting simple array.  If `type` is `nil`, it is autodetected from the arguments (as a `fixnum`, a `rational`, or some subtype of `float`).  Note that the implementation may upgrade the element type.
 
 ```lisp
-(numseq 5)       ; ⇒ #(0 1 2 3 4)  
 (numseq 2 7)     ; ⇒ #(2 3 4 5 6)
 (numseq 0 10 2)  ; ⇒ #(0 2 4 6 8)
+(numseq 2 nil :length 4 :by 2)) ; ⇒ #(2 4 6 8)
 ```
 
 The sign of `by` is automatically adjusted to match the direction from `from` to `to`. The `type` parameter can be:
@@ -1244,22 +1244,86 @@ Uses polynomial approximations in different ranges for optimal accuracy.
                              :key (lambda (x) (exp (- x max-val)))))))))
 ```
 
-#### Example: Statistical Distributions
+#### Example: Stable Log-Probability Computations in Mixture Models
+
+The `log1-exp` function is essential when working with log-probabilities in statistical models, particularly for computing complementary probabilities in log-space.
 
 ```lisp
-;; Log-normal distribution helpers
-(defun log-normal-log-pdf (x mu sigma)
-  "Log probability density for log-normal distribution"
-  (let ((log-x (log x))
-        (sigma-sq (* sigma sigma)))
-    (- (- (* 0.5 (/ (* (- log-x mu) (- log-x mu)) sigma-sq)))
-       (log (* x sigma (sqrt (* 2 pi)))))))
+;; Example: Two-component Gaussian mixture model
+;; Component 1 has probability p = 0.99 (log(p) ≈ -0.01005)
+(let ((log-p1 (log 0.99d0)))
+  (list :log-p1 log-p1
+        :log-p2 (log1-exp log-p1)           ; log(1-p) computed stably
+        :p1 (exp log-p1)
+        :p2 (exp (log1-exp log-p1))))
+; ⇒ (:LOG-P1 -0.010050335853501442d0 
+;    :LOG-P2 -4.60517018598809d0 
+;    :P1 0.99d0 
+;    :P2 0.010000000000000005d0)
 
-;; Using stable exponential functions
-(defun stable-gaussian-tail (x)
-  "Stable computation of log(1−Φ(x)) for large positive x"
-  (log1-exp (- (* 0.5 x x))))
+;; When mixture weight is extreme (p ≈ 0.999999)
+(let ((log-p1 (log 0.999999d0)))
+  (list :naive (log (- 1 (exp log-p1)))      ; May lose precision
+        :stable (log1-exp log-p1)))          ; Numerically stable
+; ⇒ (:NAIVE -13.815510557935518d0 :STABLE -13.815510557935518d0)
+
+;; Computing posterior probabilities in Bayesian inference
+(defun log-posterior-odds (log-prior log-likelihood-ratio)
+  "Compute log posterior odds from log prior and log likelihood ratio.
+   Returns (log(P(H1|D)), log(P(H0|D))) in a numerically stable way."
+  (let* ((log-odds (+ log-prior log-likelihood-ratio))
+         (log-p1 (- log-odds (log1+exp log-odds)))  ; log(p/(1+p))
+         (log-p0 (log1-exp log-p1)))                ; log(1-p) using log1-exp directly
+    (values log-p1 log-p0)))
+
+;; Example: Strong evidence for hypothesis H1
+(log-posterior-odds (log 0.5d0) 5.0d0)  ; Prior=0.5, strong evidence
+; ⇒ -0.013385901721449045d0, -4.320238721161492d0
+
+;; To see the actual posterior probabilities, take exp of the results:
+(exp -0.013385901721449045d0)  ; P(H1|D)
+; ⇒ 0.9867032910422678d0
+
+(exp -4.320238721161492d0)  ; P(H0|D)
+; ⇒ 0.013296708957732213d0
+
+;; Verify they sum to 1:
+(+ 0.9867032910422678d0 0.013296708957732213d0)
+; ⇒ 1.0d0
+
+;; Hidden Markov Model transition probabilities
+(defun hmm-stay-probability (log-transition-rate time-delta)
+  "Compute log probability of staying in the same state.
+   Given a continuous-time Markov chain with transition rate λ,
+   P(stay) = exp(-λΔt), so log(P(leave)) = log(1 - exp(-λΔt))"
+  (let ((log-stay (- (* log-transition-rate time-delta))))
+    (values log-stay                    ; log(P(stay))
+            (log1-exp log-stay))))      ; log(P(leave)) using log1-exp directly
+
+;; Example: State transition in continuous-time HMM
+(hmm-stay-probability 0.1d0 1.0d0)  ; Rate=0.1, time=1.0
+; ⇒ -0.1d0, -2.3521684610440903d0
+;; Convert to actual probabilities:
+(exp -0.1d0)        ; P(stay)
+; ⇒ 0.9048374180359595d0
+
+(exp -2.3521684610440903d0)  ; P(leave)
+; ⇒ 0.09516258196404043d0
+
+;; Verify they sum to 1.0:
+(+ 0.9048374180359595d0 0.09516258196404043d0)
+; ⇒ 1.0d0
 ```
+
+The `log1-exp` function is crucial for maintaining numerical precision in statistical computations involving:
+- **Mixture Models**: Computing complementary mixture weights from log-probabilities
+- **Bayesian Inference**: Converting between probabilities and complementary probabilities in log-space
+- **Markov Models**: Computing transition and staying probabilities
+- **Survival Analysis**: Working with survival and hazard functions
+- **Information Theory**: Computing entropies and mutual information
+
+Without this function, converting to probability space with `exp` and back to log-space with `log` can cause catastrophic cancellation when probabilities are very close to 0 or 1.
+
 
 #### Example: Financial Mathematics
 
@@ -1274,8 +1338,8 @@ Uses polynomial approximations in different ranges for optimal accuracy.
   "Approximate log(1+r) for small returns r"
   (log1+ return-rate))
 
-(log-return-approx 0.05)     ; ⇒ 0.04879016416943205d0 (vs naive 0.05)
-(log-return-approx 0.001)    ; ⇒ 0.0009995003330835334d0 (very accurate)
+(log-return-approx 0.05)     ; ⇒ 0.048790166013325934d0 (vs naive 0.05)
+(log-return-approx 0.001)    ; ⇒ 9.99500357223349d-4 (very accurate)
 ```
 
 ### Notes on Usage
