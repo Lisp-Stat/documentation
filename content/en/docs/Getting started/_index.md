@@ -53,7 +53,7 @@ available, and compile and load it.
 Print the `vgcars` data-frame (showing the first 25 rows by default)
 
 ```lisp
-(print-data vgcars)
+(pprint vgcars)
 ;; ORIGIN YEAR       ACCELERATION WEIGHT_IN_LBS HORSEPOWER DISPLACEMENT CYLINDERS MILES_PER_GALLON NAME
 ;; USA    1970-01-01         12.0          3504        130        307.0         8             18.0 chevrolet chevelle malibu
 ;; USA    1970-01-01         11.5          3693        165        350.0         8             15.0 buick skylark 320

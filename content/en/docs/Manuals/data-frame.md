@@ -402,7 +402,7 @@ are *observations* (or cases).
 For these examples we are going to install a modified version of the
 Lisp-Stat data-frame print-object function. This will cause the REPL
 to display the data-frame at creation, and save us from having to type
-(print-data data-frame) in each example.  If you'd like to install it as we
+(pprint data-frame) in each example.  If you'd like to install it as we
 have, execute the code below at the REPL.
 {{< /alert >}}
 
@@ -411,10 +411,10 @@ have, execute the code below at the REPL.
 (defmethod print-object ((df data-frame) stream)
   "Print the first six rows of DATA-FRAME"
   (let ((*print-lines* 6))
-    (df:print-data df stream nil)))
+    (pprint df stream nil)))
 
 (set-pprint-dispatch 'df:data-frame
-		     #'(lambda (s df) (df:print-data df s nil)))
+		     #'(lambda (s df) (pprint df s nil)))
 ```
 
 You can ignore the warning that you'll receive after executing the
@@ -618,7 +618,7 @@ with the largest number of observations:
 
 ```lisp
 (ql:quickload :sqldf)
-(print-data
+(pprint
 	(sqldf:sqldf "select item, title, rows, cols from rindex order by rows desc limit 10"))
 
 ;;   ITEM            TITLE                                                               ROWS COLS
@@ -849,7 +849,7 @@ The [json-to-data-frame](https://github.com/gassechen/json-to-data-frame) by 'ga
 6. Print the data frame
 
    ``` commonlisp
-   (df:print-data my-df)
+   (pprint my-df)
    ```
 
 

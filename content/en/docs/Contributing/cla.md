@@ -1,7 +1,7 @@
 ---
 title: "Contributor License Agreement"
 linkTitle: "CLA"
-weight: 10
+weight: 11
 description: >
   Contributor License Agreement
 ---

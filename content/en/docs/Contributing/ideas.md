@@ -1,7 +1,7 @@
 ---
 title: "Contribution Ideas"
 linkTitle: "Ideas"
-weight: 10
+weight: 13
 description: >
   Some ideas on how contribute to Lisp-Stat
 ---

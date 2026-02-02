@@ -75,10 +75,10 @@ and `tail` the last 6 rows:
 ;; 5 Volvo 142E     21.4   4 121.0 109 4.11 2.780 18.6  1  1    4    2
 ```
 
-`print-data` can be used to print the whole data frame:
+`pprint` can be used to print the whole data frame:
 
 ```lisp
-(print-data mtcars)
+(pprint mtcars)
 
 ;;    X1                   MPG CYL  DISP  HP DRAT    WT  QSEC VS AM GEAR CARB
 ;;  0 Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
