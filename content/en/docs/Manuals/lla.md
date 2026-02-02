@@ -1206,7 +1206,7 @@ $$A\mathbf{x} = \mathbf{b}$$
 
 where $A$ is an $n \times n$ coefficient matrix, $\mathbf{b}$ is the right-hand side vector (or matrix for multiple systems), and $\mathbf{x}$ is the unknown solution vector. The function intelligently dispatches to the most appropriate algorithm based on the matrix type and structure, ensuring both numerical stability and computational efficiency.
 
-*# Algorithm Selection Strategy
+#### Algorithm Selection Strategy
 
 LLA automatically selects the optimal solving strategy:
 
@@ -1216,7 +1216,7 @@ LLA automatically selects the optimal solving strategy:
 - **Diagonal matrices**: Element-wise division ($O(n)$ complexity)
 - **Pre-factored matrices**: Direct substitution using stored decomposition
 
-*# Basic Linear System Solving
+#### Basic Linear System Solving
 
 For general square matrices, `solve` uses LU decomposition with partial pivoting to handle the system $A\mathbf{x} = \mathbf{b}$:
 
@@ -1235,7 +1235,7 @@ The mathematical process involves:
 2. Solve $L\mathbf{y} = P\mathbf{b}$ by forward substitution
 3. Solve $U\mathbf{x} = \mathbf{y}$ by backward substitution
 
-*# Efficient Solving with Pre-computed Factorizations
+#### Efficient Solving with Pre-computed Factorizations
 
 When solving multiple systems with the same coefficient matrix, pre-computing the factorization is much more efficient. The LU factorization $PA = LU$ needs to be computed only once:
 
@@ -1251,7 +1251,7 @@ When solving multiple systems with the same coefficient matrix, pre-computing th
 
 This approach reduces the complexity from $O(n^3)$ for each solve to $O(n^2)$, making it ideal for applications requiring multiple solves with the same matrix.
 
-*# Triangular System Solvers
+#### Triangular System Solvers
 
 For triangular matrices, `solve` uses specialized algorithms that exploit the matrix structure. Upper triangular systems $U\mathbf{x} = \mathbf{b}$ are solved by backward substitution:
 
@@ -1268,7 +1268,7 @@ $$x_i = \frac{b_i - \sum_{j=i+1}^{n} u_{ij}x_j}{u_{ii}}$$
 
 Similarly, lower triangular systems use forward substitution with complexity $O(n^2)$.
 
-*# Cholesky Solvers for Positive Definite Systems
+#### Cholesky Solvers for Positive Definite Systems
 
 For symmetric positive definite matrices, the Cholesky decomposition $A = LL^T$ provides the most efficient and numerically stable solution method:
 
@@ -1290,7 +1290,7 @@ The solution process involves:
 
 This method is approximately twice as fast as LU decomposition and uses half the storage, making it the preferred approach for positive definite systems arising in optimization, statistics, and numerical PDEs.
 
-*# Multiple Right-Hand Sides
+#### Multiple Right-Hand Sides
 
 The `solve` function handles matrix right-hand sides $AX = B$ where $B$ contains multiple column vectors:
 
@@ -1312,7 +1312,7 @@ Each column of the result matrix contains the solution to $A\mathbf{x}_i = \math
 
 **`invert`** computes the matrix inverse $A^{-1}$ such that $A A^{-1} = A^{-1} A = I$, where $I$ is the identity matrix. While mathematically fundamental, explicit matrix inversion should generally be avoided in favor of `solve` for numerical linear algebra applications.
 
-*# Why Avoid Explicit Inversion?
+#### Why Avoid Explicit Inversion?
 
 Computing $A^{-1}$ and then multiplying $A^{-1}\mathbf{b}$ to solve $A\mathbf{x} = \mathbf{b}$ is both computationally expensive and numerically unstable compared to direct solving methods:
 
@@ -1325,7 +1325,7 @@ Computing $A^{-1}$ and then multiplying $A^{-1}\mathbf{b}$ to solve $A\mathbf{x}
 **Numerical Stability:**
 Direct solving typically achieves machine precision, while the inversion approach can amplify rounding errors, especially for ill-conditioned matrices.
 
-*# Comparison: Explicit Inversion vs Direct Solving
+#### Comparison: Explicit Inversion vs Direct Solving
 
 Let's compare both approaches using the same system $A\mathbf{x} = \mathbf{b}$:
 
@@ -1368,7 +1368,7 @@ Both methods produce identical results, but `solve` is more efficient and numeri
 ; => T  ; Both methods give the same result
 ```
 
-*# Basic Matrix Inversion
+#### Basic Matrix Inversion
 
 For educational purposes or when the inverse itself is needed (rare in practice):
 
@@ -1388,7 +1388,7 @@ For educational purposes or when the inverse itself is needed (rare in practice)
 ;        (0.0d0 1.0d0))
 ```
 
-*# Structured Matrix Inversions
+#### Structured Matrix Inversions
 
 Inverting triangular matrices preserves their structure and is computationally efficient:
 
@@ -1403,7 +1403,7 @@ Inverting triangular matrices preserves their structure and is computationally e
 
 For upper triangular matrices $U$, the inverse $(U^{-1})_{ij}$ can be computed by back-substitution, maintaining the triangular structure.
 
-*# Pseudoinverse for Singular Matrices
+#### Pseudoinverse for Singular Matrices
 
 When a matrix is **singular** (determinant = 0) or **nearly singular**, the standard inverse doesn't exist. The **Moore-Penrose pseudoinverse** $A^+$ generalizes the concept of inversion to non-invertible matrices.
 
@@ -1419,7 +1419,7 @@ If $A = U\Sigma V^T$ is the singular value decomposition, then:
 $$A^+ = V\Sigma^+ U^T$$
 where $\Sigma^+$ is formed by taking the reciprocal of non-zero singular values and transposing.
 
-*# Diagonal Matrix Pseudoinverse
+#### Diagonal Matrix Pseudoinverse
 
 For diagonal matrices, the pseudoinverse is particularly intuitive. Elements below a specified tolerance are treated as zero:
 
@@ -1440,7 +1440,7 @@ For diagonal matrices, the pseudoinverse is particularly intuitive. Elements bel
 
 This tolerance-based approach prevents division by near-zero values, which would create numerically unstable results.
 
-*# Nearly Singular Systems Example
+#### Nearly Singular Systems Example
 
 The pseudoinverse is particularly useful for rank-deficient systems arising in least-squares problems:
 
@@ -1451,7 +1451,7 @@ The pseudoinverse is particularly useful for rank-deficient systems arising in l
             (4 5 9)
             (7 8 15)))
        (b (vec 'lla-double 6 18 30)))
-  
+
   ;; For rank-deficient systems, use least-squares
   ;; which handles the pseudoinverse internally
   (least-squares b a))
@@ -1473,7 +1473,7 @@ For rank-deficient systems, the least-squares solution using the pseudoinverse p
 
 **`least-squares`** solves overdetermined systems in the least squares sense, finding the best-fit solution that minimizes the sum of squared residuals. This is fundamental for regression analysis, curve fitting, and many practical applications where you have more observations than unknown parameters.
 
-*# Mathematical Foundation
+#### Mathematical Foundation
 
 Given a system $X\mathbf{b} = \mathbf{y}$ where:
 - $X$ is an $m \times n$ design matrix with $m > n$ (more rows than columns)
@@ -1488,7 +1488,7 @@ $$\mathbf{b} = (X^T X)^{-1} X^T \mathbf{y}$$
 
 However, LLA uses the more numerically stable QR decomposition approach, factoring $X = QR$ where $Q$ is orthogonal and $R$ is upper triangular.
 
-*# Return Values
+#### Return Values
 
 The function returns four values:
 1. **Coefficient vector** $\mathbf{b}$ - the best-fit parameters
@@ -1496,7 +1496,7 @@ The function returns four values:
 3. **Degrees of freedom** - $m - n$ (observations minus parameters)
 4. **QR decomposition** - can be reused for further computations
 
-*# Simple Example
+#### Simple Example
 
 ```lisp
 (let ((x (mx 'lla-double
@@ -1515,7 +1515,7 @@ The function returns four values:
 
 This fits the linear model $y = -24.98 + 4.05x$.
 
-*# Real-Life Example: Predicting House Prices
+#### Real-Life Example: Predicting House Prices
 
 Let's model house prices based on size (square feet) and number of bedrooms:
 
@@ -1554,7 +1554,7 @@ Let's model house prices based on size (square feet) and number of bedrooms:
 
 The model shows that each additional 1000 square feet adds approximately €113,140 to the price, and each bedroom adds about €21,390.
 
-*# Handling Rank-Deficient Matrices
+#### Handling Rank-Deficient Matrices
 
 When predictors are linearly dependent, the design matrix becomes rank-deficient. The QR decomposition can detect and handle this:
 
@@ -1577,7 +1577,7 @@ When predictors are linearly dependent, the design matrix becomes rank-deficient
 
 Note that one coefficient is effectively zero due to the linear dependency, and the degrees of freedom reflect the rank deficiency.
 
-*# Computing Standard Errors
+#### Computing Standard Errors
 
 Standard errors measure the precision of estimated regression coefficients. They quantify the uncertainty in our parameter estimates due to sampling variability. Smaller standard errors indicate more precise estimates, while larger ones suggest greater uncertainty.
 
@@ -1686,7 +1686,7 @@ Let's fit a line to some data and compute standard errors to understand the prec
 
 This analysis demonstrates how standard errors transform point estimates into interval estimates, enabling us to quantify and communicate the uncertainty inherent
 
-*# Performance Considerations
+#### Performance Considerations
 
 The QR decomposition approach used by `least-squares`:
 - Is more numerically stable than the normal equations
