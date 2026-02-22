@@ -64,3 +64,11 @@ If you have experience with Github's CI tools, a CI setup for
 Lisp-Stat would be a great help. This allows people making pull
 requests to immediately know if their patches break anything. Beginner
 level Lisp.
+
+## Quarto
+
+Integrate Lisp-Stat with [Quarto](https://quarto.org/). If Python, R
+and Julia can integrate, so can Common Lisp.  We already have
+[common-lisp-jupyter](https://github.com/yitzchak/common-lisp-jupyter)
+which gets us pretty close.  It's mostly a Quarto configuration
+exercise and modifying `plot/vega` to output PNG files.

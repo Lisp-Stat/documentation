@@ -1,11 +1,10 @@
 ---
-title: "Plotting"
+title: "Vega Plotting"
 date: 2021-04-26
 vega: true
-hide_summary: true
 weight: 5
 description: >
-  Example plots
+  Example plots using the vega-lite DSL.
 ---
 
 The plots here show equivalents to the [Vega-Lite example
