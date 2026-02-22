@@ -1,0 +1,1 @@
+{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","data":{"url":"/data/qplot/vgcars.json"},"title":"Car Count: Cylinders by Origin","mark":{"type":"bar"},"encoding":{"x":{"field":"cylinders","type":"nominal","title":"Cylinders"},"y":{"field":"milesPerGallon","type":"quantitative","aggregate":"count","title":"Count"},"color":{"field":"origin","type":"nominal"}}}

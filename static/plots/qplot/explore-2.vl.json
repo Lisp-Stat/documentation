@@ -1,0 +1,10 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "title": "HP vs. MPG",
+  "data": {"url": "/data/qplot/vgcars.json"},
+  "mark": {"type": "point", "filled": true},
+  "encoding": {
+    "x": {"field": "horsepower", "type": "quantitative"},
+    "y": {"field": "milesPerGallon", "type": "quantitative"}
+  }
+}

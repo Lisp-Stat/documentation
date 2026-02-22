@@ -1,0 +1,17 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "title": "HP vs. MPG by Origin",
+  "data": {"url": "/data/qplot/vgcars.json"},
+  "mark": {"type": "point", "filled": true},
+  "encoding": {
+    "x": {"field": "horsepower", "type": "quantitative", "title": "Horsepower"},
+    "y": {"field": "milesPerGallon", "type": "quantitative", "title": "Miles per Gallon"},
+    "color": {"field": "origin", "type": "nominal"},
+    "tooltip": [
+      {"field": "name", "type": "nominal"},
+      {"field": "origin", "type": "nominal"},
+      {"field": "horsepower", "type": "quantitative"},
+      {"field": "milesPerGallon", "type": "quantitative"}
+    ]
+  }
+}

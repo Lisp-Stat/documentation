@@ -1,0 +1,1 @@
+{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","data":{"url":"/data/qplot/vgcars.json"},"title":"MPG: Overlaid by Origin","mark":{"type":"bar"},"encoding":{"x":{"bin":true,"field":"milesPerGallon","title":"Miles per Gallon"},"y":{"aggregate":"count","stack":null,"title":"Count"},"color":{"field":"origin","type":"nominal"},"opacity":{"value":0.5}}}

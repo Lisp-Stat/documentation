@@ -1,0 +1,13 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": {"url": "/data/qplot/stocks.json"},
+  "title": "AAPL Stock Price",
+  "transform": [{"filter": "datum.symbol === 'AAPL'"}],
+  "mark": {"type": "line", "strokeWidth": 3},
+  "encoding": {
+    "x": {"field": "date", "type": "temporal", "title": "Date"},
+    "y": {"field": "price", "type": "quantitative", "title": "Price (USD)"}
+  },
+  "width": 600,
+  "height": 300
+}

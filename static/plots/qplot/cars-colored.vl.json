@@ -1,0 +1,1 @@
+{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","data":{"url":"/data/qplot/vgcars.json"},"title":"Cars by Origin","mark":{"type":"point","filled":true},"encoding":{"x":{"field":"horsepower","type":"quantitative"},"y":{"field":"milesPerGallon","type":"quantitative"},"color":{"field":"origin","type":"nominal"}}}

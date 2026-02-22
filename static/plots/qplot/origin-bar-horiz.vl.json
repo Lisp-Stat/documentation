@@ -1,0 +1,1 @@
+{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","data":{"url":"/data/qplot/vgcars.json"},"title":"Average MPG by Origin (Horizontal)","mark":{"type":"bar","color":"steelblue"},"encoding":{"x":{"field":"milesPerGallon","type":"quantitative","aggregate":"mean","title":"Mean Miles per Gallon"},"y":{"field":"origin","type":"nominal","title":"Origin"}}}
