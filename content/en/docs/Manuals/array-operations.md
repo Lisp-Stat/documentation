@@ -1,6 +1,6 @@
 ---
 title: "Array Operations"
-date: 2021-2-21
+date: 2025-08-01
 weight: 1
 description: >
   Manipulating sample data as arrays
@@ -538,21 +538,6 @@ product](https://en.wikipedia.org/wiki/Outer_product) of vectors or arrays.  Thi
 ```
 
 ## Indexing operations
-
-### nested-loop
-**`nested-loop`** is a simple macro which iterates over a set of indices
-with a given range
-
-```lisp
-(defparameter A #2A((1 2) (3 4)))
-
-(aops:nested-loop (i j) (array-dimensions A)
-  (setf (aref A i j) (* 2 (aref A i j))))
-A ; => #2A((2 4) (6 8))
-
-(aops:nested-loop (i j) '(2 3)
-  (format t "(~a ~a) " i j)) ; => (0 0) (0 1) (0 2) (1 0) (1 1) (1 2)
-```
 
 ### sum-index
 **`sum-index`** is a macro which uses a code walker to determine the

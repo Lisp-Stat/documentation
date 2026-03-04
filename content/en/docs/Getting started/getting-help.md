@@ -22,7 +22,7 @@ and can't find it in the navigation panes, use the search box:
 ## Apropos
 
 If you're not quite sure what you're looking for, you can use the
-`apropos` command.  You can do this either from the REPL or emacs.
+`apropos` command.  You can do this either from the REPL or hemlock/emacs.
 Here are two examples:
 
 ```lisp
@@ -33,15 +33,19 @@ REMOVE-IF (fbound)
 REMOVE-IF-NOT (fbound)
 ```
 
-This works even better using emacs/slime.  If you use the slime command sequence `C-c C-d a`, (all the slime documentation commands start with `C-c C-d`) emacs will ask you for a string. Let's say you typed in `remove-if`.  Emacs will open a buffer like the one below with all the docs strings for similar functions or variables:
+If you use the emacs/slime command sequence `C-c C-d a`, (all the slime documentation commands start with `C-c C-d`) emacs will ask you for a string. Let's say you typed in `remove-if`.  Emacs will open a buffer like the one below with all the docs strings for similar functions or variables:
 
-{{< figure src="/images/slime-apropos.png" >}}
+{{< figure src="/images/slime-apropos.png" title="Emacs apropos">}}
+<!--
+In hemlock the apropos command is bound to either _Home a_ or _C-\_ a_.  You can also use the 'Describe Symbol' extended command (bound to C-M-S):
 
+{{< figure src="/images/hemlock-describe.png" title="Hemlock describe symbol">}}
+ -->
 
 
 ## Restart from errors
 
-Common lisp has what is called a _condition system_, which is somewhat unique.  One of the features of the condition system is something call _restarts_.  Basically, one part of the system can _signal_ a condition, and another part of it can _handle_ the condition.  One of the ways a signal can handled with is by providing various _restarts_.  Restarts are handled by the debugger, and many users new to Common Lisp tend to shy away from the debugger (this is common to other languages too).  In Common Lisp the debugger is both for developers **and** users.
+Common lisp has what is called a _condition system_, which is somewhat unique.  One of the features of the condition system is something call _restarts_.  Basically, one part of the system can _signal_ a condition, and another part of it can _handle_ the condition.  One of the ways a signal can be handled is by providing various _restarts_.  Restarts happen  by the debugger, and many users new to Common Lisp tend to shy away from the debugger (this is common to other languages too).  In Common Lisp the debugger is both for developers **and** users.
 
 Well written Lisp programs will provide a good set of restarts for commonly encountered situations.  As an example, suppose we are plotting a data set that has a large number of data points.  Experience has shown that greater than 50,000 data points can cause browser performance issues, so we've added a restart to warn you, seen below:
 

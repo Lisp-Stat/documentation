@@ -1,0 +1,1 @@
+{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","data":{"url":"/data/qplot/vgcars.json"},"title":"MPG Distribution","mark":{"type":"boxplot","extent":1.5},"encoding":{"x":{"field":"milesPerGallon","type":"quantitative","scale":{"zero":false},"title":"Miles per Gallon"}}}

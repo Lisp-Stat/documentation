@@ -1,0 +1,1 @@
+{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","data":{"url":"/data/qplot/vgcars.json"},"title":"Horsepower Distribution","mark":{"type":"bar","color":"darkslategray"},"encoding":{"x":{"bin":true,"field":"horsepower","title":"Horsepower"},"y":{"aggregate":"count","title":"Count"}},"width":500,"height":300,"config":{"font":"Georgia","view":{"stroke":null}}}

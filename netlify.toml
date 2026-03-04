@@ -3,10 +3,10 @@
   command = "hugo"
 
 [context.production.environment]
-  HUGO_VERSION = "0.117.0"
+  HUGO_VERSION = "0.148.2"
   HUGO_ENV = "production"
   HUGO_ENABLEGITINFO = "true"
-  GO_VERSION = "1.21.0"
+  GO_VERSION = "1.24.5"
   NODE_VERSION = "18"
 
 # Not using preview nor branch deployment yet
@@ -16,11 +16,11 @@
 #  https://gohugo.io/hosting-and-deployment/hosting-on-netlify/
 
 [context.branch-deploy.environment]
-  HUGO_VERSION = "0.117.0"
-  GO_VERSION = "1.21.0"
+  HUGO_VERSION = "0.148.2"
+  GO_VERSION = "1.24.5"
   NODE_VERSION = "18"
 
 [context.deploy-preview.environment]
-  HUGO_VERSION = "0.117.0"
-  GO_VERSION = "1.21.0"
+  HUGO_VERSION = "0.148.2"
+  GO_VERSION = "1.24.5"
   NODE_VERSION = "18"

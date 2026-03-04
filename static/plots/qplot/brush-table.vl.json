@@ -1,0 +1,61 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "description": "Drag a rectangular brush to show selected points in a table.",
+  "data": {"url": "/data/qplot/vgcars.json"},
+  "transform": [{"window": [{"op": "row_number", "as": "row_number"}]}],
+  "hconcat": [
+    {
+      "params": [{"name": "brush", "select": "interval"}],
+      "mark": "point",
+      "encoding": {
+        "x": {"field": "horsepower", "type": "quantitative"},
+        "y": {"field": "milesPerGallon", "type": "quantitative"},
+        "color": {
+          "condition": {
+            "param": "brush",
+            "field": "cylinders",
+            "type": "ordinal"
+          },
+          "value": "grey"
+        }
+      }
+    },
+    {
+      "transform": [
+        {"filter": {"param": "brush"}},
+        {"window": [{"op": "rank", "as": "rank"}]},
+        {"filter": "datum.rank < 20"}
+      ],
+      "hconcat": [
+        {
+          "width": 50,
+          "title": "Horsepower",
+          "mark": "text",
+          "encoding": {
+            "text": {"field": "horsepower", "type": "nominal"},
+            "y": {"field": "row_number", "type": "ordinal", "axis": null}
+          }
+        },
+        {
+          "width": 50,
+          "title": "MPG",
+          "mark": "text",
+          "encoding": {
+            "text": {"field": "milesPerGallon", "type": "nominal"},
+            "y": {"field": "row_number", "type": "ordinal", "axis": null}
+          }
+        },
+        {
+          "width": 50,
+          "title": "Origin",
+          "mark": "text",
+          "encoding": {
+            "text": {"field": "origin", "type": "nominal"},
+            "y": {"field": "row_number", "type": "ordinal", "axis": null}
+          }
+        }
+      ]
+    }
+  ],
+  "resolve": {"legend": {"color": "independent"}}
+}

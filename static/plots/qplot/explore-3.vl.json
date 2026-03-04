@@ -1,0 +1,10 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "title": "MPG by Origin",
+  "data": {"url": "/data/qplot/vgcars.json"},
+  "mark": {"type": "boxplot"},
+  "encoding": {
+    "x": {"field": "origin", "type": "nominal", "title": "Origin"},
+    "y": {"field": "milesPerGallon", "type": "quantitative", "title": "MPG"}
+  }
+}

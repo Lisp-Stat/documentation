@@ -7,47 +7,53 @@ description: >
   Install to plotting in five minutes
 ---
 
+## The Easy Way
+
+You can use an OCI image or pre-built notebook in the cloud for an instant
+start. See [installation](/docs/getting-started/installation/) for how.
+
+## The CLI Way
 If you have a working installation of SBCL, Google Chrome and
 Quicklisp you can be up and running in 5 minutes.
 
-## Prerequisites
+### Prerequisites
 
-- Steel Bank Common Lisp (SBCL)
+- Steel Bank Common Lisp (SBCL) or CCL
 - MacOS, Linux or Windows 10+
 - Quicklisp
 - Chrome, Firefox or Edge
 
-## Loading
+### Loading
 
 First load Lisp-Stat, Plot and sample data.  We will use Quicklisp for
 this, which will both download the system if it isn't already
 available, and compile and load it.
 
-### Lisp-Stat
+#### Lisp-Stat
 
 ```lisp
 (ql:quickload :lisp-stat)
 (in-package :ls-user)     ;access to Lisp-Stat functions
 ```
 
-### Plotting
+#### Plotting
 
 ```lisp
 (ql:quickload :plot/vega)
 ```
 
-### Data
+#### Data
 
 ```lisp
 (data :vgcars)
 ```
 
-## View
+### View
 
 Print the `vgcars` data-frame (showing the first 25 rows by default)
 
 ```lisp
-(print-data vgcars)
+(pprint vgcars)
 ;; ORIGIN YEAR       ACCELERATION WEIGHT_IN_LBS HORSEPOWER DISPLACEMENT CYLINDERS MILES_PER_GALLON NAME
 ;; USA    1970-01-01         12.0          3504        130        307.0         8             18.0 chevrolet chevelle malibu
 ;; USA    1970-01-01         11.5          3693        165        350.0         8             15.0 buick skylark 320
@@ -144,7 +150,7 @@ gallon:
   (vega:defplot hp-mpg
     `(:title "Horsepower vs. MPG"
       :description "Horsepower vs miles per gallon for various cars"
-      :data ,vgcars
+      :data (:values ,vgcars)
       :mark :point
       :encoding (:x (:field :horsepower :type :quantitative)
 	             :y (:field :miles-per-gallon :type :quantitative)))))

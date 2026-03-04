@@ -1,0 +1,1 @@
+{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","data":{"url":"/data/qplot/stocks.json"},"title":"Stock Prices by Company","mark":"line","encoding":{"x":{"field":"date","type":"temporal","title":"Date"},"y":{"field":"price","type":"quantitative","title":"Price (USD)"},"color":{"field":"symbol","type":"nominal"}}}

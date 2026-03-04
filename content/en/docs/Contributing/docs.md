@@ -1,7 +1,7 @@
 ---
 title: "Contributing to Documentation"
 linkTitle: "Docs"
-weight: 10
+weight: 12
 description: >
   You can help make Lisp-Stat documentation better
 ---

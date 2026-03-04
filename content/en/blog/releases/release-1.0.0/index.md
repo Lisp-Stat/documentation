@@ -44,7 +44,7 @@ create a scatter plot of horsepower vs. miles per gallon:
 (plot:plot
   (vega:defplot hp-mpg
   `(:title "Horsepower vs. MPG"
-    :data ,vgcars
+    :data (:values ,vgcars)
     :mark :point
 	:encoding (:x (:field vgcars:horsepower)
 	           :y (:field vgcars:miles-per-gallon)))))

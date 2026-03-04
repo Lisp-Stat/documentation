@@ -92,7 +92,7 @@ horsepower vs. miles-per-gallon of the similar Vega-Lite data set:
 (plot:plot
   (vega:defplot hp-mpg
   `(:title "Horsepower vs. MPG"
-    :data ,vgcars
+    :data (:values ,vgcars)
     :mark :point
 	:encoding (:x (:field :horsepower :type :quantitative)
 	           :y (:field :miles-per-gallon :type :quantitative)))))

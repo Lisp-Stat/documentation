@@ -1,0 +1,1 @@
+{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","data":{"url":"/data/qplot/vgcars.json"},"title":"MPG by Year (Step)","mark":{"type":"line","interpolate":"step"},"encoding":{"x":{"field":"year","type":"temporal","title":"Model Year"},"y":{"field":"milesPerGallon","type":"quantitative","title":"Miles per Gallon"}}}

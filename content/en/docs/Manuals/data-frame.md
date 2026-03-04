@@ -128,7 +128,7 @@ see a punctuation mark or the letter 'p' as the last letter of a
 function name, it indicates something about the function:
 
 - '!' indicates that the function is _destructive_.  It will modify the data that you pass to it.  Otherwise, it will return a copy that you will need to save in a variable.
-- 'p', '-p' or '?' means the function is a _predicate_, that is returns a Boolean truth value.
+- 'p', '-p' or '?' means the function is a _predicate_, that returns a Boolean truth value.
 
 
 ### Data frame environment
@@ -402,7 +402,7 @@ are *observations* (or cases).
 For these examples we are going to install a modified version of the
 Lisp-Stat data-frame print-object function. This will cause the REPL
 to display the data-frame at creation, and save us from having to type
-(print-data data-frame) in each example.  If you'd like to install it as we
+(pprint data-frame) in each example.  If you'd like to install it as we
 have, execute the code below at the REPL.
 {{< /alert >}}
 
@@ -411,10 +411,10 @@ have, execute the code below at the REPL.
 (defmethod print-object ((df data-frame) stream)
   "Print the first six rows of DATA-FRAME"
   (let ((*print-lines* 6))
-    (df:print-data df stream nil)))
+    (pprint df stream nil)))
 
 (set-pprint-dispatch 'df:data-frame
-		     #'(lambda (s df) (df:print-data df s nil)))
+		     #'(lambda (s df) (pprint df s nil)))
 ```
 
 You can ignore the warning that you'll receive after executing the
@@ -618,7 +618,7 @@ with the largest number of observations:
 
 ```lisp
 (ql:quickload :sqldf)
-(print-data
+(pprint
 	(sqldf:sqldf "select item, title, rows, cols from rindex order by rows desc limit 10"))
 
 ;;   ITEM            TITLE                                                               ROWS COLS
@@ -789,6 +789,69 @@ example you could convert a data frame to a transposed array by using
 ;; 10      4.00         4.000       4.00          3.000              3.00
 ;; 11      4.00         4.000       1.00          1.000              2.00
 ```
+
+### json
+
+The [json-to-data-frame](https://github.com/gassechen/json-to-data-frame) by 'gassechen' can be used to convert JSON to a `data-frame`. The following example is taken from that repo.  Note that the system is not in Quicklisp, so you'll have to obtain it manually (see instructions in the repo).
+
+1. Define the URL for the JSON API
+
+   ``` commonlisp
+   (defparameter *url* "https://jsonplaceholder.typicode.com/posts")
+   ```
+
+2. Define a function to call the API and parse the JSON response
+
+   ``` commonlisp
+   (defun call-api (url-get)
+     (let* ((yason:*parse-json-booleans-as-symbols* t)
+            (yason:*parse-json-arrays-as-vectors* nil)
+            (respuesta
+              (yason:parse
+               (dex:get url-get
+                        :keep-alive t
+                        :use-connection-pool t
+                        :connect-timeout 60
+                        :want-stream t))))
+       respuesta))
+   ```
+
+3. Convert the JSON response to a data frame
+
+   ``` commonlisp
+   (json-to-df (call-api *url*))
+   ```
+
+   You will be prompted to select a symbol to be made accessible in the
+   DFIO package:
+
+   ``` example
+   Select a symbol to be made accessible in package DFIO:
+     1. DATA-FRAME::BODY
+     2. DFIO::BODY
+
+   Enter an integer (between 1 and 2): 1
+   ```
+
+4. Display the data frames
+
+   ``` commonlisp
+   (lisp-stat:show-data-frames)
+   ```
+
+5. Assign the data frame to a variable and print it
+
+   ``` commonlisp
+   (json-to-df (call-api *url*) "my-df")
+   (lisp-stat:show-data-frames)
+   ```
+
+6. Print the data frame
+
+   ``` commonlisp
+   (pprint my-df)
+   ```
+
 
 ## Load data
 
@@ -1363,41 +1426,6 @@ Let's change the `print-object` back to our convenience method.
     (df:print-data df stream nil)))
 ```
 
-### stacking
-
-Stacking is done with the [array-operations stacking functions](/docs/manuals/array-operations/#stacking).  Since these functions operate on both arrays and data frames, we can use them to stack data frames, arrays, or a mixture of both, providing they have a rank of 2.  Here's an example using the `mtcars` data frame:
-
-```
-(defparameter boss-mustang
-  #("Boss Mustang" 12.7d0 8 302 405 4.11d0 2.77d0 12.5d0 0 1 4 4))
-```
-and now stack it onto the `mtcars` data set (load it with `(data :mtcars)` if you haven't already done so):
-```
-(matrix-df
- (keys mtcars)
- (stack-rows mtcars boss-mustang))
-```
-This is the functional equivalent of R's `rbind` function.  You can also add columns with the `stack-cols` function.
-
-An often asked question is: why don't you have a dedicated `stack-rows` function?  Well, if you want one it might look like this:
-```
-(defun stack-rows (df &rest objects)
-  "Stack rows that works on matrices and/or data frames."
-  (matrix-df
-   (keys df)
-   (apply #'aops:stack-rows (cons df objects))))
-```
-But now the data frame must be the first parameter passed to the function.  Or perhaps you want to rename the columns?  Or you have matrices as your starting point?  For all those reasons, it makes more sense to pass in the column keys than a data frame:
-```
-(defun stack-rows (col-names &rest objects)
-  "Stack rows that works on matrices and/or data frames."
-  (matrix-df
-   (keys col-names)
-   (stack-rows objects)))
-```
-However this means we have two `stack-rows` functions, and you don't really gain anything except an extra function call.  So use the above definition if you like; we use the first example and call `matrix-df` and `stack-rows` to stack data frames.
-
-
 
 ## Column operations
 
@@ -1438,7 +1466,7 @@ You can also return a subset of the columns by passing in a selection:
 ;; #(#(21 21 22.8d0 21.4d0 18.7d0) #(2.62d0 2.875d0 2.32d0 3.215d0 3.44d0))
 ```
 
-### Add columns
+### add columns
 
 There are two 'flavors' of add functions, destructive and
 non-destructive.  The latter return a **new** data frame as the
@@ -1523,7 +1551,7 @@ Now let's add multiple columns destructively using `add-columns!`
 ```
 
 
-### Remove columns
+### remove columns
 
 Let's remove the columns `a` and `b` that we just added above with
 the `remove-columns` function.  Since it returns a new data frame,
@@ -1544,7 +1572,7 @@ To remove columns destructively, meaning modifying the original data,
 use the `remove-column!` or `remove-columns!` functions.
 
 
-### Rename columns
+### rename columns
 
 Sometimes data sources can have variable names that we want to change.
 To do this, use the `rename-column!` function.  This example will
@@ -1607,7 +1635,7 @@ mtcars:model
   "Ford Pantera L" "Ferrari Dino" "Maserati Bora" "Volvo 142E")
 ```
 
-### Replace columns
+### replace columns
 
 Columns are "setf-able" places and the simplest way to replace a
 column is set the field to a new value.  We'll complement the `sex`
@@ -1659,7 +1687,7 @@ instead of `setf`-ing `*d*`:
 ;; 4 Male    30    170   79.4
 ```
 
-### Transform columns
+### transform columns
 
 There are two functions for column transformations, `replace-column`
 and `map-columns`.
@@ -1720,6 +1748,41 @@ categorical values like gender/sex.
 
 As the name suggests, row operations operate on each row, or
 observation, of a data set.
+
+### add rows
+
+Adding rows is done with the [array-operations stacking functions](/docs/manuals/array-operations/#stacking).  Since these functions operate on both arrays and data frames, we can use them to stack data frames, arrays, or a mixture of both, providing they have a rank of 2.  Here's an example of adding a row to the `mtcars` data frame:
+
+```lisp
+(defparameter boss-mustang
+  #("Boss Mustang" 12.7d0 8 302 405 4.11d0 2.77d0 12.5d0 0 1 4 4))
+```
+and now stack it onto the `mtcars` data set (load it with `(data :mtcars)` if you haven't already done so):
+```lisp
+(matrix-df
+ (keys mtcars)
+ (stack-rows mtcars boss-mustang))
+```
+This is the functional equivalent of R's `rbind` function.  You can also add columns with the `stack-cols` function.
+
+An often asked question is: why don't you have a dedicated `stack-rows` function?  Well, if you want one it might look like this:
+```lisp
+(defun stack-rows (df &rest objects)
+  "Stack rows that works on matrices and/or data frames."
+  (matrix-df
+   (keys df)
+   (apply #'aops:stack-rows (cons df objects))))
+```
+But now the data frame must be the first parameter passed to the function.  Or perhaps you want to rename the columns?  Or you have matrices as your starting point?  For all those reasons, it makes more sense to pass in the column keys than a data frame:
+```lisp
+(defun stack-rows (col-names &rest objects)
+  "Stack rows that works on matrices and/or data frames."
+  (matrix-df
+   (keys col-names)
+   (stack-rows objects)))
+```
+However this means we have two `stack-rows` functions, and you don't really gain anything except an extra function call.  So use the above definition if you like; we use the first example and call `matrix-df` and `stack-rows` to stack data frames.
+
 
 ### count-rows
 
@@ -2245,6 +2308,39 @@ create a new data-frame and leave the original `aq` untouched.
 
 Normally we'd round `mean` to be consistent from a type perspective,
 but did not here so you can see the values that were replaced.
+
+## Sampling
+
+You can take a random sample of the rows of a data-frame with the `select:sample` function:
+
+```lisp
+LS-USER> mtcars
+#<DATA-FRAME (32 observations of 12 variables)
+Motor Trend Car Road Tests>
+LS-USER> (sample mtcars 3 :skip-unselected t)
+#<DATA-FRAME (3 observations of 12 variables)>
+LS-USER> (print-data *)
+
+;;   MODEL              MPG CYL  DISP  HP DRAT   WT  QSEC VS AM GEAR CARB
+;; 0 Hornet Sportabout 18.7   8 360.0 175 3.15 3.44 17.02  0  0    3    2
+;; 1 Duster 360        14.3   8 360.0 245 3.21 3.57 15.84  0  0    3    4
+;; 2 Merc 230          22.8   4 140.8  95 3.92 3.15 22.90  1  0    4    2
+```
+
+You can also take random samples from CL sequences and arrays, with or without replacement and in various proportions.  For further information see [sampling](/docs/manuals/select/#sampling) in the [select system manual](/docs/manuals/select/).
+
+Uses [Vitter's Algorithm
+D](http://www.ittc.ku.edu/~jsv/Papers/Vit87.RandomSampling.pdf) to
+efficiently select the rows.  Sometimes you may want to use the
+algorithm at a lower level. If you don’t want the sample itself, say you
+only want the indices, you can directly use `map-random-below`, which
+simply calls a provided function on each index.
+
+This is an enhancement and port to standard common lisp of
+ruricolist's
+[random-sample](https://github.com/ruricolist/random-sample/tree/master).
+It also removes the dependency on Trivia, which has a restrictive
+license (LLGPL).
 
 ## Dates & Times
 

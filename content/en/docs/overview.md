@@ -11,7 +11,6 @@ Lisp-Stat is a domain specific language (DSL) for statistical analysis
 and machine learning.  It is targeted at statistics practitioners with
 little or no experience in programming.
 
-<!--
 Lisp has a history of being deployed for domain experts to use, and
 it's a great language for beginners; the [Symbolics Graphics
 Division](https://en.wikipedia.org/wiki/Symbolics#Symbolics_Graphics_Division)
@@ -46,17 +45,6 @@ a history of industrial deployments, including:
 - Amazon got started with Lisp & C; so did Y-combinator
 - Google's flight search engine is written in Common Lisp
 - AT&T used a stripped down version of Symbolics Lisp to process CDRs in the first IP telephony switches
-
-If Lisp is good enough for those applications, it very likely can meet
-the needs of an enterprise deployment today.
--->
-
-## Relationship to XLISP-Stat
-
-Although inspired by Tierney's XLisp-Stat, this is a reboot in Common
-Lisp.  XLisp-Stat code is unlikely to run except in trivial cases.
-Existing XLisp-Stat libraries can be ported with the assistance of the
-[XLS-Compat](https://github.com/Lisp-Stat/XLS-compat) system.
 
 
 ## Core Systems {#systems}
