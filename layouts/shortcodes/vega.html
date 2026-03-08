@@ -1,7 +1,12 @@
 <div id='{{ .Get "id" }}'></div>
 <script type="text/javascript">
-  var spec = '{{ .Get "spec" | safeJS }}'
-  vegaEmbed('#{{ .Get "id" }}', spec).then(function(result) {
-  // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+  // VS Code's HTML language server doesn't understand the {{ .Get "spec" }} syntax, so we have to use safeJS to prevent it from trying to parse it as a string literal.
+  // It also reports false positives that you can ignore.
+  var spec = '{{ .Get "spec" | safeJS }}';
+  //var theme = '{{ with .Get "theme" }}{{ . }}{{ else }}ggplot2{{ end }}';
+  var embedOptions = { };
+  {{ with .Get "theme" }}embedOptions.theme = '{{ . }}';{{ end }}
+  vegaEmbed('#{{ .Get "id" }}', spec, embedOptions).then(function(result) {
+    // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
   }).catch(console.error);
 </script>
