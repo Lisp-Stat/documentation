@@ -436,7 +436,7 @@ Three dimensional arrays can be tough to get your head around.  In the example a
 
 The most common use case for `recycle` is to 'stretch' a vector so that it can be an operand for an array of compatible dimensions.  In Python, this would be known as 'broadcasting'. See the [Numpy broadcasting basics](https://numpy.org/doc/stable/user/basics.broadcasting.html) for other use cases.
 
-For example, suppose we wish to multiply array `a`, a size 4x3 with vector `b` of size 3, as in the figure below:
+For example, suppose we wish to multiply array `a`, of size 4x3, with vector `b`, of size 1x3, as in the figure below:
 
 {{< figure src="/images/broadcasting_2.png" >}}
 

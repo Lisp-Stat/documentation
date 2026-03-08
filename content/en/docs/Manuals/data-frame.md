@@ -1,6 +1,6 @@
 ---
 title: "Data Frame"
-date: 2021-04-28
+date: 2026-03-08
 weight: 2
 description: >
   Manipulating data using a data frame
@@ -510,6 +510,69 @@ a data set as an array, perhaps with BLAS or `array-operations` then
 want to add categorical variables and continue processing as a
 data-frame.
 
+### From JSON
+
+The [json-to-data-frame](https://github.com/gassechen/json-to-data-frame) by 'gassechen' can be used to convert JSON to a `data-frame`. The following example is taken from that repo.  Note that the system is not in Quicklisp, so you'll have to obtain it manually (see instructions in the repo).
+
+1. Define the URL for the JSON API
+
+   ``` commonlisp
+   (defparameter *url* "https://jsonplaceholder.typicode.com/posts")
+   ```
+
+2. Define a function to call the API and parse the JSON response
+
+   ``` commonlisp
+   (defun call-api (url-get)
+     (let* ((yason:*parse-json-booleans-as-symbols* t)
+            (yason:*parse-json-arrays-as-vectors* nil)
+            (respuesta
+              (yason:parse
+               (dex:get url-get
+                        :keep-alive t
+                        :use-connection-pool t
+                        :connect-timeout 60
+                        :want-stream t))))
+       respuesta))
+   ```
+
+3. Convert the JSON response to a data frame
+
+   ``` commonlisp
+   (json-to-df (call-api *url*))
+   ```
+
+   You will be prompted to select a symbol to be made accessible in the
+   DFIO package:
+
+   ``` example
+   Select a symbol to be made accessible in package DFIO:
+     1. DATA-FRAME::BODY
+     2. DFIO::BODY
+
+   Enter an integer (between 1 and 2): 1
+   ```
+
+4. Display the data frames
+
+   ``` commonlisp
+   (lisp-stat:show-data-frames)
+   ```
+
+5. Assign the data frame to a variable and print it
+
+   ``` commonlisp
+   (json-to-df (call-api *url*) "my-df")
+   (lisp-stat:show-data-frames)
+   ```
+
+6. Print the data frame
+
+   ``` commonlisp
+   (pprint my-df)
+   ```
+
+
 
 ### Example datasets
 
@@ -790,68 +853,6 @@ example you could convert a data frame to a transposed array by using
 ;; 11      4.00         4.000       1.00          1.000              2.00
 ```
 
-### json
-
-The [json-to-data-frame](https://github.com/gassechen/json-to-data-frame) by 'gassechen' can be used to convert JSON to a `data-frame`. The following example is taken from that repo.  Note that the system is not in Quicklisp, so you'll have to obtain it manually (see instructions in the repo).
-
-1. Define the URL for the JSON API
-
-   ``` commonlisp
-   (defparameter *url* "https://jsonplaceholder.typicode.com/posts")
-   ```
-
-2. Define a function to call the API and parse the JSON response
-
-   ``` commonlisp
-   (defun call-api (url-get)
-     (let* ((yason:*parse-json-booleans-as-symbols* t)
-            (yason:*parse-json-arrays-as-vectors* nil)
-            (respuesta
-              (yason:parse
-               (dex:get url-get
-                        :keep-alive t
-                        :use-connection-pool t
-                        :connect-timeout 60
-                        :want-stream t))))
-       respuesta))
-   ```
-
-3. Convert the JSON response to a data frame
-
-   ``` commonlisp
-   (json-to-df (call-api *url*))
-   ```
-
-   You will be prompted to select a symbol to be made accessible in the
-   DFIO package:
-
-   ``` example
-   Select a symbol to be made accessible in package DFIO:
-     1. DATA-FRAME::BODY
-     2. DFIO::BODY
-
-   Enter an integer (between 1 and 2): 1
-   ```
-
-4. Display the data frames
-
-   ``` commonlisp
-   (lisp-stat:show-data-frames)
-   ```
-
-5. Assign the data frame to a variable and print it
-
-   ``` commonlisp
-   (json-to-df (call-api *url*) "my-df")
-   (lisp-stat:show-data-frames)
-   ```
-
-6. Print the data frame
-
-   ``` commonlisp
-   (pprint my-df)
-   ```
-
 
 ## Load data
 
@@ -879,6 +880,12 @@ this:
 ```lisp
 (data :antigua :system :rdata :directory :daag :type :csv)
 ```
+
+Here `system` refers to the lisp system name.  Every system that
+ASDF/Quickload loads has a name.  This is because most third party
+system will include a `DATA` directory to use for their own testing or
+tutorials and you can use this command to load an explore these third
+party data sets.
 
 If the file type is not `lisp` (say it's TSV or CSV), you need to
 specify the `type` parameter.
