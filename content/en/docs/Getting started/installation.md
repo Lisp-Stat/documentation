@@ -6,21 +6,18 @@ description: >
   Installing and configuring Lisp-Stat
 ---
 
-## Notebook
+## Intallation methods
+
+### Online Notebook
 
 {{< figure src="https://mybinder.org/badge_logo.svg" alt="Binder" link="https://mybinder.org/v2/gh/Lisp-Stat/IPS9/HEAD?urlpath=%2Fdoc%2Ftree%2Findex.ipynb" >}}
 
 The easiest way to get started is with the link above which will open a preconfigured
 notebook on mybinder.org.
 
-Users new to lisp should also consider going through the Lisp-Stat
-[basic tutorial](/docs/tutorials/basics), which guides you
-step-by-step through the basics of working with Lisp as a statistics
-practitioner.
+### Local Jupyter Container
 
-## OCI/Docker
-
-You can also run a pre-built OCI image.  This is a minimal Docker file:
+You can also run the Jupyter notebook in a pre-built OCI image.  This is a minimal Docker file:
 
 ```
 FROM ghcr.io/lisp-stat/cl-jupyter:latest
@@ -46,6 +43,16 @@ docker run -it -p 8888:8888 ghcr.io/lisp-stat/cl-jupyter:latest
 ```
 
 This command pulls the latest `cl-jupyter` image from ghcr.io if it is not already present on the local host. It then starts a container running a Jupyter Server with the JupyterLab frontend and exposes the server on host port 8888. The server logs appear in the terminal and include a URL to the server.
+
+### Local OCI/Docker
+
+If you prefer a traditional Lisp development environment, there is a [ls-dev-image](https://github.com/Lisp-Stat/ls-dev-image) configured with emacs, slime and [ls-server](https://github.com/Lisp-Stat/ls-server) for remote data and plotting.  A one-liner for getting started there is:
+
+```sh
+docker run --rm -it --user vscode -w /home/vscode ghcr.io/lisp-stat/ls-dev:latest /bin/bash -c "ls-init.sh --mode developer && ls-repl"
+```
+
+See the README in the repo above for more options and instructions.
 
 ## Initialization file
 
@@ -174,7 +181,7 @@ When a new release is announced, you can update via Quicklisp like so:
 (ql:update-dist "lisp-stat")
 ```
 
-### Documentation
+## Documentation
 
 You can install the info manuals into the emacs help system and this
 allows searching and browsing from within the editing environment.  To
@@ -203,7 +210,7 @@ the mechanism used by Lisp-Stat developers because you don't have to
 leave the emacs editor to look up function documentation in a browser.
 
 
-### Try it out
+## Try it out
 
 Load Lisp-Stat:
 ```lisp

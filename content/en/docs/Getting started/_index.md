@@ -7,46 +7,39 @@ description: >
   Install to plotting in five minutes
 ---
 
-## The Easy Way
+## Installation
 
-You can use an OCI image or pre-built notebook in the cloud for an instant
-start. See [installation](/docs/getting-started/installation/) for how.
+You can use an OCI image or pre-built notebook in the cloud for an
+instant start. See [installation](/docs/getting-started/installation/)
+for how.  Once you've installed, come back here.
 
-## The CLI Way
-If you have a working installation of SBCL, Google Chrome and
-Quicklisp you can be up and running in 5 minutes.
 
-### Prerequisites
-
-- Steel Bank Common Lisp (SBCL) or CCL
-- MacOS, Linux or Windows 10+
-- Quicklisp
-- Chrome, Firefox or Edge
-
-### Loading
+## First Steps
 
 First load Lisp-Stat, Plot and sample data.  We will use Quicklisp for
 this, which will both download the system if it isn't already
 available, and compile and load it.
 
-#### Lisp-Stat
+### Lisp-Stat
 
 ```lisp
 (ql:quickload :lisp-stat)
 (in-package :ls-user)     ;access to Lisp-Stat functions
 ```
 
-#### Plotting
+### Plotting
 
 ```lisp
 (ql:quickload :plot/vega)
 ```
 
-#### Data
+### Data
 
 ```lisp
 (data :vgcars)
 ```
+
+## Explore the data
 
 ### View
 
@@ -94,7 +87,7 @@ Show the last few rows:
 ;; USA    1982-01-01         19.4          2720         82          119         4               31 chevy s-10
 ```
 
-## Statistics
+### Statistics
 
 Look at a few statistics on the data set.
 
@@ -140,7 +133,7 @@ names, and only a human can determine whether or not they are
 significant.  For this demonstration, they are not.
 -->
 
-## Plot
+### Plot
 
 Create a scatter plot specification comparing horsepower and miles per
 gallon:
