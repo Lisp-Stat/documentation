@@ -16,7 +16,7 @@ Still, it's a pre-requisite for new users, so I've created [ls-dev-image](https:
 docker run --rm -it --user vscode -w /home/vscode ghcr.io/lisp-stat/ls-dev:latest bash
 ```
 
-Now install lisp-stat with 'ls-init.sh --mode experimenter' and from the shell you can type 'emacs' followed by 'M-x slime' and start hacking Common Lisp.
+Now install lisp-stat with `ls-init.sh --mode experimenter` and from the shell you can type 'emacs' followed by 'M-x slime' and start hacking Common Lisp.
 
 <img width="1306" height="762" alt="image" src="https://github.com/user-attachments/assets/1abaeea4-1bee-494b-9dd4-c590c9a66f5c" />
 
