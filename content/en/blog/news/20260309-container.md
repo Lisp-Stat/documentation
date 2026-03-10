@@ -16,7 +16,7 @@ Still, it's a pre-requisite for new users, so I've created [ls-dev-image](https:
 docker run --rm -it --user vscode -w /home/vscode ghcr.io/lisp-stat/ls-dev:latest bash
 ```
 
-and from the shell you can type 'emacs' followed by 'M-x slime' and start hacking Common Lisp.
+Now install lisp-stat with 'ls-init.sh --mode developer' and from the shell you can type 'emacs' followed by 'M-x slime' and start hacking Common Lisp.
 
 <img width="1306" height="762" alt="image" src="https://github.com/user-attachments/assets/1abaeea4-1bee-494b-9dd4-c590c9a66f5c" />
 
@@ -25,6 +25,6 @@ This OCI image is configured with emacs, slime, quicklisp, lisp-stat and a few s
 
 <img width="1038" height="704" alt="image" src="https://github.com/user-attachments/assets/98c0e707-b259-48e4-93c1-1ba7f62e3f09" />
 
-You can also run a this image in GitHub codespaces.
+You can also run this image in GitHub codespaces.
 
 I'd like to point out that you can use this for _any_ Common Lisp development, not just Lisp-Stat.  Contributions and [bug reports](https://github.com/Lisp-Stat/ls-dev-image/issues) are welcome and encouraged.
