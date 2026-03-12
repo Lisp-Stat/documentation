@@ -30,10 +30,10 @@ appropriate symbols into the current package (which should be
 <!-- no-extract -->
 ```lisp
 ;; Import marks
-(import '(geom:point geom:bar geom:box-plot geom:histogram geom:line))
+(import '(geom:point geom:bar geom:box-plot geom:histogram geom:line geom:loess geom:func))
 
 ;; Import modifiers
-(import '(gg:label gg:axes gg:coord gg:theme gg:tooltip))
+(import '(gg:label gg:axes gg:coord gg:theme gg:tooltip gg:layer))
 
 ;; Import quick plotting
 (import '(qplot:qplot))
