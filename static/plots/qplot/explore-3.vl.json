@@ -1,10 +1,1 @@
-{
-  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
-  "title": "MPG by Origin",
-  "data": {"url": "/data/qplot/vgcars.json"},
-  "mark": {"type": "boxplot"},
-  "encoding": {
-    "x": {"field": "origin", "type": "nominal", "title": "Origin"},
-    "y": {"field": "milesPerGallon", "type": "quantitative", "title": "MPG"}
-  }
-}
+{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","encoding":{"x":{"title":"Origin","type":"nominal","field":"origin"},"y":{"title":"MPG","scale":{"zero":false},"type":"quantitative","field":"milesPerGallon"},"color":{"field":"origin","type":"nominal","legend":null}},"mark":{"extent":1.5,"type":"boxplot"},"title":"MPG by Origin","data":{"url":"/data/qplot/vgcars.json"}}

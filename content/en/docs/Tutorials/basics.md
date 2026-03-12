@@ -1,6 +1,8 @@
 ---
 title: "Basics"
 date: 2021-02-20
+latex: true
+vega: true
 weight: 1
 description: >
   An introduction to the basics of LISP-STAT
@@ -10,7 +12,7 @@ description: >
 
 This document is intended to be a tutorial introduction to the basics
 of LISP-STAT and is based on the original tutorial for XLISP-STAT
-written by Luke Tierney, updated for Common Lisp and the 2021
+written by Luke Tierney, updated for Common Lisp and the 2026
 implementation of LISP-STAT.
 
 LISP-STAT is a statistical environment built on top of the Common Lisp
@@ -56,11 +58,11 @@ The best way to learn about a new computer programming language is
 usually to use it.  You will get most out of this tutorial if you read
 it at your computer and work through the examples yourself. To make
 this tutorial easier the named data sets used in this tutorial have
-been stored in the file `basic.lisp` in the `LS:DATASETS;TUTORIALS`
+been stored in the file `basic.lisp` in the `LS:DATA;TUTORIALS`
 folder of the system.  To load this file, execute:
 
 ```lisp
-(load #P"LS:DATASETS;TUTORIALS;basic")
+(load #P"LS:DATA;TUTORIALS;basic")
 ```
 
 at the command prompt (REPL). The file will be loaded and some
@@ -268,7 +270,7 @@ frame from a name and a value (called a `plist`, or *property-list*):
 ```
 -->
 
-### The Listener and the Evaluator
+### The Listener and Evaluator
 
 A session with LISP-STAT basically consists of a conversation between
 you and the *listener*.  The listener is the window into which you
@@ -366,7 +368,7 @@ differences.
 Remember, to quit from LISP-STAT type `(exit)`, `quit` or use the
 IDE's exit mechanism.
 
-## Elementary Statistical Operations {#Elementary}
+## Elementary Operations {#Elementary}
 
 This section introduces some of the basic graphical and numerical
 statistical operations that are available in LISP-STAT.
@@ -531,10 +533,10 @@ Here are some numerical summaries:
     1.685
     LS-USER> (median precipitation)
     1.47
-    LS-USER> (standard-deviation precipitation)
+    LS-USER> (sd precipitation)
     1.0157
     LS-USER> (interquartile-range precipitation)
-    1.145
+    1.19
 
 
 The distribution of this data set is somewhat skewed to the right.
@@ -568,29 +570,37 @@ transformed data are:
     0.384892
 ```
 
-<!-- Remove this until version 2.0 of plotting is complete
+
 ### Plots
 
 For this section we'll be using the Vega-Lite plotting back-end. Load
 it like this:
 
 ```lisp
-(asdf:load-system :plot/vglt)
+(asdf:load-system :quick-plot)
 ```
 
-The `histogram` and `box-plot` functions can be used to obtain
-graphical representations of this data set:
+and now import some functions so we can refer to them without a package prefix (we don't do this with `geom` functions to make it obvious where we're using `geom` helpers, but you could also import them, as we do in the [quick-plot cookbook](/docs/cookbooks/quick-plot/)).
 
 ```lisp
-(vglt:plot
-	(vglt:histogram
-		(plist-df `(x ,precipitation)) "X" :title "Histogram of precipitation levels"))
+(import '(gg:label gg:axes gg:coord gg:theme gg:tooltip))
+(import '(qplot:qplot))
 ```
 
-{{< figure src="/docs/tutorials/figure-1-histogram.png" >}}
+Let's plot a histogram and box-plot.  Similar to R's `ggplot`, we have
+helper functions in the `geom` package that make this easier. The
+graphical representations of this data set are:
+
+```lisp
+(qplot 'tutorial-precipitation (plist-df `(:x ,precipitation))
+  `(:title "March precipitation levels")
+   (geom:histogram :x))
+```
+
+{{< vega id="tutorial-precipitation" spec="/plots/basic-tutorial/histogram.vl.json" >}}
 
 Note how we converted the precipitation data into a data-frame before
-passing it to the `histogram` function.  This is because plotting
+passing it to the `qplot` function.  This is because plotting
 functions work on data frames. Also note the way the data frame was
 constructed using the `plist-df` function.  When I first showed you an
 example of constructing a data frame:
@@ -613,7 +623,7 @@ and comma:
 (plist-df '(x precipitation))
 ```
 
-you would get an error. This is because within a list, `precipitation`
+you would get an error. This is because, within a list, `precipitation`
 is a *symbol*, and `plist-df` expects the vector that `precipitation`
 stands for, in other words its *value*. To get the value, we use a
 sort of template mechanism, that starts with the back-quote character.
@@ -636,53 +646,55 @@ directory. This location will vary depending on your operating system.
 On MS Windows, it will be in %APPDATALOCAL%/cache.  You can view or
 edits the plots directly if you like.
 
-Let's try a box plot:
+Let's try a one dimensional box plot:
 
 ```lisp
-(vglt:plot
- (vglt::box-plot
-  (plist-df `(x ,precipitation)) nil "X" :title "Boxplot of precipitation levels"))
+(qplot 'tutorial-precipitation-box-plot (plist-df `(:x ,precipitation))
+   `(:title "March precipitation levels")
+     (geom:box-plot :x))
 ```
 
-{{< figure src="/docs/tutorials/figure-2-boxplot.png" >}}
+{{< vega id="tutorial-1d-box-plot" spec="/plots/basic-tutorial/one-d-box-plot.vl.json" >}}
 
-The box-plot function can also be used to produce parallel box-plots of
-two or more samples.
+A box-plot can encode additional information into a plot to produce a
+more informative visual.  For example we may want to compare fuel
+consumption for various classes of automobile.  To do this we can use
+a parallel box plot that encodes the `catagory` as a color.
 
-It will do so if it is given a list of lists as its
-argument instead of a single list.
-
-As an example, let's use this function to compare the fuel consumption
-for various automobile types.  The data comes from the R `ggplot`
-library and we load it like this:
+Let's plot this example. The data comes from the R `ggplot` library
+and we load it like this:
 
 ```lisp
 (defdf mpg (read-csv rdata:mpg)
   "Fuel economy data from 1999 to 2008 for 38 popular models of cars")
+#<DATA-FRAME (234 observations of 12 variables)
+Fuel economy data from 1999 to 2008 for 38 popular models of cars>
 ```
 
 The parallel box-plot is obtained by:
 
 ```lisp
-(vglt:plot
-	  (vglt:box-plot mpg "CLASS" "HWY"
-	                 :title "Boxplot of fuel consumption"))
+(qplot 'tutorial-mpg-box-by-origin mpg
+  `(:title "MPG by Origin")
+   (geom:box-plot :hwy :catagory :class)
+   (label :x "Miles per Gallon" :y "Origin"))
 ```
 
-{{< figure src="/docs/tutorials/figure-3-parallel-box-plot.png" >}}
+Note that in this plot we did **not** have to use the `plist-df`
+function; our data was already in a data-frame.
 
-
+{{< vega id="tutorial-mpg-by-origin" spec="/plots/basic-tutorial/mpg-by-origin.vl.json" >}}
 
 ### Exercises {#exercises-2 .unnumbered}
 
 The following exercises involve examples and problems from Devore and
-Peck. The data sets are in files in the folder **Datasets** in the
+Peck. The data sets are in files in the folder **data** in the
 LISP-STAT distribution directory and can be read in using the `load`
-command.  The short cut for the *Datasets* directory is `LS:DATASETS`,
+command.  The short cut for the *data* directory is `LS:DATA`,
 so to load `car-prices`, type:
 
 ```lisp
-(load #P"LS:DATASETS;car-prices")
+(load #P"LS:DATA;car-prices")
 ```
 
 at the REPL.  The file will be loaded and some variables will be
@@ -705,8 +717,8 @@ variables, `gas-heat` and `electric-heat`.[^3]
     plots and summary statistics for these samples separately and look
     at a parallel box plot for the two samples.  These data sets are
     called `gas-heat` and `electric-heat` in the file `heating.lisp`.
--->
-<!--
+
+
 ### Two Dimensional Plots {#Elementary.TwoDPlots}
 
 Many single samples are actually collected over time.  The
@@ -715,58 +727,82 @@ In some cases it is reasonable to assume that the observations are
 independent of one another, but in other cases it is not.  One way to
 check the data for some form of serial correlation or trend is to plot
 the observations against time, or against the order in which they were
-obtained.  I will use the `plot-points` function to produce a
-scatter-plot of the precipitation data versus time.  The `plot-points`
-function is called as
+obtained.  I will use the `point` function to produce a
+plot of the precipitation data versus time. Here is a skeleton of a scatter plot using the `points` geom helper function
 
-    (plot-points x-variable y-variable)
+```lisp
+(qplot ...
+
+(geom:point x-variable y-variable)
+...
+```
 
 Our $y$-variable will be `precipitation`, the variable we defined
 earlier.  As our $x$-variable we would like to use a sequence of
 integers from 1 to 30.  We could type these in ourselves, but there is
-an easier way.  The function `iseq`, short for *integer-sequence*,
+an easier way.  The function `numseq`, short for *number-sequence*,
 generates a list of consecutive integers between two specified
 values. The general form for a call to this function is
 
-    (iseq start end).
-
+```lisp
+    (numseq start end)
+```
 To generate the sequence we need we use
+```lisp
+    (numseq 1 30)
+```
+Thus to generate the scatter plot we use:
 
-    (iseq 1 30).
+```lisp
+(qplot 'tutorial-scatter-plot (plist-df `(:x ,(numseq 1 30)
+                                          :precipitation ,precipitation))
+  `(:title "Precipitation by Day")
+   (geom:point :x :precipitation)
+   (label :x "Day" :y "Precipitation"))
+```
 
-Thus to generate the scatter plot we type
+{{< vega id="tutorial-precipitation-by-day" spec="/plots/basic-tutorial/precipitation-by-day.vl.json" >}}
 
-    > (plot-points (iseq 1 30) precipitation)
-    #<Object: 3423466, prototype = SCATTERPLOT-PROTO>
-    >
+Recall our template to replace symbols with values, used twice here,
+once for the `:x` variable (day) and `:precipitation` for the amount
+of rain.
 
-and the result will look like Figure
-[\[Scatterplot1\]](#Scatterplot1){reference-type="ref"
-reference="Scatterplot1"}.
 
 There does not appear to be much of a pattern to the data; an
 independence assumption may be reasonable.
 
 Sometimes it is easier to see temporal patterns in a plot if the points
-are connected by lines.  Try the above command with `plot-points`
-replaced by `plot-lines`.
+are connected by lines.  Try the above plot with `geom:point`
+replaced by `geom:line`.
 
-The `plot-lines` function can also be used to construct graphs of
+The `geom:line` function can also be used to construct graphs of
 functions. Suppose you would like a plot of $\sin(x)$ from $-\pi$ to
 $+\pi$. The constant $\pi$ is predefined as the variable `pi`. You
 can construct a list of $n$ equally spaced real numbers between $a$ and
 $b$ using the expression
+```lisp
+    (numseq a b :length n)
+```
+Thus to draw the plot of $\sin(x)$ using 50 equally spaced points use:
 
-    (rseq a b n).
+```lisp
+(let* ((x (numseq (- pi) pi :length 50))
+       (y (esin x)))
+  (qplot 'tutorial-sin (plist-df `(:x ,x :y ,y))
+	 `(:title "sin(x) -π to π")
+	  (geom:line :x :y)
+	  (label :y "sin(x)")
+	  (theme :width 600 :height 300)))
+```
 
-Thus to draw the plot of $\sin(x)$ using 50 equally spaced points type
+{{< vega id="tutorial-sin" spec="/plots/basic-tutorial/sin.vl.json" >}}
 
-    > (plot-lines (rseq (- pi) pi 50) (sin (rseq (- pi) pi 50)))
-    #<Object: 3423466, prototype = SCATTERPLOT-PROTO>
-    >
-
-The plot should look like Figure
-[\[Lineplot1\]](#Lineplot1){reference-type="ref" reference="Lineplot1"}.
+Note here the use of `let`.  This introduces two local variables, `x`
+and `y`.  We did this because we want to compute the value of `y`
+given `x` using the `esin` function.  We would be unable to 'grab' the
+x values if we had done this entirely in the `plist-df` function.
+Don't worry, this is an unusual case for demonstration purposes.
+Normally you'll be working with data-frames and the syntax is simpler.
 
 Scatter-plots are of course particularly useful for examining the
 relationship between two numerical observations taken on the same
@@ -775,24 +811,25 @@ and CO emission recorded for 46 automobiles. The results can be placed
 in two variables, `hc` and `co`, and these variable can then
 be plotted against one another with the `plot-points` function:
 
-    > (def hc (list .5 .46 .41 .44 .72 .83 .38 .60 .83 .34 .37 .87
-                    .65 .48 .51 .47 .56 .51 .57 .36 .52 .58 .47 .65
-                    .41 .39 .55 .64 .38 .50 .73 .57 .41 1.02 1.10 .43
-                    .41 .41 .52 .70 .52 .51 .49 .61 .46 .55))
-    HC
-    > (def co (list 5.01 8.60 4.95 7.51 14.59 11.53 5.21 9.62 15.13
-                    3.95 4.12 19.00 11.20 3.45 4.10 4.74 5.36 5.69
-                    6.02 2.03 6.78 6.02 5.22 14.67 4.42 7.24 12.30
-                    7.98 4.10 12.10 14.97 5.04 3.38 23.53 22.92 3.81
-                    1.85 2.26 4.29 14.93 6.35 5.79 4.62 8.43 3.99 7.47))
-    CO
-    > (plot-points hc co)
-    #<Object: 3423466, prototype = SCATTERPLOT-PROTO>
-    >
+```lisp
+(defparameter hc #(.5 .46 .41 .44 .72 .83 .38 .60 .83 .34 .37 .87
+                   .65 .48 .51 .47 .56 .51 .57 .36 .52 .58 .47 .65
+                   .41 .39 .55 .64 .38 .50 .73 .57 .41 1.02 1.10 .43
+                   .41 .41 .52 .70 .52 .51 .49 .61 .46 .55))
+```
+```lisp
+(defparameter co #(5.01 8.60 4.95 7.51 14.59 11.53 5.21 9.62 15.13
+                   3.95 4.12 19.00 11.20 3.45 4.10 4.74 5.36 5.69
+                   6.02 2.03 6.78 6.02 5.22 14.67 4.42 7.24 12.30
+                   7.98 4.10 12.10 14.97 5.04 3.38 23.53 22.92 3.81
+                   1.85 2.26 4.29 14.93 6.35 5.79 4.62 8.43 3.99 7.47))
+```
+```lisp
+(qplot 'tutorial-hc-co (plist-df `(:hc ,hc :co ,co))
+   (geom:point :hc :co))
+```
 
-The resulting plot is shown in Figure
-[\[Scatterplot2\]](#Scatterplot2){reference-type="ref"
-reference="Scatterplot2"}.
+{{< vega id="tutorial-hc-co" spec="/plots/basic-tutorial/hc-co.vl.json" >}}
 
 ### Exercises {#exercises-3 .unnumbered}
 
@@ -802,10 +839,12 @@ reference="Scatterplot2"}.
     concentration, a measure of metabolic activity, recorded for 18
     cross country skiers during a relay race. These data are in the
     variables `age` and `cpk` in the file
-    `metabolism.lsp`. Plot the data and describe any relationship
+    `metabolism.lisp`. Plot the data and describe any relationship
     you observe between age and CPK concentration.
 
 ### Plotting Functions
+
+TODO: Implement geom:function
 
 Plotting the sine function in the previous section was a bit cumbersome.
 As an alternative we can use the function `plot-function` to plot a
@@ -836,7 +875,6 @@ is equivalent to the expression `(function sin)`. The short form
 the expression for producing the sine plot can be written as
 
     (plot-function #'sin (- pi) pi).
--->
 
 
 ## Generating and Modifying Data
@@ -846,18 +884,51 @@ and systematic data.
 
 
 ### Generating Random Data
-<!--
+
 LISP-STAT has several functions for generating pseudo-random numbers
 in the [distributions](https://github.com/Lisp-Stat/distributions)
 system, loaded as part of LISP-STAT.  For example, the expression
+```lisp
+(rand 50)
+```
+will generate a vector of 50 independent uniform random variables. The
+function `randn` will produce values normally distributed with mean 0
+and standard deviation 1.
 
-    (uniform-rand 50)
+To generate values from other distributions use the `generate` function and pass it a function:
 
-will generate a list of 50 independent uniform random variables. The
-functions `normal-rand` and `cauchy-rand` work similarly.
-Other generating functions require additional arguments to specify
-distribution parameters. Here is a list of the functions available for
-dealing with probability distributions:
+```lisp
+(generate #'distributions:draw-standard-normal 50)
+```
+
+This does the same as above.
+
+You can also generate a matrix of random data by passing in the
+dimensions to either `generate` or `rand`, for example
+
+```lisp
+(rand '(3 3))
+```
+will produce a two dimensional 3x3 array drawn from a uniform distribution
+```lisp
+#2A((0.63552105 0.65347326 0.5214559)
+    (0.31842113 0.18871248 0.17352986)
+    (0.04502511 0.09796631 0.8505186))
+```
+
+To use a parameterised distribution, first create it with a local
+(`let`) binding and get the generator, for example:
+```lisp
+(let ((rv (distributions:r-gamma 10 60/15)))
+  (generate (distributions:generator rv) 50))
+```
+
+Will produce 50 values drawn from a gamma distribution with $α=10$ and $β=4$.
+
+TODO: fix this section
+
+Here is a list of the functions available for dealing with probability
+distributions:
 
 | CDF          | Quantile       | Draw          | PDF          |
 | ---          | ---            | ---           | ---          |
@@ -882,7 +953,7 @@ for integer arguments. The quantile functions and random variable
 generators for the beta, gamma, $\chi^{2}$, t and F distributions are
 presently calculated by inverting the cdf and may be a bit slow.
 
--->
+
 
 The state of the internal random number generator can be "randomly"
 reseeded, and the current value of the generator state can be saved. The
@@ -895,118 +966,133 @@ an optional argument. If the argument is `NIL` or omitted
 returned.  If the argument is `t` a new, "randomly" initialized
 state object is produced and returned. [^5]
 
-<!--
+
 ### Generating Systematic Data
 
-(defun generate-sequence (result-type size function)
-  "Like MAKE-SEQUENCE, but using a function to fill the result."
-  (map-into (make-sequence result-type size) function))
+Systematic data is that which does not come from a distribution.  We
+have already used the function `numseq` to generate equally spaced
+sequences of integers and real numbers.
 
-alexandria:iota
+Sometimes we wish to create more complicated vectors or matrices
+containing systematic data and for that we can use the functions in
+[array-operations](/docs/manuals/array-operations/#creation--transformation).
 
-It might be that generate-sequence can be used with the random-draw
-functions for the same effect as the XLISP-STAT (uniform 50). It works with this:
+For example we can `linspace` to create evenly spaced numbers in given range:
 
-(let ((rv (r-normal 13 2)))
-	   (num-utils.utilities:generate-sequence 'vector 10 (lambda () (draw rv))))
+```lisp
+(linspace 0 4 5)   ;=> #(0 1 2 3 4)
+(linspace 1 3 5)   ;=> #(0 1/2 1 3/2 2)
+(linspace 1 3 5 'double-float) ;=> #(1.0d0 1.5d0 2.0d0 2.5d0 3.0d0)
+(linspace 0 4d0 3) ;=> #(0.0d0 2.0d0 4.0d0)
+```
 
-But that seems a bit clumsy and (normal 50), or something like it, a bit easier.
+or [recycle](/docs/manuals/array-operations/#recycle) to create
+repeating patterns:
 
-NOTE: `iota` doesn't have a range, it has :start and :step, and you have to calculate the range.
+```lisp
+(recycle #(2 3) :outer 2)  ;=> #2A((2 3)
+                                   (2 3))
+```
 
-We have already used the functions `iseq` and `rseq` to generate equally spaced
-sequences of integers and real numbers.  The function `repeat` is
-useful for generating sequences with a particular pattern. The general
-form of a call to `repeat` is
+and if you want a 1D vector, `flatten` it:
 
-    (repeat list pattern)
+```lisp
+(flatten (recycle #(2 3) :outer 2))  ;=> #(2 3 2 3)
+```
 
-`pattern` must be either a single number or a list of numbers of
-the same length as `list`. If `pattern` is a single number
-then `repeat` simply repeats `list` `pattern` times. For
-example
+`recycle` has options for several types of repeating data.
 
-    > (repeat (list 1 2 3) 2)
-    (1 2 3 1 2 3)
-
-If `pattern` is a list then each element of `list` is repeated
-the number of times indicated by the corresponding element of
-`pattern`. For example
-
-    > (repeat (list 1 2 3) (list 3 2 1))
-    (1 1 1 2 2 3)
 
 In Section [6.2](#MorePlots.Scatmat){reference-type="ref"
 reference="MorePlots.Scatmat"} below I generate the variables
 `density` and `variety` by typing them in directly. Using the
-`repeat` function we could have generated them like this:
-
-    (def density (repeat (repeat (list 1 2 3 4) (list 3 3 3 3)) 3))
-    (def variety (repeat (list 1 2 3) (list 12 12 12)))
--->
-### Forming Subsets and Deleting Cases {#MoreData.Subsets}
-
-The `select` function allows you to select a single element or a
-group of elements from a list or vector. For example, if we define
-`x` by
+`recycle` function we could have generated them like this:
 
 ```lisp
-(def x (list 3 7 5 9 12 3 14 2))
+(defvar density
+  (flatten (recycle (flatten (recycle #(1 2 3 4) :inner 3)) :outer 3)))
 ```
 
-then `(select x i)` will return the i<sup>th</sup> element of `x`.
+and
+
+```lisp
+(defvar variety
+  (flatten (recycle #(1 2 3) :inner 12)))
+```
+
+
+### Forming Subsets and Deleting Cases {#MoreData.Subsets}
+
+The [select system](/docs/manuals/select/) allows you to take slices
+(elements selected by the Cartesian product of vectors of subscripts
+for each axis) of array-like objects.  You can select a single element
+or a group of elements from a list or vector.  For example, if we
+define $x$ by
+
+```lisp
+(defparameter x #(3 7 5 9 12 3 14 2))
+```
+
+then `(select x i)` will return the i<sup>th</sup> element of $x$.
 Common Lisp, like the language C, but in contrast to FORTRAN, numbers
 elements of list and vectors starting at zero.  Thus the indices for
 the elements of `x` are 0, 1, 2, 3, 4, 5, 6, 7 . So
 
-    LS-USER> (select x 0)
-    3
-    LS-USER> (select x 2)
-    5
+```lisp
+(select x 0) ; => 3
+(select x 2) ; => 5
+```
 
 To get a group of elements at once we can use a list of indices instead
 of a single index:
 
-    LS-USER> (select x (list 0 2))
-    (3 5)
+```lisp
+(select x '(0 2)) ; => #(3 5)
+```
 
-If you want to select all elements of `x` except element 2 you can
+If you want to select all elements of $x$ except element 2 you can
 use the expression
 
 ```lisp
-(remove 2 (iota 8))
+(remove 2 (iota 8)) ; => (0 1 3 4 5 6 7)
 ```
 
-as the second argument to the function `select`:
+`iota` produces a zero-based list of integers up to, but not including
+the argument. `remove`, as the name suggests, removes the value at
+that index.  The result of this is that we have a list of the indices,
+without the one want to discard.  Now we can use it as the second
+argument to the function `select`:
 
 ```lisp
 LS-USER> (remove 2 (iota 8))
-(0 1 3 4 5 6 7)
+#(0 1 3 4 5 6 7)
 LS-USER> (select x (remove 2 (iota 8)))
-(3 7 9 12 3 14 2)
+#;(3 7 9 12 3 14 2)
 ```
-<!--
+
 Another approach is to use the logical function `/=` (meaning not
 equal) to tell you which indices are not equal to 2. The function
 `which` can then be used to return a list of all the indices for
 which the elements of its argument are not `NIL`:
 
-    LS-USER> (/= 2 (iota 8))
-    (T T NIL T T T T T)
-    LS-USER> (which (/= 2 (iota 0 8)))
-    (0 1 3 4 5 6 7)
-    LS-USER> (select x (which (/= 2 (iseq 0 7))))
-    (3 7 9 12 3 14 2)
+```lisp
+(which x :predicate #'(lambda (i) (/= 2 i)))) ;=> #(0 1 3 4 5 6 7)
+(select x *) ;=> #(3 7 9 12 3 14 2)
+```
+
+You'll learn more about the short-hand `*` in the next section.  It
+means "insert the value of the last command here" and as you can see
+makes working at the REPL a bit simpler.
 
 This approach is a little more cumbersome for deleting a single element,
-but it is more general. The expression
-`(select x (which (< 3 x)))`, for example, returns all elements in
+but it is more general. For example, to return all elements in
 `x` that are greater than 3:
 
-    LS-USER> (select x (which (< 3 x)))
-    (7 5 9 12 14)
--->
-### Combining Lists & Vectors
+```lisp
+(select x (which x :predicate #'(lambda (i) (< 3 i)))) ;=> #(7 5 9 12 14)
+```
+
+### Combining  Vectors
 
 At times you may want to combine several short lists or vectors into a
 single longer one.  This can be done using the `append` function. For
@@ -1014,9 +1100,9 @@ example, if you have three variables `x`, `y` and `z` constructed by
 the expressions
 
 ```lisp
-(def x (list 1 2 3))
-(def y (list 4))
-(def z (list 5 6 7 8))
+(defparameter x '(1 2 3))
+(defparameter y '(4))
+(defparameter z '(5 6 7 8))
 ```
 
 then the expression
@@ -1033,8 +1119,7 @@ For vectors, we use the more general function `concatenate`, which
 operates on *sequences*, that is objects of either `list` or `vector`:
 
 ```lisp
-LS-USER> (concatenate 'vector #(1 2) #(3 4))
-#(1 2 3 4)
+(concatenate 'vector #(1 2) #(3 4)) ;=> #(1 2 3 4)
 ```
 
 Notice that we had to indicate the return type, using the `'vector`
@@ -1046,24 +1131,15 @@ type.
 
 So far when I have asked you to type in a list of numbers I have been
 assuming that you will type the list correctly.  If you made an error
-you had to retype the entire `def` expression.  Since you can use
-cut & paste this is really not too serious.  However it would be
+you had to retype the entire `defparameter` expression.  Since you can use
+copy & paste this is really not too serious.  However it would be
 nice to be able to replace the values in a list after you have typed
 it in.  The `setf` special form is used for this. Suppose you would
-like to change the 12 in the list `x` used in the Section
-[4.3](#MoreData.Subsets) to 11. The expression
+like to change the 12 in the list $x$ used in the Section
+[4.3](#MoreData.Subsets) to 11. The expression `setf` will do this:
 
 ```lisp
-(setf (select x 4) 11)
-```
-
-will make this replacement:
-
-```lisp
-LS-USER> (setf (select x 4) 11)
-11
-LS-USER> x
-(3 7 5 9 11 3 14 2)
+(setf (select x 4) 11) ;=> #(3 7 5 9 11 3 14 2)
 ```
 
 The general form of `setf` is
@@ -1078,41 +1154,52 @@ value you would like that element to have, or the list of the values for
 the elements in the group. Thus the expression
 
 ```lisp
-(setf (select x (list 0 2)) (list 15 16))
+(setf (select x #(0 2)) #(15 16))
 ```
 
-changes the values of elements 0 and 2 to 15 and 16:
+changes the values of elements 0 and 2 to 15 and 16. What this means
+is that the return of `select` is a
+[place](https://www.lispworks.com/documentation/HyperSpec/Body/05_aa.htm)
+that is 'setf-able'.
 
-    LS-USER> (setf (select x (list 0 2)) (list 15 16))
-    (15 16)
-    LS-USER> x
-    (15 7 16 9 11 3 14 2)
+```lisp
+(setf (select x #(0 2)) #(15 16))
+NIL
+```
+to see the new values, type the name of the variable, in this case $x$
+
+```lisp
+LS-USER> x
+#(15 7 16 9 11 3 14 2)
+```
 
 {{< alert color="warning" title="Caution" >}} Lisp symbols are merely labels for
 different items. When you assign a name to an item with the `defvar` or `defparameter`
 commands you are not producing a new item. Thus
 
-    (defparameter x (list 1 2 3 4))
+    (defparameter x #(1 2 3 4))
     (defparameter y x)
 
 means that `x` and `y` are two different names for the same
 thing.{{< /alert >}}
 
-As a result, if we change an element of (the item referred to by) `x`
-with `setf` then we are also changing the element of (the item
-referred to by) `y`, since both `x` and `y` refer to the same item. If
-you want to make a copy of `x` and store it in `y` before you make
-changes to `x` then you must do so explicitly using, say, the
-[copy-list](http://clhs.lisp.se/Body/f_cp_lis.htm) function. The
-expression
+As a result, if we change an element of (the item referred to by) $x$
+with
+[setf](https://www.lispworks.com/documentation/HyperSpec/Body/m_setf_.htm#setf)
+then we are also changing the element of (the item referred to by)
+$y$, since both $x$ and $y$ refer to the same item. If you want to
+make a copy of $x$ and store it in $y$ before you make changes to $x$
+then you must do so explicitly using, say, the
+[copy-seq](http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/Body/fun_copy-seq.html)
+function. The expression
 
 ```lisp
-(defparameter y (copy-list x))
+(defparameter y (copy-seq x))
 ```
 
-will make a copy of `x` and set the value of `y` to that copy.
-Now `x` and `y` refer to different items and changes to
-`x` will not affect `y`.
+will make a copy of $x$ and set the value of $y$ to that copy.
+Now $x$ and $y$ refer to different items and changes to
+$x$ will not affect $y$.
 
 ## Useful Shortcuts {#Shortcuts}
 
@@ -1368,6 +1455,15 @@ shows the variable documentation for `pi`[^10].
 
 ### Listing and Undefining Variables
 
+TODO: Fix the `variables` function to work with `defvar` and `defparameter`.  This could be:
+
+```lisp
+(variables (& optional *package*)
+...
+```
+
+we can also search `LS-USER` and any packages in the data-frame list.  CL-USER as well.  Only return data-frames or symbolcs whos values are vectors of numeric type.
+
 After you have been working for a while you may want to find out what
 variables you have defined (using `def`).  The function
 `variables` will produce a listing:
@@ -1420,8 +1516,8 @@ resulting object to a variable:
 
 ```lisp
 LS-USER> (read-csv rdata:mtcars)
-WARNING: Missing column name was filled in
-#<DATA-FRAME (32 observations of 12 variables)>
+#<DATA-FRAME (32 observations of 12 variables)
+Motor Trend Car Road Tests>
 ```
 
 you can recover it using one of the history variables:
@@ -1447,19 +1543,19 @@ pause if you are using large amounts of memory.
 The data for the examples and exercises in this tutorial, when not
 loaded from the network, have been stored on files with names ending
 in `.lisp`. In the LISP-STAT system directory they can be found in the
-folder `Datasets`. Any variables you save (see the next subsection for
+folder `data`. Any variables you save (see the next subsection for
 details) will also be saved in files of this form. The data in these
 files can be read into LISP-STAT with the `load` function. To load a
 file named `randu.lisp` type the expression
 
 ```lisp
-(load #P"LS:DATASETS;RANDU.LISP")
+(load #P"LS:DATA;RANDU.LISP")
 ```
 
 or just
 
 ```lisp
-(load #P"LS:DATASETS;randu")
+(load #P"LS:DATA;randu")
 ```
 
 If you give `load` a name that does not end in `.lisp` then
@@ -1495,6 +1591,9 @@ directory and can be viewed again until the directory is cleared
 during a system reboot.
 
 #### Saving Variables
+
+TODO: Rewrite this section to use Common Lisp / Lisp-Stat functions.
+
 Variables you define in LISP-STAT only exist for the duration of the
 current session.  If you quit from LISP-STAT your data will be lost.
 To preserve your data you can use the `savevar` function.  This
@@ -1521,21 +1620,21 @@ recreate the variables `precipitation` and `purchases`.  You can look
 at these files with an editor like the Emacs editor and you can
 prepare files with your own data by following these examples.
 
-<!--
+
 Removed until we can cohesively put data frames into the tutorial
 #### Saving Data Frames
 To save a data frame, use the `save` function. For example to save the
 `mpg` data frame you would use:
 
 ```lisp
-(save mpg #P"LS:DATASETS;mpg.lisp")
+(save 'mpg #P"LS:DATA;mpg.lisp")
 ```
 
 
 For more information on saving data frames see the [save section in
 the manual](https://lisp-stat.dev/docs/manuals/data-frame/#save-data)
 function.
--->
+
 
 <!-- Describe the CCL Editor, Hemlock, for MacOS users
 ### The LISP-STAT Editor {#Shortcuts.Editor}
@@ -1590,7 +1689,7 @@ initialization file for global level initialization, and
 file](/docs/getting-started/installation/#initialization-file) in the
 manual for more information.
 
-<!-- Document this once Vega-lite/Plotly is working
+
 ## More Elaborate Plots {#MorePlots}
 
 The plots described so far were designed for exploring the distribution
@@ -1623,9 +1722,11 @@ extractable iron and aluminum in a sediment (Devore and Peck
 [@DevorePeck page 509, Example 6]). The data can be entered with the
 expressions
 
-    (def iron (list 61 175 111 124 130 173 169 169 160 224 257 333 199))
-    (def aluminum (list 13 21 24 23 64 38 33 61 39 71 112 88 54)) 
-    (def absorption (list 4 18 14 18 26 26 21 30 28 36 65 62 40))
+```lisp
+(defparameter iron #(61 175 111 124 130 173 169 169 160 224 257 333 199))
+(defparameter aluminum #(13 21 24 23 64 38 33 61 39 71 112 88 54))
+(defparameter absorption #(4 18 14 18 26 26 21 30 28 36 65 62 40))
+```
 
 The expression
 
@@ -1646,12 +1747,13 @@ this data quite well.
 
 As a second example, with the data defined by
 
-    (def strength (list 14.7 48.0 25.6 10.0 16.0 16.8 20.7 38.8
-                        16.9 27.0 16.0 24.9 7.3 12.8))
-    (def depth (list 8.9 36.6 36.8 6.1 6.9 6.9 7.3 8.4 6.5 8.0 4.5 9.9 2.9 2.0))
-    (def water (list 31.5 27.0 25.9 39.1 39.2 38.3 33.9 33.8
-                     27.9 33.1 26.3 37.8 34.6 36.4))
-
+```lisp
+(defparameter strength #(14.7 48.0 25.6 10.0 16.0 16.8 20.7 38.8
+                         16.9 27.0 16.0 24.9 7.3 12.8))
+(defparameter depth #(8.9 36.6 36.8 6.1 6.9 6.9 7.3 8.4 6.5 8.0 4.5 9.9 2.9 2.0))
+(defparameter water #(31.5 27.0 25.9 39.1 39.2 38.3 33.9 33.8
+                     2 7.9 33.1 26.3 37.8 34.6 36.4))
+```
 (Devore and Peck[@DevorePeck Problem 12.18]) the expression
 
     (spin-plot (list water depth strength)
@@ -1700,28 +1802,27 @@ released.
     random number generator called RANDU in its software library. This
     generator was supposed to produce numbers that behaved like
     $i. i. d.$ uniform random variables. The data set `randu` in
-    the file `randu.lsp` in the **Data** folder consists of a list
-    of three lists of numbers. These lists are consecutive triples of
+    the file `randu.lisp` in the **data** folder consists of a vector
+    of three vectors of numbers. These vectors are consecutive triples of
     numbers produced by RANDU. Use `spin-plot` to see if you can
     spot any unusual features in this sample.
--->
 
-<!--
 ### Scatter-plot Matrices {#MorePlots.Scatmat}
 
 Another approach to graphing a set of variables is to look at a matrix
 of all possible pairwise scatter-plots of the variables. The
 `scatterplot-matrix` function will produce such a plot. The data
 
-    (def hardness (list 45 55 61 66 71 71 81 86 53 60 64 68 79 81 56
-                        68 75 83 88 59 71 80 82 89 51 59 65 74 81 86))
-    (def tensile-strength (list 162 233 232 231 231 237 224 219 203 189
-                                210 210 196 180 200 173 188 161 119 161
-                                151 165 151 128 161 146 148 144 134 127))
-    (def abrasion-loss (list 372 206 175 154 136 112 55 45 221 166 164
-                             113  82  32 228 196 128 97 64 249 219 186
-                             155 114 341 340 284 267 215 148))
-
+```lisp
+(defparameter hardness #(45 55 61 66 71 71 81 86 53 60 64 68 79 81 56
+                         68 75 83 88 59 71 80 82 89 51 59 65 74 81 86))
+(defparameter tensile-strength #(162 233 232 231 231 237 224 219 203 189
+                                 210 210 196 180 200 173 188 161 119 161
+                                 151 165 151 128 161 146 148 144 134 127))
+(defparameter abrasion-loss #(372 206 175 154 136 112 55 45 221 166 164
+                              113  82  32 228 196 128 97 64 249 219 186
+                              155 114 341 340 284 267 215 148))
+```
 were produced in a study of the abrasion loss in rubber tires and the
 expression
 
@@ -1776,14 +1877,15 @@ A scatterplot matrix is also useful for examining the relationship
 between a quantitative variable and several categorical variables. In
 the data
 
-    (def yield (list 7.9 9.2 10.5 11.2 12.8 13.3 12.1 12.6 14.0 9.1 10.8 12.5
-                     8.1 8.6 10.1 11.5 12.7 13.7 13.7 14.4 15.5 11.3 12.5 14.5  
-                    15.3 16.1 17.5 16.6 18.5 19.2 18.0 20.8 21 17.2 18.4 18.9 )) 
-    (def density (list 1 1 1 2 2 2 3 3 3 4 4 4 1 1 1 2 2 2 3 3 3 4 4 4 
-                       1 1 1 2 2 2 3 3 3 4 4 4))
-    (def variety (list 1 1 1  1 1 1  1 1 1  1 1 1  2 2 2  2 2 2  2 2 2
-                       2 2 2  3 3 3  3 3 3  3 3 3  3 3 3))
-
+```lisp
+(defparameter yield #(7.9 9.2 10.5 11.2 12.8 13.3 12.1 12.6 14.0 9.1 10.8 12.5
+                      8.1 8.6 10.1 11.5 12.7 13.7 13.7 14.4 15.5 11.3 12.5 14.5
+                      15.3 16.1 17.5 16.6 18.5 19.2 18.0 20.8 21 17.2 18.4 18.9 ))
+(defparameter density #(1 1 1 2 2 2 3 3 3 4 4 4 1 1 1 2 2 2 3 3 3 4 4 4
+                        1 1 1 2 2 2 3 3 3 4 4 4))
+(defparameter variety #(1 1 1  1 1 1  1 1 1  1 1 1  2 2 2  2 2 2  2 2 2
+                        2 2 2  3 3 3  3 3 3  3 3 3  3 3 3))
+```
 (Devore and Peck [@DevorePeck page 595, Example 14]) the yield of tomato
 plants is recorded for an experiment run at four different planting
 densities and using three different varieties. In the plot in Figure
@@ -1806,21 +1908,18 @@ accepts the optional keyword argument `scale`.
     products. Four oxygen concentrations and two types of sugar were
     used. The data are
 
-        (def ethanol (list .59 .30 .25 .03 .44 .18 .13 .02 .22 .23 .07
-                           .00 .12 .13 .00 .01))
-        (def oxygen (list 1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4))
-        (def sugar (list 1 1 2 2 1 1 2 2 1 1 2 2 1 1 2 2 ))
-
-    and are on file the `oxygen.lsp`. Use a scatterplot matrix to
+```lisp
+(defparameter ethanol #(.59 .30 .25 .03 .44 .18 .13 .02 .22 .23 .07
+                        .00 .12 .13 .00 .01))
+(defparameter oxygen #(1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4))
+(defparameter sugar #(1 1 2 2 1 1 2 2 1 1 2 2 1 1 2 2 ))
+```
+    and are on file the `oxygen.lisp`. Use a scatterplot matrix to
     examine these data.
 
 2.  Use scatterplot matrices to examine the data in the examples and
     exercises of Section [6.1](#MorePlots.Spinplot){reference-type="ref"
     reference="MorePlots.Spinplot"} above.
-
--->
-
-<!--
 
 ### Interacting with Individual Plots
 
@@ -1898,9 +1997,10 @@ Peck [@DevorePeck page 105, Example 2] describe a data set collected to
 examine the effect of bicycle lanes on drivers and bicyclists. The
 variables given by
 
-    (def travel-space (list 12.8 12.9 12.9 13.6 14.5 14.6 15.1 17.5 19.5 20.8))
-    (def separation (list 5.5 6.2 6.3 7.0 7.8 8.3 7.1 10.0 10.8 11.0))
-
+```lisp
+(defparameter travel-space #(12.8 12.9 12.9 13.6 14.5 14.6 15.1 17.5 19.5 20.8))
+(defparameter separation #(5.5 6.2 6.3 7.0 7.8 8.3 7.1 10.0 10.8 11.0))
+```
 represent the distance between the cyclist and the roadway center line
 and the distance between the cyclist and a passing car, respectively,
 recorded in ten cases. A regression line fit to these data, with
@@ -2121,7 +2221,6 @@ example, you could use
 
 in place of the previous expression.
 
--->
 
 <!--
 
@@ -2393,12 +2492,12 @@ expression `defun` will install it so the `documentation` function will
 be able to retrieve it.
 -->
 
-<!--
+
 ### Anonymous Functions {#Fundefs.Anonymous}
 
-Suppose you would like to plot the function f(x) = 2x + x^{2} over the
-range -2 <= x <= 3.  We can do this by first defining a function
-`f` and then using `plot-function`:
+Suppose you would like to plot the function $f(x) = 2x + x^{2}$ over the
+range $-2 \leq x \leq 3$.  We can do this by first defining a function
+$f$ and then using `plot-function`:
 
     (defun f (x) (+ (* 2 x) (^ x 2)))
     (plot-function #'f -2 3)
@@ -2452,9 +2551,8 @@ There are a number of other situations in which you might want to pass a
 function on as an argument without first going through the trouble of
 thinking up a name for the function and defining it using `defun`.
 A few additional examples are given in the next subsection.
--->
 
-<!--
+
 ### Some Dynamic Simulations
 
 In Section [6.6](#MorePlots.Dynamic){reference-type="ref"
@@ -2601,9 +2699,8 @@ values. We would not want to see these values in the display field on
 the slider, so I have used the keyword argument `:display` to
 specify an alternative display sequence, the powers used in the
 transformation.
--->
 
-<!--
+
 ### Defining Methods
 
 When a message is sent to an object the object system will use the
@@ -2664,7 +2761,7 @@ method:
 
 The variable `self` refers to the object that is receiving the
 message. This definition is close to the definition of this method
-supplied in the file `regression.lsp`.
+supplied in the file `regression.lisp`.
 
 
 
@@ -2680,7 +2777,7 @@ when they are selected. If you are interested in modifying plot behavior
 you may be able to get started by looking at the methods defined in the
 graphics files loaded on start up. Further details will be given in
 [@MyBook].
--->
+
 
 
 ## Matrices and Arrays {#Arrays}
@@ -2730,7 +2827,7 @@ returns the upper left hand corner of `A`.
 
 LISP-STAT allows the construction of nonlinear, normal regression
 models. The present implementation is experimental. The definitions
-needed for nonlinear regression are in the file `nonlin.lsp` on the
+needed for nonlinear regression are in the file `nonlin.lisp` on the
 distribution disk. This file is not loaded automatically at start up;
 you should load it now, using the **Load** item on the **File** menu or
 the `load` command, to carry out the calculations in this section.
@@ -2753,8 +2850,8 @@ concentration level the function `f1` defined by
 
 computes the list of mean response values at the points in `x1` for
 a parameter list `b`. Using these definitions, which are contained
-in the file `puromycin.lsp` in the `Data` folder of the
-distribution disk, we can construct a nonlinear regression model using
+in the file `puromycin.lisp` in the **data** folder of the
+LISP-STAT system folder, we can construct a nonlinear regression model using
 the `nreg-model` function.
 
 First we need initial estimates for the two model parameters. Examining
@@ -2836,7 +2933,7 @@ regression model can respond to the messages
 
 1.  Examine the residuals of the `puromycin` model.
 
-2.  The file `puromycin.lsp` also contains data `x2` and
+2.  The file `puromycin.lisp` also contains data `x2` and
     `y2` and mean function `f2` for an experiment run without
     the Puromycin treatment. Fit a model to this data and compare the
     results to the experiment with Puromycin.
@@ -2848,8 +2945,8 @@ regression model can respond to the messages
 ## One Way ANOVA
 
 LISP-STAT allows the construction of normal one way analysis of
-variance models. The definitions needed are in the file
-`oneway.lsp` on the distribution disk. This file is not loaded
+variance models. The function definitions needed are in the file
+`oneway.lsp` . This file is not loaded
 automatically at start up; you should load it now, using the **Load**
 item on the **File** menu or the `load` command, to carry out the
 calculations in this section.
@@ -2903,7 +3000,7 @@ as a few new ones. The new ones are
 ## Maximization and Maximum Likelihood Estimation {#MaximumLikelihood}
 
 LISP-STAT includes two functions for maximizing functions of several
-variables. The definitions needed are in the file `maximize.lisp` on
+variables. The definitions needed are in the file `maximize.lsp` on
 the distribution disk. This file is not loaded automatically at start
 up; you should load it now, using the **Load** item on the **File** menu
 or the `load` command, to carry out the calculations in this
@@ -2923,9 +3020,10 @@ collected on times (in operating hours) between failures of air
 conditioning units on several aircraft. The data for one of the aircraft
 can be entered as
 
-    (def x (90 10 60 186 61 49 14 24 56 20 79 84 44 59 29 118 25 156 310 76
-            26 44 23 62 130 208 70 101 208))
-
+```lisp
+(defparameter x #(90 10 60 186 61 49 14 24 56 20 79 84 44 59 29 118 25 156 310 76
+                26 44 23 62 130 208 70 101 208))
+```
 A simple model for these data might be to assume the times between
 failures are independent random variables with a common gamma
 distribution. The density of the gamma distribution can be written as
@@ -2948,8 +3046,7 @@ evaluate this log likelihood by
 
 This definition uses the function `log-gamma` to evaluate
 $\log(\Gamma(\beta))$. The data and function definition are contained in
-the file `aircraft.lsp` in the `Data` folder of the
-distribution disk.
+the file `aircraft.lisp` in the **data** folder of the LISP-STAT system.
 
 Closed form maximum likelihood estimates are not available for the shape
 parameter of this distribution, but we can use `newtonmax` to
@@ -3047,7 +3144,7 @@ result.
 
 1.  The data set used in this example consists of sets of measurements
     for ten aircraft. Data for five of the aircraft are contained in the
-    variable `failure-times` in the file `aircraft.lsp`. The
+    variable `failure-times` in the file `aircraft.lisp`. The
     calculations of this section used the data for the second aircraft.
     Examine the data for the remaining four aircraft.
 
@@ -3060,7 +3157,7 @@ result.
 
 This section describes a set of tools for computing approximate
 posterior moments and marginal densities in XLISP-STAT. The definitions
-needed are in the file `bayes.lsp` on the distribution disk. This
+needed are in the file `bayes.lisp` on the distribution disk. This
 file is not loaded automatically at start up; you should load it now,
 using the **Load** item on the **File** menu or the `load` command,
 to carry out the calculations in this section. The material in this
@@ -3080,7 +3177,7 @@ between survival time (in weeks) of leukemia patients and white blood
 cell count recorded for the patients at their entry into the study
 [@CoxSnell Example U]. The data consists of two groups of patients
 classified as AG positive and AG negative. The data for the 17 AG
-positive patients, contained in the file `leukemia.lsp` in the
+positive patients, contained in the file `leukemia.lisp` in the
 `Data` folder on the distribution disk, can be entered as
 
     (def wbc-pos (list 2300 750 4300 2600 6000 10500 10000 17000 5400 7000
@@ -3750,7 +3847,7 @@ also. They are the functions `interval-slider-dialog` and
     bindings.
 
 [^3]: Use the function `load`. For example, evaluating the expression
-    `(load #P"LS:DATASETS;CAR-PRICES")` should load the file
+    `(load #P"LS:DATA;CAR-PRICES")` should load the file
     `car-prices.lisp`.
 
 [^4]: As an aside, a Lisp symbol can be thought of as a "thing" with

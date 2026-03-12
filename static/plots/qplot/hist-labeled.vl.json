@@ -1,1 +1,1 @@
-{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","data":{"url":"/data/qplot/vgcars.json"},"mark":{"type":"bar","color":"steelblue"},"encoding":{"x":{"bin":true,"field":"horsepower","title":"Engine Horsepower"},"y":{"aggregate":"count","title":"Number of Cars"}}}
+{"$schema":"https://vega.github.io/schema/vega-lite/v6.json","encoding":{"x":{"title":"Engine Horsepower","field":"horsepower","bin":true},"y":{"title":"Number of Cars","aggregate":"count"}},"mark":{"color":"steelblue","type":"bar"},"data":{"url":"/data/qplot/vgcars.json"}}

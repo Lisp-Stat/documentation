@@ -51,10 +51,12 @@ In ggplot2, a plot is built from independent concerns:
 | `geom_bar()` | `bar` | `geom` | Mark type and encoding |
 | `geom_boxplot()` | `box-plot` | `geom` | Mark type and encoding |
 | `geom_histogram()` | `histogram` | `geom` | Binning, aggregation |
+| `geom_line()` | `line` | `geom` | Series connection, interpolation |
 | `labs()` | `label` | `gg` | Axis titles |
 | `scale_*()` | `axes` | `gg` | Axis transforms, domains, color schemes |
 | `coord_cartesian()` | `coord` | `gg` | Viewport clipping |
 | `theme()` | `theme` | `gg` | Dimensions, fonts, appearance |
+| *(no direct equiv.)* | `tooltip` | `gg` | Hover field definitions |
 
 Each function knows about _one_ concern and nothing else. A mark
 function never sets axis titles; `label` never touches mark types;
@@ -70,6 +72,10 @@ the same key (e.g. `:encoding`), the inner plists are merged rather
 than one replacing the other. This is what allows `label` to add
 `:axis` entries to the `:encoding` that `point` already created.
 
+Note that `merge-plists` is a utility function, not a layer helper —
+it is the mechanism that makes composition work, not a layer you
+pass to `qplot` yourself. See the API reference for full details.
+
 
 ### Two ways to plot
 
@@ -79,7 +85,9 @@ that fits your workflow.
 #### `defplot` + `plot:plot` — the explicit pattern
 
 The traditional approach separates definition from rendering. Use this
-when you want full control, or when writing scripts and notebooks:
+when you want full control, or when writing scripts and notebooks.
+Replace `:x-field`, `:y-field`, and `my-data` with your actual field
+names and data source:
 
 ```lisp
 (plot:plot
@@ -278,26 +286,17 @@ Load them into your session before running the examples:
 (vega:load-vega-examples)
 ```
 
-This makes variables like `vgcars` (a data frame of automobile
-specifications) available in your environment.  For datasets loaded
-using `vega:read-vega`, field names are automatically converted to
-Lisp-style keywords (e.g. `Miles_per_Gallon` becomes
-`:miles-per-gallon`).
+This makes the following variables available in your environment:
 
-### Accessing the helper functions
+- **`vgcars`** — Automobile specifications (horsepower, MPG, origin, etc.) for 406 cars.
+- **`stocks`** — Daily closing prices for several major tech stocks over multiple years.
 
-Let's import our helper functions so we don't need to use package qualified names.
-<!-- no-extract -->
-```lisp
-;; Import marks
-(import '(geom:point geom:bar geom:box-plot geom:histogram geom:line))
-
-;; Import modifiers
-(import '(gg:label gg:axes gg:coord gg:theme gg:tooltip))
-
-;; Import quick plotting
-(import '(qplot:qplot))
-```
+For datasets loaded using `vega:read-vega`, field names are
+automatically converted to Lisp-style keywords (e.g.
+`Miles_per_Gallon` becomes `:miles-per-gallon`). Note that the
+`:year` field in `vgcars` is stored as a date string (e.g.
+`"1970-01-01"`) rather than an integer, which is why the line chart
+examples pass `:x-type :temporal` for that field.
 
 ## Scatter plot
 
@@ -449,6 +448,37 @@ Combine every layer for a production-quality plot:
 ```
 
 {{< vega id="cars-full" spec="/plots/qplot/cars-full.vl.json" >}}
+
+
+### LOESS smoother
+
+A LOESS (locally estimated scatterplot smoothing) curve fits a
+non-parametric smooth line through data, revealing trends without
+assuming a fixed functional form. Use `loess` to overlay a trend
+line on a scatter plot or to compare smoothed trajectories across
+groups.
+
+#### Scatter plot with LOESS smoother
+
+Use `gg:layer` to compose the scatter points and the smoother into
+a single layered view:
+```lisp
+(qplot 'cars-loess vgcars
+  `(:title "HP vs. MPG with LOESS Smoother")
+  (gg:layer
+    (point :horsepower :miles-per-gallon
+           :color :origin :filled t :opacity 0.5)
+    (loess :horsepower :miles-per-gallon
+           :group :origin
+           :stroke-width 2)))
+```
+
+{{< vega id="cars-loess" spec="/plots/qplot/cars-loess.vl.json" >}}
+
+The `:group :origin` argument fits a separate curve for each origin
+and encodes it with the matching hue automatically. Increase
+`:bandwidth` toward `1.0` for a flatter, more global fit; decrease
+it toward `0.05` for a curve that tracks local variation closely.
 
 ## Histogram
 
@@ -771,7 +801,9 @@ curves), `:step` (step function), `:basis` (B-spline), and
 ### Line with point markers
 
 Set `:point t` to overlay point marks on each data position — useful
-for sparse data or when exact values matter:
+for sparse data or when exact values matter. Note that `:x-type
+:temporal` is required here because the `:year` field in `vgcars` is
+stored as a date string rather than an integer:
 
 ```lisp
 (qplot 'mpg-trend vgcars
@@ -859,6 +891,415 @@ presentation:
 
 {{< vega id="stock-full" spec="/plots/qplot/stock-full.vl.json" >}}
 
+
+## Function curves
+
+`geom:func` plots a Lisp function as a smooth line by evaluating it at
+evenly-spaced sample points and embedding the resulting (x, y) pairs
+directly in the Vega-Lite specification.  It mirrors the behaviour of
+R's [`geom_function()`](https://ggplot2.tidyverse.org/reference/geom_function.html)
+from ggplot2.
+
+Unlike the data-driven helpers (`point`, `bar`, `histogram`, etc.),
+`func` is **self-contained**: it carries its own `:data` block and
+requires no external data frame.  Use it anywhere you want to visualise
+a mathematical relationship — probability densities, regression curves,
+physical models, or any other computable function.
+
+Import `func` alongside the other helpers you use:
+
+<!-- no-extract -->
+```lisp
+(import '(geom:func))
+```
+
+### How it works
+
+`func` calls `aops:linspace` to generate `n` evenly-spaced x values
+over the closed interval `[xmin, xmax]` specified by `:xlim`.  It
+then calls `fn` at each x, collects the `(x, y)` pairs into a vector
+of plists, and embeds them as an inline Vega-Lite `:data` block.
+A `:line` mark connects the points using the chosen interpolation
+method (`:monotone` by default, giving smooth curves without
+overshoot).
+
+Points where `fn` signals a condition (e.g. `(log 0)`, `(/ 1 0)`)
+or returns a non-finite value (± infinity, NaN) are **silently
+dropped**.  Vega-Lite renders a visible gap at each discontinuity —
+the correct visual for functions like tan or 1/x.
+
+### Design note: self-contained data
+
+All other `geom` helpers return only `:mark` and `:encoding` keys and
+rely on the caller to supply `:data`.  `func` also returns a `:data`
+key, because the data _is_ the function.  This means it composes
+slightly differently from the other geom helpers:
+
+| Helper | Data source | Typical entry point |
+|--------|-------------|---------------------|
+| `point`, `bar`, `histogram`, … | external data frame | `qplot` |
+| `func` | self-generated inline | `defplot` + `vega:merge-plists` |
+
+For multi-layer plots (function overlaid on data) use Vega-Lite's
+`:layer` array directly inside `defplot`; see
+[Overlay on scatter data](#overlay-on-scatter-data) below.
+
+The following table describes the ggplot2 equivalent and responsibility:
+
+| ggplot2 | Lisp-Stat | Package | Responsibility |
+|---------|-----------|---------|----------------|
+| `geom_function()` | `func` | `geom` | Sample a function, encode as a line |
+
+### Reference
+
+```
+(geom:func fn &key xlim n color stroke-width stroke-dash opacity interpolate)
+```
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `fn` | function | — | A Lisp function `(real → real)`.  Receives a `double-float`; must return a real. |
+| `:xlim` | vector | `#(0d0 1d0)` | Domain `#(xmin xmax)`.  Both endpoints are always sampled. |
+| `:n` | integer ≥ 2 | `100` | Number of sample points.  Increase for oscillatory functions. |
+| `:color` | string | `nil` | CSS color for the line, e.g. `"steelblue"` or `"#e63946"`. `nil` lets Vega-Lite choose. |
+| `:stroke-width` | number | `nil` | Line thickness in pixels. |
+| `:stroke-dash` | vector | `nil` | Dash/gap pattern, e.g. `#(6 3)` for dashes or `#(2 2)` for dots. |
+| `:opacity` | number 0–1 | `nil` | Line opacity. |
+| `:interpolate` | keyword | `:monotone` | Vega-Lite interpolation method.  `:linear`, `:basis`, `:cardinal`, `:step` are also accepted. |
+
+{{% alert title="Vectors for JSON arrays" color="warning" %}}
+`:xlim` and `:stroke-dash` must be **vectors** (e.g. `#(0 10)`), not
+lists.  In the JSON serializer, lists become JSON objects while
+vectors become JSON arrays.
+{{% /alert %}}
+
+{{% alert title="color is always a CSS string" color="info" %}}
+Unlike the other mark helpers, `func` does not support a keyword
+`:color` for field-based color encoding — a function curve is a single
+computed series and carries no nominal grouping field.  `:color` always
+takes a CSS color string (e.g. `"steelblue"`).
+{{% /alert %}}
+
+{{% alert title="Top-level :data in layer specs" color="info" %}}
+`vega:defplot` always validates the top-level `:data` key.  In a
+`:layer` plot where every layer is self-contained (as all `func`
+layers are), pass `:data (:values #())` as a placeholder.  Vega-Lite
+discards it when each layer declares its own `:data`.  This same
+placeholder is needed for any `defplot` form that uses `:layer`
+without shared top-level data.
+{{% /alert %}}
+
+### Basic function plot
+
+Supply a function and a domain.  `vega:merge-plists` combines the
+self-contained `func` layer with a title and axis labels:
+
+```lisp
+(vega:defplot sine-wave
+  (vega:merge-plists
+    `(:title "Sine Wave")
+     (func #'sin :xlim #(-6.283 6.283) :n 200)
+     (label :x "x" :y "sin(x)")))
+```
+
+{{< vega id="sine-wave" spec="/plots/qplot/sine-wave.vl.json" >}}
+
+### Custom domain and resolution
+
+Increase `:n` for functions that oscillate rapidly.  Use `:xlim` to
+set the evaluation domain precisely:
+
+```lisp
+(vega:defplot damped-oscillation
+  (vega:merge-plists
+    `(:title "Damped Oscillation")
+     (func (lambda (x) (* (exp (* -0.3 x)) (sin (* 4 x))))
+           :xlim #(0 20)
+           :n    400)
+     (label :x "t" :y "Amplitude")))
+```
+
+{{< vega id="damped-oscillation" spec="/plots/qplot/damped-oscillation.vl.json" >}}
+
+### Functions with singularities
+
+Points where `fn` raises a condition or returns ±infinity are silently
+dropped.  Vega-Lite draws a gap at each discontinuity — the correct
+rendering for functions like tan(x):
+
+```lisp
+(vega:defplot tangent-curve
+  (vega:merge-plists
+    `(:title "tan(x) — gaps at singularities")
+     (func #'tan :xlim #(-4.5 4.5) :n 500)
+     (label :x "x" :y "tan(x)")
+     (axes  :y-domain #(-10 10))))
+```
+
+{{< vega id="tangent-curve" spec="/plots/qplot/tangent-curve.vl.json" >}}
+
+{{% alert title="Controlling the visible range" color="info" %}}
+For functions with large excursions near a singularity, use `axes`
+with `:y-domain` to restrict the visible range.  Unlike `coord`,
+`axes` changes the axis extent without clipping the line marks, which
+avoids visual artefacts near the asymptotes.
+{{% /alert %}}
+
+### Probability density function
+
+Plot a probability density function using the `distributions` system.
+Load it before running these examples:
+
+<!-- no-extract -->
+```lisp
+(asdf:load-system :distributions)
+```
+
+Create a distribution object with `distributions:r-normal`, then pass
+its `pdf` method to `func`.  `r-normal` takes **mean** and
+**variance** (not standard deviation), so the standard normal is
+`(r-normal 0d0 1d0)`:
+
+```lisp
+(let ((d (distributions:r-normal 0d0 1d0)))   ; mean=0, variance=1
+  (vega:defplot normal-pdf
+    (vega:merge-plists
+      `(:title "Standard Normal PDF")
+       (func (lambda (x) (distributions:pdf d x))
+             :xlim #(-4 4)
+             :n    200)
+       (label :x "x" :y "Density")
+       (theme :width 500 :height 300))))
+```
+
+{{< vega id="normal-pdf" spec="/plots/qplot/normal-pdf.vl.json" >}}
+
+{{% alert title="r-normal takes variance, not standard deviation" color="warning" %}}
+`distributions:r-normal` is parameterised as `(r-normal mean variance)`.
+To construct a distribution from a standard deviation `sigma`, pass
+`(expt sigma 2)` as the second argument.  Passing `sigma` directly
+will produce a distribution with the wrong spread and no error.
+{{% /alert %}}
+
+### Styled function curve
+
+Pass `:color`, `:stroke-width`, and `:stroke-dash` for visual polish.
+To show two styled curves together, use `:layer` — each `func` call
+carries its own inline data:
+
+```lisp
+(vega:defplot sin-and-cos-styled
+  `(:title "sin and cos — styled lines"
+    :data (:values #())
+    :layer
+    #(,(func #'sin
+             :xlim #(-6.283 6.283)
+             :n 200
+             :color "steelblue"
+             :stroke-width 2)
+      ,(func #'cos
+             :xlim #(-6.283 6.283)
+             :n 200
+             :color "firebrick"
+             :stroke-width 2
+             :stroke-dash #(8 4)))))
+```
+
+{{< vega id="sin-and-cos-styled" spec="/plots/qplot/sin-and-cos-styled.vl.json" >}}
+
+### Step interpolation
+
+Use `:interpolate :step` for piecewise-constant functions — useful for
+visualising floor, ceiling, or any discrete-valued function:
+
+```lisp
+(vega:defplot step-function
+  (vega:merge-plists
+    `(:title "Floor function")
+     (func #'ffloor
+           :xlim #(0 6)
+           :n    300
+           :interpolate :step
+           :color "darkslategray"
+           :stroke-width 2)
+     (label :x "x" :y "floor(x)")))
+```
+
+{{< vega id="step-function" spec="/plots/qplot/step-function.vl.json" >}}
+
+### Two functions on the same axes
+
+Use Vega-Lite's `:layer` array directly inside `defplot`.  Each
+`func` call produces an independent layer with its own inline data:
+
+```lisp
+(vega:defplot sin-vs-cos
+  `(:title "sin(x) and cos(x)"
+    :data (:values #())
+    :layer
+    #(;; Layer 1 — sine
+      ,(func #'sin
+             :xlim #(-6.283 6.283)
+             :n 200
+             :color "steelblue"
+             :stroke-width 2)
+      ;; Layer 2 — cosine
+      ,(func #'cos
+             :xlim #(-6.283 6.283)
+             :n 200
+             :color "firebrick"
+             :stroke-width 2
+             :stroke-dash #(6 3)))))
+```
+
+{{< vega id="sin-vs-cos" spec="/plots/qplot/sin-vs-cos.vl.json" >}}
+
+{{% alert title="Axis labels in layered plots" color="info" %}}
+When using `:layer` directly, add axis titles inside each layer's
+`:encoding` entry, or use the top-level `:encoding` key for shared
+axes — Vega-Lite will merge them automatically.  Alternatively, wrap
+the `:layer` spec in `vega:merge-plists` and add a `label` layer
+at the outer level.
+{{% /alert %}}
+
+### Family of curves
+
+Plot a parameterised family by building the `:layer` vector in a loop:
+
+```lisp
+;; Gaussian PDFs with increasing standard deviations
+(let* ((sigmas #(0.5 1.0 1.5 2.0))
+       (colors #("steelblue" "seagreen" "darkorange" "firebrick"))
+       (layers (map 'vector
+                    (lambda (sigma color)
+                      (func (lambda (x)
+                              (* (/ 1 (* sigma (sqrt (* 2 pi))))
+                                 (exp (* -0.5 (expt (/ x sigma) 2)))))
+                            :xlim #(-5 5)
+                            :n 200
+                            :color color))
+                    sigmas
+                    colors)))
+  (vega:defplot gaussian-family
+    `(:title "Gaussian PDFs for sigma = 0.5, 1, 1.5, 2"
+      :data (:values #())
+      :layer ,layers)))
+```
+
+{{< vega id="gaussian-family" spec="/plots/qplot/gaussian-family.vl.json" >}}
+
+### Overlay on scatter data
+
+When overlaying a function on top of data, each layer supplies its own
+`:data`.  The data layer uses the original data frame; the function
+layer uses the inline data generated by `func`:
+
+```lisp
+(vega:defplot cars-with-trend
+  `(:title "HP vs MPG with Quadratic Trend"
+    :data (:values #())
+    :layer
+    #(;; Layer 1: raw data as a scatter plot
+      (:data     (:values ,vgcars)
+       :mark     (:type :point :filled t :opacity 0.5)
+       :encoding (:x (:field :horsepower      :type :quantitative
+                      :title "Horsepower")
+                  :y (:field :miles-per-gallon :type :quantitative
+                      :title "Miles per Gallon")
+                  :color (:field :origin :type :nominal)))
+      ;; Layer 2: fitted quadratic y = 52 - 0.23x + 3e-4*x^2
+      ,(func (lambda (x)
+               (+ 52.0d0
+                  (* -0.23d0 x)
+                  (* 3.0d-4  (expt x 2))))
+             :xlim #(40 230)
+             :n    300
+             :color "firebrick"
+             :stroke-width 2.5))))
+```
+
+{{< vega id="cars-with-trend" spec="/plots/qplot/cars-with-trend.vl.json" >}}
+
+{{% alert title="Field names in overlay plots" color="info" %}}
+The function layer always uses the internal field names `:x` and `:y`.
+The data layer uses the actual field names from your data frame (e.g.
+`:horsepower`, `:miles-per-gallon`).  Vega-Lite resolves the axis
+scales across layers automatically when the quantitative ranges
+overlap, which is why the function curve aligns correctly with the
+scatter points.
+{{% /alert %}}
+
+### Normal distribution fit over a histogram
+
+Overlay the theoretical PDF on an empirical histogram.  Use
+`select:select` to extract the column as a vector, `statistics:sd`
+for the standard deviation, and `distributions:r-normal` to construct
+the fitted distribution — recall that `r-normal` takes the variance,
+so pass `(expt sigma 2)`:
+
+```lisp
+(let* ((mpg   (select:select vgcars t :miles-per-gallon))
+       (mu    (statistics:mean mpg))
+       (sigma (statistics:sd   mpg))
+       (d     (distributions:r-normal mu (expt sigma 2))))
+  (vega:defplot mpg-fit
+    `(:title "MPG: Empirical Histogram with Normal Fit"
+      :data (:values #())
+      :layer
+      #(;; Histogram layer
+        (:data     (:values ,vgcars)
+         :mark     :bar
+         :encoding (:x (:field :miles-per-gallon
+                        :bin   (:maxbins 15)
+                        :type  :quantitative
+                        :title "Miles per Gallon")
+                    :y (:aggregate :count
+                        :stack :null
+                        :type  :quantitative
+                        :title "Count")))
+        ;; Density curve — scaled by (n × bin-width) to match count axis
+        ,(func (lambda (x) (* 406 3 (distributions:pdf d x)))
+               :xlim #(5 50)
+               :n    300
+               :color "firebrick"
+               :stroke-width 2)))))
+```
+
+{{< vega id="mpg-fit" spec="/plots/qplot/mpg-fit.vl.json" >}}
+
+### Chebyshev approximation
+
+`numerical-utilities` provides `chebyshev-regression` and
+`evaluate-chebyshev` for polynomial approximation.  Plot the exact
+function and its approximation together to inspect accuracy:
+
+```lisp
+(let* ((coeffs (nu:chebyshev-regression
+                  (lambda (x) (exp (- (nu:square x))))
+                  12))           ; 12-term approximation
+       (approx (lambda (x) (nu:evaluate-chebyshev coeffs x))))
+  (vega:defplot chebyshev-approx
+    `(:title "exp(-x^2): Exact vs 12-Term Chebyshev Approximation"
+      :data (:values #())
+      :layer
+      #(,(func (lambda (x) (exp (- (nu:square x))))
+               :xlim #(-1 1)
+               :n    200
+               :color "steelblue"
+               :stroke-width 2)
+        ,(func approx
+               :xlim #(-1 1)
+               :n    200
+               :color "firebrick"
+               :stroke-width 1.5
+               :stroke-dash #(6 3))))))
+```
+
+{{< vega id="chebyshev-approx" spec="/plots/qplot/chebyshev-approx.vl.json" >}}
+
+
+
+
 ## Combining layers across plot types
 
 Because every helper returns an independent plist, you can mix and
@@ -867,7 +1308,9 @@ match freely. Here are patterns that work with all mark types.
 ### Labels on any plot
 
 `label` works identically on every plot type — it only touches
-`:encoding :x/:y :axis :title`:
+`:encoding :x/:y :axis :title`. The examples below produce the same
+visual results as the per-section examples above; they are shown here
+to illustrate that `label` requires no changes across mark types:
 
 ```lisp
 ;; On a scatter plot
@@ -1028,7 +1471,8 @@ For reports or publications, combine all the layering helpers:
 
 Once you are happy with a plot created via `qplot`, it is a
 first-class `vega-plot` object. You can re-render, inspect, or
-write it to a file:
+write it to a file. This example assumes `presentation` was created
+in the recipe above:
 
 ```lisp
 ;; Re-render in the browser
@@ -1041,11 +1485,99 @@ write it to a file:
 (show-plots)
 ```
 
-### Recipe: dropping down to raw Vega-Lite
+## Recipe: exploring a function
+
+A typical REPL workflow when investigating a mathematical function.
+Note how the same plot name is reused — each `defplot` call overwrites
+the previous definition.
+
+**Step 1 — Quick sketch over the natural domain**
+
+```lisp
+(vega:defplot explore-fn
+  (vega:merge-plists
+    `(:title "First look")
+     (func (lambda (x) (/ (sin x) x))   ; sinc
+           :xlim #(-20 20)
+           :n    400)))
+```
+
+{{< vega id="sinc-rough" spec="/plots/qplot/sinc-rough.vl.json" >}}
+
+**Step 2 — Zoom in on a region of interest**
+
+```lisp
+(vega:defplot explore-fn
+  (vega:merge-plists
+    `(:title "sinc(x) — detail near origin")
+     (func (lambda (x) (/ (sin x) x))
+           :xlim #(-6.283 6.283)
+           :n    400)
+     (label :x "x" :y "sin(x)/x")
+     (axes  :y-domain #(-0.3 1.1))))
+```
+
+{{< vega id="sinc-detail" spec="/plots/qplot/sinc-detail.vl.json" >}}
+
+**Step 3 — Presentation polish**
+
+```lisp
+(vega:defplot sinc-final
+  (vega:merge-plists
+    `(:title "sinc(x) = sin(x)/x"
+      :description "Classic sinc function over [-2pi, 2pi]")
+     (func (lambda (x) (/ (sin x) x))
+           :xlim #(-6.283 6.283)
+           :n    500
+           :color "steelblue"
+           :stroke-width 2)
+     (label :x "x" :y "sin(x) / x")
+     (theme :width 600 :height 350 :font "Georgia")))
+```
+
+{{< vega id="sinc-final" spec="/plots/qplot/sinc-final.vl.json" >}}
+
+## Recipe: comparing model fits
+
+Overlay multiple fitted curves on a scatter plot to compare competing
+models visually:
+
+```lisp
+(let* ((linear    (lambda (x) (+ 39.9 (* -0.158 x))))
+       (quadratic (lambda (x) (+ 52.0 (* -0.23 x) (* 3.0e-4 (expt x 2))))))
+  (vega:defplot model-comparison
+    `(:title "Linear vs Quadratic Fit"
+      :data (:values #())
+      :layer
+      #(;; Raw data
+        (:data     (:values ,vgcars)
+         :mark     (:type :point :filled t :color "lightgray")
+         :encoding (:x (:field :horsepower      :type :quantitative
+                        :title "Horsepower")
+                    :y (:field :miles-per-gallon :type :quantitative
+                        :title "Miles per Gallon")))
+        ;; Linear fit
+        ,(func linear
+               :xlim #(40 230) :n 200
+               :color "steelblue" :stroke-width 2)
+        ;; Quadratic fit
+        ,(func quadratic
+               :xlim #(40 230) :n 200
+               :color "firebrick" :stroke-width 2
+               :stroke-dash #(6 3))))))
+```
+
+{{< vega id="model-comparison" spec="/plots/qplot/model-comparison.vl.json" >}}
+
+
+
+
+## Recipe: dropping down to raw Vega-Lite
 
 The helpers cover common patterns. When you need something they
-don't support, like transforms, selections, parameters, calculated
-fields, multi-view compositions then you can write raw Vega-Lite directly.
+don't support — transforms, selections, parameters, calculated
+fields, multi-view compositions — you can write raw Vega-Lite
+directly.
 
 **Example: brush selection with linked data table**
 
