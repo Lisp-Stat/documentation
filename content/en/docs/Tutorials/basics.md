@@ -842,6 +842,7 @@ be plotted against one another with the `plot-points` function:
     `metabolism.lisp`. Plot the data and describe any relationship
     you observe between age and CPK concentration.
 
+<!--
 ### Plotting Functions
 
 TODO: Implement geom:function
@@ -876,6 +877,7 @@ the expression for producing the sine plot can be written as
 
     (plot-function #'sin (- pi) pi).
 
+-->
 
 ## Generating and Modifying Data
 
@@ -1689,7 +1691,7 @@ initialization file for global level initialization, and
 file](/docs/getting-started/installation/#initialization-file) in the
 manual for more information.
 
-
+<!--
 ## More Elaborate Plots {#MorePlots}
 
 The plots described so far were designed for exploring the distribution
@@ -2221,7 +2223,7 @@ example, you could use
 
 in place of the previous expression.
 
-
+-->
 <!--
 
 ## Regression {#Regression}
