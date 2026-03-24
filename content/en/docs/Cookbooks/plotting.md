@@ -409,7 +409,7 @@ Lisp-Stat equivalent
 ```
 
 ### Loess regression
-<!-- TODO Rework this example using Lisp-Stat lowess regression.  See the IPS Jupyter notebook for an example -->
+
 {{< vega id="scatter-loess-regression" spec="/plots/loess-regression.vl.json" >}}
 
 ```lisp
