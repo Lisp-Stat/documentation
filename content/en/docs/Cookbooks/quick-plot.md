@@ -9,6 +9,12 @@ description: >
 
 ## Overview
 
+{{% alert title="Package setup" color="warn" %}} The `quickplot` system has now been integrated into `plot` and the Lisp-Stat plot architecture no longer has a seperate `quickplot`.  All of the below examples should still work: ignore the `qplot` package.  The [plot](https://github.com/Lisp-Stat/plot) README has some working examples if you want a quick start.
+
+If you're looking for a starter contribution, this area of documentation is both easy and valuable.
+{{% /alert %}}
+
+
 The `geom` and `gg` packages provide a set of composable helper
 functions for building [Vega-Lite](https://vega.github.io/vega-lite/)
 plot specifications. Inspired by R's
