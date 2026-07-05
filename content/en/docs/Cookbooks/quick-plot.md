@@ -9,7 +9,7 @@ description: >
 
 ## Overview
 
-{{% alert title="Documention Slightly Outdated" color="red" %}} The `quickplot` system has now been integrated into `plot` and the Lisp-Stat plot architecture no longer has a seperate `quickplot`.  All of the below examples should still work: ignore the `qplot` package.  The [plot](https://github.com/Lisp-Stat/plot) README has some working examples if you want a quick start.
+{{% alert title="Documention Slightly Outdated" color="warning" %}} The `quickplot` system has now been integrated into `plot` and the Lisp-Stat plot architecture no longer has a seperate `quickplot`.  All of the below examples should still work: ignore the `qplot` package.  The [plot](https://github.com/Lisp-Stat/plot) README has some working examples if you want a quick start.
 
 If you're looking for a starter contribution, this area of documentation is both easy and valuable.
 {{% /alert %}}
