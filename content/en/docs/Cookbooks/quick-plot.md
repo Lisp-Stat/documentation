@@ -14,6 +14,27 @@ description: >
 If you're looking for a starter contribution, this area of documentation is both easy and valuable.
 {{% /alert %}}
 
+Some quick examples courtesy of reddit user r/mirko:
+
+```lisp
+;;; one liner
+  (plot:plot (vega:make-plot (df:make-df '(x y group) '(#(1 2 3) #(2 3 5) #("A" "B" "A")))
+                             '(:title "first example")
+                             (geom:point :x :y :color :group :filled t)
+                             (gg:label :x "X" :y "Y")
+                             (gg:theme :width 360 :height 220)))
+```
+
+```lisp
+;;; Two liner uses dataframe's keys to derive the plot axis
+  CL-USER> (defvar *df* (df:make-df '(x y group) '(#(1 2 3) #(2 3 5) #("A" "B" "A"))))
+  CL-USER> (plot:plot (vega:make-plot *df*
+                                      '(:title "first example")
+                                      (geom:point :x :y :color :group :filled t)
+                                      (gg:label :x (elt (df:keys *df*) 0) :y (elt (df:keys *df*) 1))
+                                      (gg:theme :width 360 :height 220)))
+```
+
 
 The `geom` and `gg` packages provide a set of composable helper
 functions for building [Vega-Lite](https://vega.github.io/vega-lite/)
